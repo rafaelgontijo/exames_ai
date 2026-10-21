@@ -1,0 +1,219 @@
+{
+  "schemaVersion": "1.0",
+  "corpusVersion": "synthetic-1.0",
+  "seed": 20261021,
+  "notice": "DADOS SINTÉTICOS. Faixas arbitrárias para testes; não usar como referência clínica.",
+  "analytes": [
+    {
+      "id": "GLUCOSE",
+      "label": "Glicose",
+      "unit": "mg/dL"
+    },
+    {
+      "id": "UREA",
+      "label": "Ureia",
+      "unit": "mg/dL"
+    },
+    {
+      "id": "CREATININE",
+      "label": "Creatinina",
+      "unit": "mg/dL"
+    },
+    {
+      "id": "SODIUM",
+      "label": "Sódio",
+      "unit": "mmol/L"
+    },
+    {
+      "id": "POTASSIUM",
+      "label": "Potássio",
+      "unit": "mmol/L"
+    }
+  ],
+  "layouts": [
+    "simple-v1",
+    "footnote-v1"
+  ],
+  "scenarios": [
+    {
+      "id": "within",
+      "resultRaw": "15",
+      "referenceRaw": "10–20",
+      "numericValue": "15",
+      "low": "10",
+      "high": "20",
+      "expectedStatus": "WITHIN_RANGE",
+      "expectedReason": "INSIDE_REFERENCE"
+    },
+    {
+      "id": "below",
+      "resultRaw": "9",
+      "referenceRaw": "10–20",
+      "numericValue": "9",
+      "low": "10",
+      "high": "20",
+      "expectedStatus": "BELOW_RANGE",
+      "expectedReason": "BELOW_LOWER_BOUND"
+    },
+    {
+      "id": "above",
+      "resultRaw": "21",
+      "referenceRaw": "10–20",
+      "numericValue": "21",
+      "low": "10",
+      "high": "20",
+      "expectedStatus": "ABOVE_RANGE",
+      "expectedReason": "ABOVE_UPPER_BOUND"
+    },
+    {
+      "id": "inclusive-low",
+      "resultRaw": "10",
+      "referenceRaw": "10–20",
+      "numericValue": "10",
+      "low": "10",
+      "high": "20",
+      "expectedStatus": "WITHIN_RANGE",
+      "expectedReason": "INSIDE_REFERENCE"
+    },
+    {
+      "id": "inclusive-high",
+      "resultRaw": "20",
+      "referenceRaw": "10–20",
+      "numericValue": "20",
+      "low": "10",
+      "high": "20",
+      "expectedStatus": "WITHIN_RANGE",
+      "expectedReason": "INSIDE_REFERENCE"
+    },
+    {
+      "id": "exclusive-high",
+      "resultRaw": "20",
+      "referenceRaw": "10 ≤ x < 20",
+      "numericValue": "20",
+      "low": "10",
+      "high": "20",
+      "expectedStatus": "ABOVE_RANGE",
+      "expectedReason": "ABOVE_UPPER_BOUND"
+    },
+    {
+      "id": "upper-only",
+      "resultRaw": "20",
+      "referenceRaw": "< 20",
+      "numericValue": "20",
+      "low": null,
+      "high": "20",
+      "expectedStatus": "ABOVE_RANGE",
+      "expectedReason": "ABOVE_UPPER_BOUND"
+    },
+    {
+      "id": "lower-only",
+      "resultRaw": "10",
+      "referenceRaw": "> 10",
+      "numericValue": "10",
+      "low": "10",
+      "high": null,
+      "expectedStatus": "BELOW_RANGE",
+      "expectedReason": "BELOW_LOWER_BOUND"
+    },
+    {
+      "id": "censored",
+      "resultRaw": "< 0,1",
+      "referenceRaw": "0–1",
+      "numericValue": null,
+      "low": "0",
+      "high": "1",
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReason": "CENSORED_RESULT"
+    },
+    {
+      "id": "ambiguous-comma",
+      "resultRaw": "1,234",
+      "referenceRaw": "10–20",
+      "numericValue": null,
+      "low": "10",
+      "high": "20",
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReason": "AMBIGUOUS_INPUT"
+    },
+    {
+      "id": "ambiguous-dot",
+      "resultRaw": "1.234",
+      "referenceRaw": "10–20",
+      "numericValue": null,
+      "low": "10",
+      "high": "20",
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReason": "AMBIGUOUS_INPUT"
+    },
+    {
+      "id": "unit-mismatch",
+      "resultRaw": "15",
+      "referenceRaw": "10–20",
+      "numericValue": "15",
+      "low": "10",
+      "high": "20",
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReason": "UNIT_UNRESOLVED"
+    },
+    {
+      "id": "missing-reference",
+      "resultRaw": "15",
+      "referenceRaw": null,
+      "numericValue": "15",
+      "low": null,
+      "high": null,
+      "expectedStatus": "NOT_CLASSIFIABLE",
+      "expectedReason": "NO_REFERENCE"
+    },
+    {
+      "id": "unknown-context",
+      "resultRaw": "15",
+      "referenceRaw": "Adultos: 10–20; Crianças: 30–40",
+      "numericValue": "15",
+      "low": null,
+      "high": null,
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReason": "CONTEXT_UNRESOLVED"
+    },
+    {
+      "id": "qualitative",
+      "resultRaw": "Negativo",
+      "referenceRaw": "10–20",
+      "numericValue": null,
+      "low": "10",
+      "high": "20",
+      "expectedStatus": "NOT_CLASSIFIABLE",
+      "expectedReason": "NON_NUMERIC"
+    },
+    {
+      "id": "invalid-reference",
+      "resultRaw": "15",
+      "referenceRaw": "20–10",
+      "numericValue": "15",
+      "low": "20",
+      "high": "10",
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReason": "INVALID_REFERENCE"
+    },
+    {
+      "id": "competing-reference",
+      "resultRaw": "15",
+      "referenceRaw": "10–20 ou 30–40",
+      "numericValue": "15",
+      "low": null,
+      "high": null,
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReason": "REFERENCE_MISMATCH"
+    },
+    {
+      "id": "unreadable",
+      "resultRaw": "",
+      "referenceRaw": "10–20",
+      "numericValue": null,
+      "low": "10",
+      "high": "20",
+      "expectedStatus": "NEEDS_REVIEW",
+      "expectedReason": "AMBIGUOUS_INPUT"
+    }
+  ]
+}

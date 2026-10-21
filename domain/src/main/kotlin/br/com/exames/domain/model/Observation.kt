@@ -18,6 +18,7 @@ data class Observation(
     val unitNormalized: String? = null,
     val resultComparator: ResultComparator = ResultComparator.EQ,
     val ambiguities: Set<Ambiguity> = emptySet(),
+    /** Human review metadata only; never set automatically to enable classification. */
     val confirmed: Boolean = false,
 )
 enum class ResultComparator { EQ, LT, LTE, GT, GTE, UNKNOWN }

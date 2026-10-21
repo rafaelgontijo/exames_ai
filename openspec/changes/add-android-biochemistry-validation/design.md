@@ -11,7 +11,7 @@ Ver `proposal.md` para motivação e `specs/*/spec.md` para os contratos. A base
 - Room v1 guarda campos sensíveis em claro; avaliação keyed por observação é sobrescrita, sem histórico de execuções.
 - Arquivos já usam AES-GCM/Keystore. Exclusão tem outbox e worker, sem integração UI; `DeletionWorker` abre sua própria base.
 - `:inference-experimental` é stub desconectado de `:app`. O usuário autorizou inferência P0, substituindo a exclusão anterior do MVP, e sugeriu LFM2.5-1.2B-Thinking no lugar do Qwen.
-- minSdk 23 é provisório; SDK de compilação é 36. Não houve teste físico no S25 nesta conversa.
+- O minSdk original era 23; o usuário aprovou elevar para 24 após inspeção dos AARs LiteRT-LM. SDK de compilação permanece 36. Não houve teste físico no S25 nesta conversa.
 
 Esta proposta foi reconstruída após substituição do ambiente que continha o commit local `754820d`, antes do push. Preserva o escopo acordado e incorpora a avaliação de LFM solicitada durante a recuperação; não é uma recuperação byte a byte do objeto Git antigo.
 
@@ -60,7 +60,7 @@ Limites técnicos iniciais: 20 MiB já existentes por documento, 20 páginas, um
 
 ### 4. PDF, OCR e coordenadas
 
-Adaptador PDF recebe bytes autenticados limitados do store e fornece texto posicionado/raster sem temporário persistente em claro. Avaliar PDFBox-Android para texto e PDFium Android com abertura por byte array para raster, verificando licença, manutenção, API 23 e ABI/16 KiB antes de fixar versões. São candidatas, não dependências já comprovadas.
+Adaptador PDF recebe bytes autenticados limitados do store e fornece texto posicionado/raster sem temporário persistente em claro. Avaliar PDFBox-Android para texto e PDFium Android com abertura por byte array para raster, verificando licença, manutenção, API 24 e ABI/16 KiB antes de fixar versões. São candidatas, não dependências já comprovadas.
 
 O spike deve abrir texto/raster sem URI original e sem gravar PDF descriptografado em disco. Substituir biblioteca se necessário, mantendo o contrato; não relaxar criptografia. O `PdfRenderer` atual só pode ser reutilizado com descritor seguro compatível com esse contrato.
 

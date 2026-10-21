@@ -2,24 +2,24 @@
 
 ## 1. Contratos e corpus reproduzível
 
-- [ ] 1.1 Adicionar contratos JVM de caso/família, gabarito, execução, evidência e comparação; verificar serialização, IDs estáveis e independência de Android em `:domain:test`.
-- [ ] 1.2 Criar gabaritos anteriores à renderização para cinco analitos e dois layouts, cobrindo limites, censura, ambiguidades, unidades, contexto, faixas ausentes/concorrentes e qualitativos; verificar matriz versionada em `validation/corpus/`.
-- [ ] 1.3 Implementar gerador com ferramentas/fontes/seeds fixados para PDF textual, escaneado e JPEG/PNG, incluindo rotação/degradação; verificar semântica, hashes e partição por família.
-- [ ] 1.4 Definir pacote local de corpus/gabarito com schema, hash, tamanho, IDs e caminhos validados; verificar testes de entradas inválidas, path traversal e exemplo sem revisão.
-- [ ] 1.5 Documentar geração e inclusão/revisão de exemplos públicos com URL/data/condições de uso/hash fora do APK; verificar procedimento demonstrativo e execução sintética sem cobertura pública.
+- [x] 1.1 Adicionar contratos JVM de caso/família, gabarito, execução, evidência e comparação; verificar serialização, IDs estáveis e independência de Android em `:domain:test`.
+- [x] 1.2 Criar gabaritos anteriores à renderização para cinco analitos e dois layouts, cobrindo limites, censura, ambiguidades, unidades, contexto, faixas ausentes/concorrentes e qualitativos; verificar matriz versionada em `validation/corpus/`.
+- [x] 1.3 Implementar gerador com ferramentas/fontes/seeds fixados para PDF textual, escaneado e JPEG/PNG, incluindo rotação/degradação; verificar semântica, hashes e partição por família.
+- [x] 1.4 Definir pacote local de corpus/gabarito com schema, hash, tamanho, IDs e caminhos validados; verificar testes de entradas inválidas, path traversal e exemplo sem revisão.
+- [x] 1.5 Documentar geração e inclusão/revisão de exemplos públicos com URL/data/condições de uso/hash fora do APK; verificar procedimento demonstrativo e execução sintética sem cobertura pública.
 
 ## 2. Persistência protegida e histórico imutável
 
-- [ ] 2.1 Implementar codec AES-GCM/Keystore com IV único e AAD por entidade/ID/versão; verificar round-trip, adulteração, troca de payload e chave indisponível em testes instrumentados.
-- [ ] 2.2 Criar Room v2 com execuções/checkpoints/evidências/gabaritos/correções/comparações imutáveis e apenas metadados operacionais em claro; verificar schema exportado, relações e ausência de upsert destrutivo da saída original.
-- [ ] 2.3 Implementar migração v1→v2 em destino protegido e troca recuperável; verificar IDs, contagens, correções, regra legada e interrupções em cópia/troca antes de remover base antiga/sidecars.
-- [ ] 2.4 Centralizar abertura/migração para Hilt e workers incluindo DeletionWorker; verificar ausência de caminho legado, fallback destrutivo ou recriação silenciosa após falha de chave.
-- [ ] 2.5 Implementar repositórios de documento/execução/observação/avaliação/gabarito/comparação; verificar reabertura e preservação da saída/configuração/gabarito originais após correções e reexecuções.
-- [ ] 2.6 Inspecionar banco, WAL/journals, caches e arquivos com marcadores sintéticos; verificar ausência em claro e documentar proteção de payloads, metadados expostos e limites de descarte físico.
+- [x] 2.1 Implementar codec AES-GCM/Keystore com IV único e AAD por entidade/ID/versão; verificar round-trip, adulteração, troca de payload e chave indisponível em testes instrumentados.
+- [x] 2.2 Criar Room v2 com execuções/checkpoints/evidências/gabaritos/correções/comparações imutáveis e apenas metadados operacionais em claro; verificar schema exportado, relações e ausência de upsert destrutivo da saída original.
+- [x] 2.3 Implementar migração v1→v2 em destino protegido e troca recuperável; verificar IDs, contagens, correções, regra legada e interrupções em cópia/troca antes de remover base antiga/sidecars.
+- [x] 2.4 Centralizar abertura/migração para Hilt e workers incluindo DeletionWorker; verificar ausência de caminho legado, fallback destrutivo ou recriação silenciosa após falha de chave.
+- [x] 2.5 Implementar repositórios de documento/execução/observação/avaliação/gabarito/comparação; verificar reabertura e preservação da saída/configuração/gabarito originais após correções e reexecuções.
+- [x] 2.6 Inspecionar banco, WAL/journals, caches e arquivos com marcadores sintéticos; verificar ausência em claro e documentar proteção de payloads, metadados expostos e limites de descarte físico.
 
 ## 3. Importação, PDF e OCR
 
-- [ ] 3.1 Concluir spike PDF de buffer autenticado para texto/raster sem URI externa ou temporário persistente em claro; verificar licença, minSdk 23, ABI/16 KiB, PDF híbrido e memória em decisão técnica.
+- [ ] 3.1 Concluir spike PDF de buffer autenticado para texto/raster sem URI externa ou temporário persistente em claro; verificar licença, minSdk 24 aprovado, ABI/16 KiB, PDF híbrido e memória em decisão técnica.
 - [ ] 3.2 Integrar SAF à cópia criptografada, assinatura, hash e limite real; verificar MIME incorreto, tamanho ausente/enganoso, truncamento, revogação de URI e limpeza após interrupção.
 - [ ] 3.3 Adaptar texto/raster à cópia privada e coordenadas comuns da prévia; verificar destaque correto em PDF textual, escaneado, híbrido e rotacionado.
 - [ ] 3.4 Conectar OCR empacotado, EXIF e decodificação limitada; verificar JPEG/PNG rotacionados, imagem enorme, PDF sem texto e confiança desconhecida preservada como null.
@@ -29,9 +29,9 @@
 
 - [ ] 4.1 Implementar cinco analitos/abreviações e identificação dos dois layouts; verificar campos/proveniência contra fixtures e sinalização de conteúdo fora do escopo.
 - [ ] 4.2 Implementar associação de colunas/faixas e contexto explícito; verificar tabelas densas, rodapés, duplicatas e contexto ausente sem seleção silenciosa.
-- [ ] 4.3 Introduzir REF_NUMERIC/2.0.0 sem confirmação prévia e com revisão separada; verificar classificação inequívoca não revisada sem confirmed=true artificial.
-- [ ] 4.4 Preservar/ampliar testes de BigDecimal, limites, comparadores, números ambíguos, censura, unidades, faixas e contexto; verificar `./gradlew :domain:test` e precedência de abstenção inclusive após confirmação genérica.
-- [ ] 4.5 Documentar nova regra e layouts versus 1.0.0 legada; verificar exemplos executáveis sem referências clínicas externas.
+- [x] 4.3 Introduzir REF_NUMERIC/2.0.0 sem confirmação prévia e com revisão separada; verificar classificação inequívoca não revisada sem confirmed=true artificial.
+- [x] 4.4 Preservar/ampliar testes de BigDecimal, limites, comparadores, números ambíguos, censura, unidades, faixas e contexto; verificar `./gradlew :domain:test` e precedência de abstenção inclusive após confirmação genérica.
+- [x] 4.5 Documentar nova regra e layouts versus 1.0.0 legada; verificar exemplos executáveis sem referências clínicas externas.
 - [ ] 4.6 Verificar o arquivo LFM INT4 na revisão `f8b5b3a3eea2e3859e821ad9d9222c64d649eff7`, confrontar tamanho/SHA-256 real com metadados e documentar licença/redistribuição e alternativa Qwen; verificar manifesto fixado sem baixar pesos para o Git comum.
 - [ ] 4.7 Fixar AAR LiteRT-LM e executar spike no S25 com LFM CPU INT4 e ensaio GPU separado se pertinente; verificar carga real, JSON em pt-BR, evidência, licença, API/ABI/16 KiB, memória e latência, registrando escolha LFM ou Qwen com justificativa antes do empacotamento.
 - [ ] 4.8 Promover/renomear o stub para `:inference-local`, contrato puro e DI, ativo na bancada compatível; verificar execução real, seleção sem IA e ausência de rede, sem elevar minSdk silenciosamente.

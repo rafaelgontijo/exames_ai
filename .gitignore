@@ -6,3 +6,6 @@ local.properties
 .idea/
 *.jks
 *.keystore
+validation/generated/
+tools/corpus/__pycache__/
+tools/corpus/.venv/

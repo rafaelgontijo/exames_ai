@@ -1,0 +1,450 @@
+{
+  "schemaVersion": "1.0",
+  "caseId": "c713ef2c26fe24b8273c3e663b42dc0e2cb7c88c8809046bd0faa68eb9d137b6",
+  "version": "1",
+  "reviewState": "REVIEWED",
+  "reviewerId": "synthetic-fixture-author",
+  "reviewedAt": "2026-10-21T00:00:00Z",
+  "observations": [
+    {
+      "observationId": "eb75e3559e892e25885f95b37cff06d3772a549fb6d32da4f00bb440c83a4bb2",
+      "analyte": "GLUCOSE",
+      "analyteRaw": "Glicose",
+      "resultRaw": "15",
+      "unitRaw": "mg/dL",
+      "referenceRaw": "10–20 mg/dL",
+      "numericValue": "15",
+      "low": "10",
+      "high": "20",
+      "expectedStatus": "WITHIN_RANGE",
+      "expectedReason": "INSIDE_REFERENCE",
+      "recoverable": true,
+      "evidence": [
+        {
+          "field": "analyteRaw",
+          "raw": "Glicose",
+          "region": {
+            "page": 1,
+            "left": 25,
+            "top": 175,
+            "right": 71.541015625,
+            "bottom": 194,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "8fc0a894091e7d62769a9cbab1fc5ac25d51d544ff294ba3b4072be3682ce0be",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        },
+        {
+          "field": "resultRaw",
+          "raw": "15",
+          "region": {
+            "page": 1,
+            "left": 175,
+            "top": 175,
+            "right": 193.26953125,
+            "bottom": 194,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "f2501500e06888e0656c830ea7087719e35a6af928efb6c98fa9029a67103761",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        },
+        {
+          "field": "unitRaw",
+          "raw": "mg/dL",
+          "region": {
+            "page": 1,
+            "left": 270,
+            "top": 175,
+            "right": 310.65234375,
+            "bottom": 194,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "74a0682a3be1069bb5fd40a0b0279ee72d2ad02b75cc4a8a22499fedcbdc9105",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        },
+        {
+          "field": "referenceRaw",
+          "raw": "10–20 mg/dL",
+          "region": {
+            "page": 1,
+            "left": 360,
+            "top": 175,
+            "right": 421.50439453125,
+            "bottom": 191,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "3e1482bbf35f437eb8938d16a5d7762954f8da3460de5e1b0dd4ee6ce47ab81f",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        }
+      ]
+    },
+    {
+      "observationId": "0aed966f35a3254eee7c72440996004b89f81fe0c948487b39a7fb76a1a3e20a",
+      "analyte": "UREA",
+      "analyteRaw": "Ureia",
+      "resultRaw": "15",
+      "unitRaw": "mg/dL",
+      "referenceRaw": "10–20 mg/dL",
+      "numericValue": "15",
+      "low": "10",
+      "high": "20",
+      "expectedStatus": "WITHIN_RANGE",
+      "expectedReason": "INSIDE_REFERENCE",
+      "recoverable": true,
+      "evidence": [
+        {
+          "field": "analyteRaw",
+          "raw": "Ureia",
+          "region": {
+            "page": 1,
+            "left": 25,
+            "top": 240,
+            "right": 59.787109375,
+            "bottom": 259,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "4e709f7a0e2e7f9a03b08a16161e37f4ee22022993e8a85021d11fecd45200e9",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        },
+        {
+          "field": "resultRaw",
+          "raw": "15",
+          "region": {
+            "page": 1,
+            "left": 175,
+            "top": 240,
+            "right": 193.26953125,
+            "bottom": 259,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "1b9288eea62fba7c26d8d44b0691295ef24a77af252fa3f8eb7609f711ec2a80",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        },
+        {
+          "field": "unitRaw",
+          "raw": "mg/dL",
+          "region": {
+            "page": 1,
+            "left": 270,
+            "top": 240,
+            "right": 310.65234375,
+            "bottom": 259,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "c0de67857e212efbe4783bafa993d7cf741d55c85ea7aeb7f6492b7bcb77edde",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        },
+        {
+          "field": "referenceRaw",
+          "raw": "10–20 mg/dL",
+          "region": {
+            "page": 1,
+            "left": 360,
+            "top": 240,
+            "right": 421.50439453125,
+            "bottom": 256,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "2cbc39757886d8e9f5e208fa034b77b4b19177035784117b22b3186f5c3c078c",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        }
+      ]
+    },
+    {
+      "observationId": "297d5d80a358a2d8f78ef286c98a6f616528271882ce75f3474d38a620f46a09",
+      "analyte": "CREATININE",
+      "analyteRaw": "Creatinina",
+      "resultRaw": "15",
+      "unitRaw": "mg/dL",
+      "referenceRaw": "10–20 mg/dL",
+      "numericValue": "15",
+      "low": "10",
+      "high": "20",
+      "expectedStatus": "WITHIN_RANGE",
+      "expectedReason": "INSIDE_REFERENCE",
+      "recoverable": true,
+      "evidence": [
+        {
+          "field": "analyteRaw",
+          "raw": "Creatinina",
+          "region": {
+            "page": 1,
+            "left": 25,
+            "top": 305,
+            "right": 89.986328125,
+            "bottom": 324,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "152c6913c000c2957115dd04ba4ab804a5a3521e2337d9531ec2bcc34d249340",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        },
+        {
+          "field": "resultRaw",
+          "raw": "15",
+          "region": {
+            "page": 1,
+            "left": 175,
+            "top": 305,
+            "right": 193.26953125,
+            "bottom": 324,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "47b487b7591488d24208e30a2e13f607a75b5b0f3eb2503f4311244a379dc7a9",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        },
+        {
+          "field": "unitRaw",
+          "raw": "mg/dL",
+          "region": {
+            "page": 1,
+            "left": 270,
+            "top": 305,
+            "right": 310.65234375,
+            "bottom": 324,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "db323e59b3f80576d8f82ecef7b4993cc70e170a50078f4e08baf29213652e34",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        },
+        {
+          "field": "referenceRaw",
+          "raw": "10–20 mg/dL",
+          "region": {
+            "page": 1,
+            "left": 360,
+            "top": 305,
+            "right": 421.50439453125,
+            "bottom": 321,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "d0e89f1c295bd391df7bc263c8f4e4789a6e56ad83704ad120a1ec312e50e8e0",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        }
+      ]
+    },
+    {
+      "observationId": "2b31857c5509fdcaa5ffd1dad455fe74a3b915c0c85bd7e98e03a3c1ea259032",
+      "analyte": "SODIUM",
+      "analyteRaw": "Sódio",
+      "resultRaw": "15",
+      "unitRaw": "mmol/L",
+      "referenceRaw": "10–20 mmol/L",
+      "numericValue": "15",
+      "low": "10",
+      "high": "20",
+      "expectedStatus": "WITHIN_RANGE",
+      "expectedReason": "INSIDE_REFERENCE",
+      "recoverable": true,
+      "evidence": [
+        {
+          "field": "analyteRaw",
+          "raw": "Sódio",
+          "region": {
+            "page": 1,
+            "left": 25,
+            "top": 370,
+            "right": 61.251953125,
+            "bottom": 389,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "db19bfcbfb4be2714423d7ede2bfda92e4d854f7db1f6560f3911e6e99b35313",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        },
+        {
+          "field": "resultRaw",
+          "raw": "15",
+          "region": {
+            "page": 1,
+            "left": 175,
+            "top": 370,
+            "right": 193.26953125,
+            "bottom": 389,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "3af67ca6ec6b591b72e764c006ee80f4c0fd20fa3f8f127c35e6242f5f05655d",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        },
+        {
+          "field": "unitRaw",
+          "raw": "mmol/L",
+          "region": {
+            "page": 1,
+            "left": 270,
+            "top": 370,
+            "right": 317.783203125,
+            "bottom": 389,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "7a31d3b5dd51b6b34084a7e0603830260ec26631d9e3376979cceafc8ec5b0d6",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        },
+        {
+          "field": "referenceRaw",
+          "raw": "10–20 mmol/L",
+          "region": {
+            "page": 1,
+            "left": 360,
+            "top": 370,
+            "right": 426.8525390625,
+            "bottom": 386,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "c55bc0bc956466bcc205ce49ae75b41fa007d41a9772b337339ea8c140164139",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        }
+      ]
+    },
+    {
+      "observationId": "7864c8026514ba8efb67149e7d12f82169e6a89ccff24a77de73ab196c47d7f0",
+      "analyte": "POTASSIUM",
+      "analyteRaw": "Potássio",
+      "resultRaw": "15",
+      "unitRaw": "mmol/L",
+      "referenceRaw": "10–20 mmol/L",
+      "numericValue": "15",
+      "low": "10",
+      "high": "20",
+      "expectedStatus": "WITHIN_RANGE",
+      "expectedReason": "INSIDE_REFERENCE",
+      "recoverable": true,
+      "evidence": [
+        {
+          "field": "analyteRaw",
+          "raw": "Potássio",
+          "region": {
+            "page": 1,
+            "left": 25,
+            "top": 435,
+            "right": 77.81640625,
+            "bottom": 454,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "f0cd958d71baa4275582103de994d2737940f8da2012024d7bc092c23896b65f",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        },
+        {
+          "field": "resultRaw",
+          "raw": "15",
+          "region": {
+            "page": 1,
+            "left": 175,
+            "top": 435,
+            "right": 193.26953125,
+            "bottom": 454,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "340328690fd3f7e83b54062ecfa0a32b1bfd22620f2c99469f304d56038dc2c7",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        },
+        {
+          "field": "unitRaw",
+          "raw": "mmol/L",
+          "region": {
+            "page": 1,
+            "left": 270,
+            "top": 435,
+            "right": 317.783203125,
+            "bottom": 454,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "e118a2575f81c1054ff5d672dc04c4607bab7b11d422229ce8b09bf64bd4a31b",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        },
+        {
+          "field": "referenceRaw",
+          "raw": "10–20 mmol/L",
+          "region": {
+            "page": 1,
+            "left": 360,
+            "top": 435,
+            "right": 426.8525390625,
+            "bottom": 451,
+            "pageWidth": 600,
+            "pageHeight": 800,
+            "rotationDegrees": 0
+          },
+          "spanId": "600281cf8d6be9107b19d717ac5424d59be69b54cc34bca36476259c7000e180",
+          "method": "SYNTHETIC",
+          "extractorVersion": "1.0",
+          "confidence": null
+        }
+      ]
+    }
+  ]
+}
