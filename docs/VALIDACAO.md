@@ -49,4 +49,21 @@ A execução adicional de privacidade usou:
 
 O corpus contém 216 variantes sintéticas/1080 observações, com validação de pacote aprovada. Foram aprovados os 15 testes iniciais da suíte Python e o teste adicional direcionado de compressão excessiva, totalizando 16 casos de teste distintos. A geração em duplicata produziu o mesmo manifesto e ZIP. Ver docs/CORPUS.md.
 
-**Limites:** não houve execução física no S25, extração de laudos reais, OCR ponta a ponta, validação clínica ou inferência do modelo. A UI e o pipeline continuam pendentes. A obtenção do peso LFM foi bloqueada pelo proxy ao redirecionar para us.aws.cdn.hf.co; ver docs/MODEL_DOWNLOAD.md. O runtime/modelo ainda não está incluído no APK. Não declarar o MVP completo ou a tarefa 4.6 concluída.
+**Limites dessa execução:** não houve execução física no S25, extração de laudos reais, OCR ponta a ponta, validação clínica ou inferência do modelo. A UI e o pipeline continuam pendentes. A obtenção do peso LFM estava bloqueada nessa etapa; o bloqueio foi superado na retomada abaixo. O runtime/modelo ainda não está incluído no APK. Não declarar o MVP completo.
+
+## Retomada — verificação do peso LFM
+
+Em 21/10/2026, a branch foi recuperada no commit remoto
+`6a8f0528a8c6da2f77bec716a4cc8959c1794164`. Git e Hugging Face funcionaram
+com acesso à rede autorizado no executor, preservando o proxy e TLS.
+
+- Download completo: 736015744 bytes, HTTP 200.
+- SHA-256 calculado no binário: `da3c0ad154b78f33537b117fbe747cc1d4fd3507479002b159998f4023f32a84`.
+- Tamanho/hash coincidem com o pin, metadados LFS e manifesto de origem na revisão `f8b5b3a3eea2e3859e821ad9d9222c64d649eff7`.
+- Peso mantido em `/workspace/.model-cache/`, fora do Git. Manifesto fixado e licença preservados em `validation/models/lfm2.5-1.2b-thinking/`.
+- Tarefa 4.6 concluída: 15/51 tarefas. Os resultados anteriores de build/testes não foram reexecutados nesta alteração documental.
+
+Ver comandos, termos de redistribuição e alternativa Qwen em `MODEL_DOWNLOAD.md`.
+O ADB não lista dispositivos conectados nesta retomada. A tarefa 4.7 continua
+pendente do spike real no S25; download e integridade não comprovam inferência,
+JSON final, memória, latência, reset ou cancelamento. Nenhum benchmark foi executado.

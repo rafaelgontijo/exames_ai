@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "repository": "litert-community/LFM2.5-1.2B-Thinking",
+  "revision": "f8b5b3a3eea2e3859e821ad9d9222c64d649eff7",
+  "file": "LFM2.5-1.2B-Thinking_int4.litertlm",
+  "format": "litertlm",
+  "quantization": "int4 blockwise-32 + OCTAV linears, int8 embedding, convs float",
+  "backend": "cpu",
+  "sizeBytes": 736015744,
+  "sha256": "da3c0ad154b78f33537b117fbe747cc1d4fd3507479002b159998f4023f32a84",
+  "contextTokens": 4096,
+  "minimumRuntimeVersion": "0.15.0",
+  "license": {
+    "name": "LFM Open License v1.0",
+    "file": "LICENSE",
+    "sha256": "61d7e939a05911c765b7e98ffaa1ab5ca6c0174a65350766c25cb10197d19fc8"
+  },
+  "upstreamManifest": {
+    "file": "litertlm_manifest.json",
+    "sha256": "8aaeef39e6fb5857d270d9de856c06a5698ae70f2fc79779cc5919da8dff7942"
+  },
+  "verification": {
+    "date": "2026-10-21",
+    "actualSizeBytes": 736015744,
+    "actualSha256": "da3c0ad154b78f33537b117fbe747cc1d4fd3507479002b159998f4023f32a84",
+    "comparedWith": [
+      "user pin",
+      "Hugging Face LFS metadata at pinned revision",
+      "upstream litertlm_manifest.json at pinned revision"
+    ],
+    "inferenceExecuted": false,
+    "selectedForDistribution": false
+  },
+  "alternative": {
+    "repository": "litert-community/Qwen3-0.6B",
+    "revision": "e6687177e00897731e7716267eebd4eba0dde7c2",
+    "file": "Qwen3-0.6B_dynamic_wi4b32_afp32.litertlm",
+    "license": "Apache-2.0",
+    "publishedSizeBytes": 344671744,
+    "publishedSha256": "03e7da1eb1108b50dffaa9bb52cc7bcbad2eb0c66ca990267f480c1e545d2856",
+    "binaryVerified": false
+  }
+}

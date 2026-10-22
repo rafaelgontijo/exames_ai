@@ -32,7 +32,7 @@
 - [x] 4.3 Introduzir REF_NUMERIC/2.0.0 sem confirmação prévia e com revisão separada; verificar classificação inequívoca não revisada sem confirmed=true artificial.
 - [x] 4.4 Preservar/ampliar testes de BigDecimal, limites, comparadores, números ambíguos, censura, unidades, faixas e contexto; verificar `./gradlew :domain:test` e precedência de abstenção inclusive após confirmação genérica.
 - [x] 4.5 Documentar nova regra e layouts versus 1.0.0 legada; verificar exemplos executáveis sem referências clínicas externas.
-- [ ] 4.6 Verificar o arquivo LFM INT4 na revisão `f8b5b3a3eea2e3859e821ad9d9222c64d649eff7`, confrontar tamanho/SHA-256 real com metadados e documentar licença/redistribuição e alternativa Qwen; verificar manifesto fixado sem baixar pesos para o Git comum.
+- [x] 4.6 Verificar o arquivo LFM INT4 na revisão `f8b5b3a3eea2e3859e821ad9d9222c64d649eff7`, confrontar tamanho/SHA-256 real com metadados e documentar licença/redistribuição e alternativa Qwen; verificar manifesto fixado sem baixar pesos para o Git comum.
 - [ ] 4.7 Fixar AAR LiteRT-LM e executar spike no S25 com LFM CPU INT4 e ensaio GPU separado se pertinente; verificar carga real, JSON em pt-BR, evidência, licença, API/ABI/16 KiB, memória e latência, registrando escolha LFM ou Qwen com justificativa antes do empacotamento.
 - [ ] 4.8 Promover/renomear o stub para `:inference-local`, contrato puro e DI, ativo na bancada compatível; verificar execução real, seleção sem IA e ausência de rede, sem elevar minSdk silenciosamente.
 - [ ] 4.9 Implementar staging e distribuição de um modelo no APK, cópia privada atômica e hash/espaço; verificar instalação limpa em modo avião, ausência/corrupção e falta de espaço sem download posterior.
