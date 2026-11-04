@@ -16,6 +16,8 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+    // The instrumentation APK otherwise inherits minSdk as targetSdk; Android 17 shows an "older Android" dialog over tests.
+    testOptions { targetSdk = 36 }
     androidResources { noCompress += "traineddata" }
     sourceSets.getByName("main").assets.srcDir(layout.buildDirectory.dir("generated/ocr-assets"))
 }
