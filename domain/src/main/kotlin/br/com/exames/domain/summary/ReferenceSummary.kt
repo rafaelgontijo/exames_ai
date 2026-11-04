@@ -28,6 +28,7 @@ data class SummaryLine(
     val status: AssessmentStatus,
     val reason: ReasonCode?,
     val ambiguities: Set<Ambiguity>,
+    val analyteNormalized: String? = null,
 )
 
 data class ReferenceSummary(
@@ -75,7 +76,7 @@ object ProjectReferenceSummary {
             if (o.ambiguities.isNotEmpty()) warnings += SummaryWarning.AMBIGUITIES_PRESENT
             if (reason == ReasonCode.NO_REFERENCE || (o.referenceRaw == null && o.referenceCandidates.isEmpty()))
                 warnings += SummaryWarning.REFERENCE_MISSING
-            SummaryLine(o.id, o.page, o.analyteRaw, o.resultRaw, o.unitRaw, o.referenceRaw, status, reason, o.ambiguities)
+            SummaryLine(o.id, o.page, o.analyteRaw, o.resultRaw, o.unitRaw, o.referenceRaw, status, reason, o.ambiguities, o.analyteNormalized)
         }
         if (assessments.any { it.observationId !in knownIds }) warnings += SummaryWarning.ORPHAN_ASSESSMENT
         if (lines.isEmpty()) warnings += SummaryWarning.NO_OBSERVATIONS
