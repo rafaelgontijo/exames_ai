@@ -68,10 +68,10 @@ produção) e `NavigationTest` cobrem esse contrato.
 `:ui-checks` (módulo só de testes, sem o APK de 2 GB) renderiza Início (vazio e com exame), Enviar, Resultado e Ajuda nos
 temas claro/escuro com fonte 100% e 200%, usando o mesmo fundo temado da `MainActivity`, e verifica: checagens de
 acessibilidade do Compose (`enableAccessibilityChecks`), altura e largura de layout de todo controle ≥ 48 dp e alcance por
-rolagem (telas de rolagem simples). Passou em 03/11/2026 em Android 7.0 (API 24) e no emulador API 36.
+rolagem (telas de rolagem simples). Passou em 03/11/2026 em Android 7.0 (API 24), no emulador API 36 e no S25.
 
 Capturas sintéticas (sem dado clínico; documento `doc-sintetico`, valores fictícios) em `docs/prototype-screens/`,
-nomeadas `<tela>-<claro|escuro>-<100|200>.png` (20 arquivos, geradas no emulador API 36).
+nomeadas `<tela>-<claro|escuro>-<100|200>.png` (20 arquivos, geradas no Samsung S25, SM-S931B, Android 17, em 03/11/2026).
 
 Defeitos encontrados e corrigidos por essa verificação: botões de texto com 40 dp (agora `ExamesTextButton`, ≥ 48 dp) e
 raiz do app usando `surface` em vez de `background`, que deixava telas sem fundo próprio claras no tema escuro.
@@ -80,6 +80,7 @@ raiz do app usando `surface` em vez de `background`, que deixava telas sem fundo
 
 - **TalkBack real não foi executado.** As checagens acima são automatizadas (ATF/semântica); a ordem de leitura e os rótulos
   falados no TalkBack do S25 ainda precisam de sessão manual.
-- As capturas vêm do emulador, não do S25; não comprovam renderização em hardware.
+- As capturas são sintéticas (host de teste com estado fictício), não do app com dados reais.
+- Nos módulos de biblioteca o APK de teste herdava `targetSdk` 24 e o S25 (Android 17) exibia o aviso de app antigo sobre os testes; `testOptions.targetSdk = 36` corrige isso.
 - `EvidenceUiTest.overlayPaintsTheCited…` usa `captureToImage`, que não existe em API 24 (`PixelCopy`); falha só ali, desde a
   change anterior, e não indica defeito do app.
