@@ -9,9 +9,17 @@ import java.io.IOException
 /** Rejection with a stable code only; messages never carry image content, metadata or paths. */
 class CaptureRejected(val code: String) : IOException(code)
 
+/** One captured page held in memory. The holder owns [jpeg] and must call [wipe] when it is discarded or persisted. */
+interface CapturedPage {
+    val jpeg: ByteArray
+    val width: Int
+    val height: Int
+    fun wipe()
+}
+
 /** An oriented, metadata-free JPEG of one page. [jpeg] is owned by the receiver, which wipes it after use. */
-class NormalizedPage internal constructor(val jpeg: ByteArray, val width: Int, val height: Int) {
-    fun wipe() = jpeg.fill(0)
+class NormalizedPage internal constructor(override val jpeg: ByteArray, override val width: Int, override val height: Int) : CapturedPage {
+    override fun wipe() = jpeg.fill(0)
 }
 
 /**
@@ -95,7 +103,7 @@ object CapturedDocuments {
      * Same signature, truncation and hash validation as any imported JPEG, over a copy of the bytes. The page is not
      * consumed here: the importer wipes it after persistence, whatever the outcome.
      */
-    fun validate(page: NormalizedPage): ValidatedDocument {
+    fun validate(page: CapturedPage): ValidatedDocument {
         val validated = ValidatedDocumentInput.read(java.io.ByteArrayInputStream(page.jpeg), "image/jpeg")
         check(validated.mimeType == "image/jpeg") { "CAPTURE_MIME_INVALID" }
         return validated

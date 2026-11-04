@@ -39,7 +39,8 @@ class ImportViewModelTest {
     @After fun cleanup() { store.clear(); Dispatchers.resetMain() }
     private val corpus = mockk<CorpusIntake>()
     private val preparation = mockk<br.com.exames.domain.inference.PrepareLocalInference>()
-    private fun model() = ImportViewModel(intake, starter, controls, repository, corpus, preparation).also { store.put("model", it) }
+    private val captureIntake = mockk<CaptureIntake>()
+    private fun model() = ImportViewModel(intake, starter, controls, repository, corpus, preparation, captureIntake).also { store.put("model", it) }
 
     @Test fun rapidSelectionCreatesOnePrivateImportAndProgressTracksPartialPages() = runTest {
         val model = model()

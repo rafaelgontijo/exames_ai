@@ -65,6 +65,8 @@ object DomainModule {
         }
     @Provides fun documentIntake(importer: br.com.exames.datalocal.ProtectedDocumentImporter): br.com.exames.featureimport.DocumentIntake =
         br.com.exames.featureimport.DocumentIntake { uri -> importer.import(uri) }
+    @Provides fun captureIntake(importer: br.com.exames.datalocal.ProtectedDocumentImporter): br.com.exames.featureimport.CaptureIntake =
+        br.com.exames.featureimport.CaptureIntake { page -> importer.importCapture(page) }
     @Provides fun sourcePreview(loader: br.com.exames.datalocal.PrivatePageLoader): br.com.exames.featureresults.SourcePreviewLoader =
         br.com.exames.featureresults.SourcePreviewLoader { documentId, page ->
             kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {

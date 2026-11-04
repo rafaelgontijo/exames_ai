@@ -62,7 +62,7 @@ class CameraXPageCapturer(private val context: Context) {
     }
 
     /** Suspends until the camera delivers; cancellation discards a late frame after closing it. */
-    suspend fun capture(): NormalizedPage {
+    suspend fun capture(): CapturedPage {
         val imageCapture = capture ?: throw CaptureRejected("CAMERA_NOT_OPEN")
         val executor = worker ?: throw CaptureRejected("CAMERA_NOT_OPEN")
         return suspendCancellableCoroutine { cont ->

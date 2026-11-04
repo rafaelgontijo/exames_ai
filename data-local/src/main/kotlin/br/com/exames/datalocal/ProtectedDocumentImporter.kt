@@ -30,7 +30,7 @@ class ProtectedDocumentImporter(
      * Confirmed camera capture: validated bytes enter the same journal/encryption/commit path as a picked file, with no
      * simulated URI and no plaintext fallback. The page is wiped on every outcome.
      */
-    suspend fun importCapture(page: br.com.exames.datadocuments.NormalizedPage): Document = try {
+    suspend fun importCapture(page: br.com.exames.datadocuments.CapturedPage): Document = try {
         persist(br.com.exames.datadocuments.CapturedDocuments.validate(page))
     } finally {
         page.wipe()

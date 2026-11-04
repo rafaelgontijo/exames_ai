@@ -83,3 +83,28 @@ qualquer journal; duas capturas viram dois documentos independentes.
 Resultado em 03/11/2026: passaram em Android 7.0 (API 24), emulador API 36 e S25. No API 24, `ExtractionLimitsTest` e
 `ProtectedDocumentImporterTest.lyingSizeCannotBypassActualByteLimit` (testes anteriores, não alterados) esgotam a heap do
 emulador ao alocar 20 MiB; não ocorre no S25 nem no API 36.
+
+## Fluxo prévia / usar / refazer / cancelar (tarefa 4.4)
+
+Em **Enviar exame**, “Fotografar uma página” fica ao lado do seletor. A permissão CAMERA só é pedida ao tocar nessa ação
+(`onCameraPermission`); negada, nada é criado, o seletor e o corpus continuam disponíveis e aparece uma mensagem
+recuperável. Aberta a câmera, “Tirar foto” gera um candidato **só em memória** (`ImportViewModel`, nunca em estado
+restaurável, `SavedStateHandle` ou arquivo); a conferência mostra a imagem já na orientação em que será salva, com **Usar
+esta foto**, **Refazer** e **Cancelar foto**. “Usar” apenas escolhe a imagem como fonte e segue o caminho existente
+(`importCapture` → execução no modo escolhido), sem confirmação clínica; o modo assistido exige o modelo preparado antes de
+abrir a câmera.
+
+Cada transição incrementa um número de **sessão**. Um resultado de captura que chega depois de refazer, cancelar, sair da
+tela, perder a permissão ou iniciar outra sessão é zerado e descartado, sem criar estado, documento ou execução. Também
+descartam o candidato: sair da tela (exceto rotação, em que o ViewModel mantém só a memória), revogação da permissão
+(verificada em `ON_RESUME`) e o fim do ViewModel, que cobre a morte do processo antes de confirmar. Depois de confirmar, a
+interrupção usa a recuperação do importador protegido (tarefa 4.3). Falhas mostram mensagens estáveis, sem texto interno.
+
+Testes: `CaptureFlowTest` (14, JVM) cobre permissão negada, captura→usar com o modo escolhido, refazer, cancelar, resultado
+tardio após sair/refazer/nova sessão/perda de permissão, revogação durante a conferência, morte antes de confirmar,
+rejeições, câmera ausente, falha de persistência após confirmar (nada criado, página zerada), `usar` idempotente e modo
+assistido sem modelo. `ImportControlsUiTest` (14, Compose) cobre as fases câmera e conferência, alvos de 48 dp, seletor
+desabilitado durante a captura e ausência de aceite clínico. Passaram em Android 7.0 (API 24), no emulador API 36 e no S25
+em 03/11/2026.
+
+Limite: a câmera real e o `ImageProxy` do CameraX só são exercitados na tarefa 4.5; aqui a fonte de captura é simulada.
