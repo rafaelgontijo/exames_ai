@@ -13,7 +13,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import br.com.exames.coreui.*
 import br.com.exames.domain.model.*
+import br.com.exames.domain.summary.ProjectReferenceSummary
+import br.com.exames.domain.summary.SummaryCompleteness
 import br.com.exames.domain.validation.*
 
 @Composable
@@ -32,30 +35,40 @@ fun ResultsScreen(runId: String, onBack: () -> Unit, model: ResultsViewModel = v
     }
     LazyColumn(Modifier.fillMaxSize().padding(24.dp).testTag("results-list"), state = listState,
         verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { Text("Revisão dos resultados", style = MaterialTheme.typography.headlineMedium) }
+        item { Text("Revisão dos resultados", style = MaterialTheme.typography.headlineMedium, color = ExamesTheme.palette.title) }
         item { TextButton(onClick = onBack) { Text("Voltar") } }
         if (state.loading) item { CircularProgressIndicator() }
         state.message?.let { item { Text(it) } }
         if (state.unavailable) item { TextButton(onClick = { model.open(runId) }) { Text("Tentar reabrir execução") } }
         state.run?.let { run ->
             item {
-                Text(if (run.mode == ExtractionMode.BASELINE) "Modo sem IA" else "Modo assistido")
-                Text(inferenceParticipation(run,state.checkpoints))
-                Text(when (run.state) {
-                    RunState.QUEUED -> "Aguardando processamento"; RunState.RUNNING -> "Em processamento"
-                    RunState.COMPLETE -> "Execução concluída"; RunState.PARTIAL -> "Execução parcial — há páginas com falha"
-                    RunState.FAILED -> "Execução com falha"; RunState.CANCELLED -> "Execução cancelada"
-                })
+                val summary = remember(run, state.rows, state.checkpoints, state.pageCount) {
+                    ProjectReferenceSummary.project(run, state.rows.map { it.observation }, state.rows.mapNotNull { it.assessment },
+                        state.checkpoints, state.pageCount)
+                }
+                ExamesCard(Modifier.testTag("results-summary")) {
+                    StatusChip(completenessLabel(summary.completeness), if (summary.completeness == SummaryCompleteness.COMPLETE) ChipKind.INFO else ChipKind.REVIEW)
+                    Text(modeLabel(run.mode))
+                    Text(inferenceParticipation(run,state.checkpoints))
+                    Text(when (run.state) {
+                        RunState.QUEUED -> "Aguardando processamento"; RunState.RUNNING -> "Em processamento"
+                        RunState.COMPLETE -> "Execução concluída"; RunState.PARTIAL -> "Execução parcial — há páginas com falha"
+                        RunState.FAILED -> "Execução com falha"; RunState.CANCELLED -> "Execução cancelada"
+                    })
+                    Text(basisLabel(run.outputBasis, run.correctionIds.size))
+                    val c = summary.counts
+                    Text("Abaixo da referência informada: ${c.below}")
+                    Text("Dentro da referência informada: ${c.within}")
+                    Text("Acima da referência informada: ${c.above}")
+                    Text("Precisam de revisão: ${c.needsReview}")
+                    Text("Não classificáveis: ${c.notClassifiable}")
+                    if (summary.warnings.isNotEmpty()) Text("Limitações: " + summary.warnings.map(::warningLabel).sorted().joinToString("; ") + ".")
+                }
                 Text("Páginas concluídas: ${state.checkpoints.count { it.state == PageState.COMPLETE }}. Falhas: ${state.checkpoints.count { it.state == PageState.FAILED }}.")
                 for(page in state.checkpoints.filter { it.state==PageState.FAILED }) Text("Página ${page.page}: " + when(page.errorCode) {
                     "PAGE_UNSUPPORTED_LAYOUT" -> "o layout não foi identificado com segurança. Confira a fonte original."
                     "PAGE_NO_SUPPORTED_OBSERVATIONS" -> "nenhum dos cinco analitos pôde ser extraído com segurança."
                     else -> "falha no processamento. Confira a fonte ou tente uma nova execução."
-                })
-                Text(when (run.outputBasis) {
-                    OutputBasis.AUTOMATIC -> "Saída automática"
-                    OutputBasis.CORRECTED -> "Reavaliação após correções — ${run.correctionIds.size} registros de correção"
-                    OutputBasis.REASSESSED -> "Reavaliação da regra sem nova extração"
                 })
                 Text("A sinalização de referência não define diagnóstico ou urgência.")
                 if (run.outputBasis != OutputBasis.AUTOMATIC) Text("Esta saída não executou novamente OCR ou IA. As métricas originais permanecem na execução de origem.")

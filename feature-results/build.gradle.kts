@@ -48,4 +48,6 @@ dependencies {
     testImplementation(libs.coroutines.test)
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.test.runner)
+    // 3.7.0 avoids the removed InputManager.getInstance reflection on Android 17.
+    androidTestImplementation(libs.androidx.espresso.core)
 }

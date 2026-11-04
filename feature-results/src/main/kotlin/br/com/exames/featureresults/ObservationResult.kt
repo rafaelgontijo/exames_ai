@@ -6,6 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import br.com.exames.coreui.ChipKind
+import br.com.exames.coreui.ExamesCard
+import br.com.exames.coreui.StatusChip
 import br.com.exames.domain.model.*
 import br.com.exames.domain.validation.*
 
@@ -14,8 +17,8 @@ internal fun ObservationResult(row: ResultRow, ruleVersion: String, onPage: (Int
     onEvidence: (String, String, Int) -> Unit, basis: OutputBasis = OutputBasis.AUTOMATIC,
     onCorrection: ((String, CorrectionField) -> Unit)? = null) {
     val observation = row.observation
-    Card(Modifier.fillMaxWidth().testTag("observation-${observation.id}")) {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    ExamesCard(Modifier.testTag("observation-${observation.id}")) {
+        run {
             Text(observation.analyteRaw, style = MaterialTheme.typography.titleMedium)
             Text(if (observation.confirmed || row.corrections.isNotEmpty()) "Revisão documental registrada" else "Sem revisão documental registrada")
             Text(if (basis == OutputBasis.AUTOMATIC) "Saída automática preservada. A revisão não elimina ambiguidades."
@@ -31,15 +34,9 @@ internal fun ObservationResult(row: ResultRow, ruleVersion: String, onPage: (Int
             for (candidate in observation.referenceCandidates) Text(candidate.referenceRaw)
         }
             row.assessment?.let { assessment ->
-                Text(when (assessment.status) {
-                    AssessmentStatus.BELOW_RANGE -> "Abaixo da referência"
-                    AssessmentStatus.WITHIN_RANGE -> "Dentro da referência"
-                    AssessmentStatus.ABOVE_RANGE -> "Acima da referência"
-                    AssessmentStatus.NEEDS_REVIEW -> "Precisa de revisão"
-                    AssessmentStatus.NOT_CLASSIFIABLE -> "Não classificável"
-                }, style = MaterialTheme.typography.titleSmall)
+                StatusChip(statusLabel(assessment.status), statusKind(assessment.status))
                 Text(reason(assessment.reasonCode))
-            } ?: Text("Avaliação indisponível")
+            } ?: StatusChip("Avaliação indisponível", ChipKind.REVIEW)
             Text("Página ${observation.page} · Regra ${row.assessment?.ruleVersion ?: ruleVersion}")
             TextButton(onClick = { onPage(observation.page) }) { Text("Ver página ${observation.page} da fonte privada") }
             if (observation.fieldEvidence.isEmpty()) Text("Regiões dos campos indisponíveis nesta execução; abra a página inteira.")
