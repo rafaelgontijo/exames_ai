@@ -1,5 +1,6 @@
 package br.com.exames.featureresults
 
+import br.com.exames.coreui.ExamesTextButton
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,7 +25,7 @@ internal fun ValidationReportDialog(report: LocalValidationReport, pair: PairedV
         Surface(modifier=Modifier.fillMaxWidth(.95f).fillMaxHeight(.95f),shape=MaterialTheme.shapes.large) {
             LazyColumn(Modifier.padding(16.dp).testTag("validation-report"),verticalArrangement=Arrangement.spacedBy(12.dp)) {
                 item { Text("Relatório local",style=MaterialTheme.typography.headlineSmall,modifier=Modifier.semantics { heading() })
-                    TextButton(onClick=close) { Text("Fechar relatório") }
+                    ExamesTextButton(onClick=close) { Text("Fechar relatório") }
                     Text("Resultado técnico; sem validação clínica.")
                     if(!report.publicCoverageAvailable) Text("Sem cobertura pública revisada neste relatório.") }
                 pair?.let { p -> item {
@@ -47,8 +48,8 @@ internal fun ValidationReportDialog(report: LocalValidationReport, pair: PairedV
                     Text("Anormais: ${c.abnormalCounts}. Isolado indisponível: ${c.isolatedUnavailable}.")
                 }
                 item {
-                    TextButton(onClick={ strata=!strata }) { Text(if(strata) "Recolher estratos" else "Detalhar origem, formato, analito, layout e partição") }
-                    TextButton(onClick={ details=!details }) { Text(if(details) "Recolher identidade e métodos" else "Identidade, versões e métodos de medição") }
+                    ExamesTextButton(onClick={ strata=!strata }) { Text(if(strata) "Recolher estratos" else "Detalhar origem, formato, analito, layout e partição") }
+                    ExamesTextButton(onClick={ details=!details }) { Text(if(details) "Recolher identidade e métodos" else "Identidade, versões e métodos de medição") }
                 }
                 if(details) {
                 items(report.identities) { identity ->

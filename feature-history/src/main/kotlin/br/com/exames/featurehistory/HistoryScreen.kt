@@ -1,5 +1,6 @@
 package br.com.exames.featurehistory
 
+import br.com.exames.coreui.ExamesTextButton
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,12 +18,21 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun HistoryScreen(onBack: () -> Unit, onRun: (String) -> Unit, model: HistoryViewModel = viewModel()) {
     val state by model.state.collectAsStateWithLifecycle()
+    HistoryContent(state, onBack, onRun, model::reload, model::selectDocument, model::closeDocument, model::processDocument,
+        model::processAssisted, model::deleteDocument)
+}
+
+/** Stateless so deletion, new runs and run access can be tested without storage. */
+@Composable
+fun HistoryContent(state: HistoryUiState, onBack: () -> Unit, onRun: (String) -> Unit, onReload: () -> Unit,
+    onSelectDocument: (String) -> Unit, onCloseDocument: () -> Unit, onProcess: (String) -> Unit,
+    onProcessAssisted: (String) -> Unit, onDelete: (String) -> Unit) {
     var deleting by remember { mutableStateOf<String?>(null) }
     LazyColumn(Modifier.fillMaxSize().padding(24.dp).testTag("history-list"), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item { Text("Histórico local", style = MaterialTheme.typography.headlineMedium) }
-        item { TextButton(onClick = onBack) { Text("Voltar") } }
+        item { ExamesTextButton(onClick = onBack) { Text("Voltar") } }
         if (state.loading) item { CircularProgressIndicator() }
-        if (state.unavailable) item { TextButton(onClick = model::reload) { Text("Tentar abrir histórico novamente") } }
+        if (state.unavailable) item { ExamesTextButton(onClick = onReload) { Text("Tentar abrir histórico novamente") } }
         state.message?.let { message -> item { Text(message) } }
         if (!state.loading && !state.unavailable && state.documents.isEmpty()) item { Text("Nenhum documento salvo.") }
         if (state.selectedDocumentId == null) {
@@ -32,19 +42,19 @@ fun HistoryScreen(onBack: () -> Unit, onRun: (String) -> Unit, model: HistoryVie
                         Text(when (document.mimeType) { "application/pdf" -> "Documento PDF"; "image/png" -> "Imagem PNG"; else -> "Imagem JPEG" },
                             style = MaterialTheme.typography.titleMedium)
                         Text("Importado em " + DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(ZoneId.systemDefault()).format(document.importedAt))
-                        TextButton(onClick = { model.selectDocument(document.id) }) { Text("Abrir execuções") }
-                        TextButton(enabled = !state.actionBusy, onClick = { deleting = document.id }) { Text("Excluir documento") }
+                        ExamesTextButton(onClick = { onSelectDocument(document.id) }) { Text("Abrir execuções") }
+                        ExamesTextButton(enabled = !state.actionBusy, onClick = { deleting = document.id }) { Text("Excluir documento") }
                     }
                 }
             }
         } else {
             item {
-                TextButton(onClick = model::closeDocument) { Text("Todos os documentos") }
+                ExamesTextButton(onClick = onCloseDocument) { Text("Todos os documentos") }
                 if (state.loadingRuns) CircularProgressIndicator()
                 else if (state.runs.isEmpty()) Text("Documento salvo, sem execuções.")
-                TextButton(enabled = !state.actionBusy, onClick = { state.selectedDocumentId?.let(model::processDocument) }) { Text("Nova execução sem IA") }
-                TextButton(enabled = !state.actionBusy, onClick = { state.selectedDocumentId?.let(model::processAssisted) }) { Text("Nova execução assistida") }
-                TextButton(enabled = !state.actionBusy, onClick = { deleting = state.selectedDocumentId }) { Text("Excluir documento e derivados") }
+                ExamesTextButton(enabled = !state.actionBusy, onClick = { state.selectedDocumentId?.let(onProcess) }) { Text("Nova execução sem IA") }
+                ExamesTextButton(enabled = !state.actionBusy, onClick = { state.selectedDocumentId?.let(onProcessAssisted) }) { Text("Nova execução assistida") }
+                ExamesTextButton(enabled = !state.actionBusy, onClick = { deleting = state.selectedDocumentId }) { Text("Excluir documento e derivados") }
             }
             items(state.runs.reversed(), key = { it.runId }) { run ->
                 Card(Modifier.fillMaxWidth().testTag("run-${run.runId}")) {
@@ -61,7 +71,7 @@ fun HistoryScreen(onBack: () -> Unit, onRun: (String) -> Unit, model: HistoryVie
                             RunState.FAILED -> "Falhou"; RunState.CANCELLED -> "Cancelada"
                         })
                         if (run.parentRunId != null) Text("Nova execução vinculada à anterior")
-                        TextButton(onClick = { onRun(run.runId) }) { Text("Abrir resultado e fonte") }
+                        ExamesTextButton(onClick = { onRun(run.runId) }) { Text("Abrir resultado e fonte") }
                     }
                 }
             }
@@ -70,7 +80,7 @@ fun HistoryScreen(onBack: () -> Unit, onRun: (String) -> Unit, model: HistoryVie
     deleting?.let { id ->
         AlertDialog(onDismissRequest = { deleting = null }, title = { Text("Excluir documento?") },
             text = { Text("O original privado, as execuções, correções, gabaritos associados e outros derivados serão removidos. Esta ação não pode ser desfeita.") },
-            confirmButton = { TextButton(onClick = { deleting = null; model.deleteDocument(id) }) { Text("Excluir definitivamente") } },
-            dismissButton = { TextButton(onClick = { deleting = null }) { Text("Manter documento") } })
+            confirmButton = { ExamesTextButton(onClick = { deleting = null; onDelete(id) }) { Text("Excluir definitivamente") } },
+            dismissButton = { ExamesTextButton(onClick = { deleting = null }) { Text("Manter documento") } })
     }
 }

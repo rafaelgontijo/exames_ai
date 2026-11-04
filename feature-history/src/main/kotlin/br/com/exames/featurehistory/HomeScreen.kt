@@ -65,6 +65,6 @@ fun HomeScreen(onSend: () -> Unit, onOpenRun: (String) -> Unit, onExams: () -> U
                 }
             }
         }
-        TextButton(onClick = onExams, modifier = Modifier.heightIn(min = MinTouchTarget)) { Text("Ver todos os exames e detalhes") }
+        ExamesTextButton(onClick = onExams, modifier = Modifier.heightIn(min = MinTouchTarget)) { Text("Ver todos os exames e detalhes") }
     }
 }

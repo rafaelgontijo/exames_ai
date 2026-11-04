@@ -1,5 +1,6 @@
 package br.com.exames.featureresults
 
+import br.com.exames.coreui.ExamesTextButton
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -40,7 +41,7 @@ internal fun ReviewEditor(draft: ReviewDraft, busy: Boolean, message: String?, o
                 modifier = Modifier.fillMaxWidth().testTag("review-draft"))
             message?.let { Text(it) }
         }
-    }, confirmButton = { TextButton(onClick = onSave, enabled = !busy, modifier = Modifier.testTag("review-save")) {
+    }, confirmButton = { ExamesTextButton(onClick = onSave, enabled = !busy, modifier = Modifier.testTag("review-save")) {
         Text(if (busy) "Salvando" else "Salvar novo registro")
-    } }, dismissButton = { TextButton(onClick = onDismiss, enabled = !busy) { Text("Descartar rascunho") } })
+    } }, dismissButton = { ExamesTextButton(onClick = onDismiss, enabled = !busy) { Text("Descartar rascunho") } })
 }

@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.espresso.Espresso
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Rule
@@ -46,13 +47,19 @@ class NavigationTest {
         compose.onNodeWithContentDescription("Exames").performClick()
         compose.onNodeWithText("Histórico local").assertIsDisplayed()
         compose.onNodeWithContentDescription("Ajuda").performClick()
-        compose.onNodeWithText("Conferência da fonte e privacidade local.").assertIsDisplayed()
+        compose.onNodeWithText("Como revisar uma leitura e o que acontece com seus dados.").assertIsDisplayed()
         Espresso.pressBack()
         compose.onNodeWithText("Meu Exame").assertIsDisplayed()
+    }
+    @Test fun helpExplainsReviewAndReachesTheWorkbenchList() {
+        compose.onNodeWithContentDescription("Ajuda").performClick()
+        compose.onNodeWithText("Como ler o resultado").assertIsDisplayed()
+        compose.onNodeWithText("Abrir lista de exames").performScrollTo().performClick()
+        compose.onNodeWithText("Histórico local").assertIsDisplayed()
     }
     @Test fun recreationRestoresOnlyTheDestination() {
         compose.onNodeWithContentDescription("Ajuda").performClick()
         compose.activityRule.scenario.recreate()
-        compose.onNodeWithText("Conferência da fonte e privacidade local.").assertIsDisplayed()
+        compose.onNodeWithText("Como revisar uma leitura e o que acontece com seus dados.").assertIsDisplayed()
     }
 }

@@ -87,3 +87,9 @@ fun ExamesScreen(title: String, modifier: Modifier = Modifier, content: @Composa
     }
 }
 
+
+/** Text button whose layout height (not only its touch slop) is at least 48 dp. */
+@Composable
+fun ExamesTextButton(onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, content: @Composable RowScope.() -> Unit) {
+    TextButton(onClick = onClick, modifier = modifier.heightIn(min = MinTouchTarget), enabled = enabled, content = content)
+}

@@ -1,5 +1,6 @@
 package br.com.exames.featureresults
 
+import br.com.exames.coreui.ExamesTextButton
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -38,10 +39,10 @@ internal fun ObservationResult(row: ResultRow, ruleVersion: String, onPage: (Int
                 Text(reason(assessment.reasonCode))
             } ?: StatusChip("Avaliação indisponível", ChipKind.REVIEW)
             Text("Página ${observation.page} · Regra ${row.assessment?.ruleVersion ?: ruleVersion}")
-            TextButton(onClick = { onPage(observation.page) }) { Text("Ver página ${observation.page} da fonte privada") }
+            ExamesTextButton(onClick = { onPage(observation.page) }) { Text("Ver página ${observation.page} da fonte privada") }
             if (observation.fieldEvidence.isEmpty()) Text("Regiões dos campos indisponíveis nesta execução; abra a página inteira.")
             for ((field, page) in observation.fieldEvidence.map { it.field to it.region.page }.distinct()) {
-                TextButton(modifier = Modifier.testTag("evidence-original-${observation.id}-$field-$page"),
+                ExamesTextButton(modifier = Modifier.testTag("evidence-original-${observation.id}-$field-$page"),
                     onClick = { onEvidence(observation.id, field, page) }) {
                 Text("Destacar ${extractedFieldLabel(field).lowercase()} — página $page")
                 }
@@ -58,7 +59,7 @@ internal fun ObservationResult(row: ResultRow, ruleVersion: String, onPage: (Int
                 }
             }
             onCorrection?.let { edit ->
-                for (field in CorrectionField.entries) TextButton(onClick = { edit(observation.id, field) },
+                for (field in CorrectionField.entries) ExamesTextButton(onClick = { edit(observation.id, field) },
                     modifier = Modifier.testTag("correct-${observation.id}-${field.name}")) {
                     Text("Corrigir ${correctionLabel(field).lowercase()}")
                 }

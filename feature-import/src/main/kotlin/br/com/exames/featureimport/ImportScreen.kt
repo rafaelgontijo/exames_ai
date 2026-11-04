@@ -25,6 +25,17 @@ fun ImportScreen(onResults: (String) -> Unit, onHistory: () -> Unit, model: Impo
         uri?.let(model::select)
     }
     val corpusPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> uri?.let(model::selectPackage) }
+    ImportContent(state, onPickDocument = { picker.launch(arrayOf("application/pdf", "image/jpeg", "image/png")) },
+        onPickPackage = { corpusPicker.launch(arrayOf("application/zip", "application/x-zip-compressed")) },
+        onSelectMode = model::selectMode, onRecheckModel = model::recheckModel, onCancel = model::cancel,
+        onReschedule = model::reschedule, onRetry = model::retry, onResults = onResults, onHistory = onHistory)
+}
+
+/** Stateless so the controls can be exercised without a ViewModel, storage or the model. */
+@Composable
+fun ImportContent(state: ImportUiState, onPickDocument: () -> Unit, onPickPackage: () -> Unit, onSelectMode: (ExtractionMode) -> Unit,
+    onRecheckModel: () -> Unit, onCancel: () -> Unit, onReschedule: () -> Unit, onRetry: () -> Unit,
+    onResults: (String) -> Unit, onHistory: () -> Unit) {
     ExamesScreen("Enviar exame") {
         ExamesCard {
             Text("Leitura referencial de resultados laboratoriais, no seu dispositivo.", style = MaterialTheme.typography.titleMedium)
@@ -35,7 +46,7 @@ fun ImportScreen(onResults: (String) -> Unit, onHistory: () -> Unit, model: Impo
         Text("Como processar?", style = MaterialTheme.typography.titleLarge, color = ExamesTheme.palette.title)
         for(mode in ExtractionMode.entries) Row(Modifier.fillMaxWidth().heightIn(min=48.dp).selectable(
             selected=state.mode==mode,enabled=!state.importing && !state.actionBusy && state.modelReadiness!=ModelReadiness.PREPARING,
-            role=Role.RadioButton,onClick={ model.selectMode(mode) }),horizontalArrangement=Arrangement.spacedBy(12.dp)) {
+            role=Role.RadioButton,onClick={ onSelectMode(mode) }),horizontalArrangement=Arrangement.spacedBy(12.dp)) {
             RadioButton(selected=state.mode==mode,onClick=null)
             Text(if(mode==ExtractionMode.BASELINE) "Modo sem IA" else "Modo assistido local")
         }
@@ -52,12 +63,12 @@ fun ImportScreen(onResults: (String) -> Unit, onHistory: () -> Unit, model: Impo
                 ModelReadiness.STORAGE_UNAVAILABLE -> "O armazenamento do modelo está indisponível."
             })
             if(state.modelReadiness==ModelReadiness.PREPARING) CircularProgressIndicator()
-            else TextButton(onClick=model::recheckModel,enabled=!state.importing && !state.actionBusy) { Text("Preparar/verificar modelo") }
+            else ExamesTextButton(onClick=onRecheckModel,enabled=!state.importing && !state.actionBusy) { Text("Preparar/verificar modelo") }
             Text("O modelo propõe campos da fonte; o avaliador determinístico faz a comparação. Falhas usam o caminho sem IA e são identificadas como fallback.")
         }
         val canImport=!state.importing && !state.actionBusy && (state.mode==ExtractionMode.BASELINE || state.modelReadiness==ModelReadiness.READY)
-        PrimaryAction("Selecionar documento", { picker.launch(arrayOf("application/pdf", "image/jpeg", "image/png")) }, enabled = canImport)
-        SecondaryAction("Importar pacote do corpus", { corpusPicker.launch(arrayOf("application/zip", "application/x-zip-compressed")) }, enabled = canImport)
+        PrimaryAction("Selecionar documento", onPickDocument, enabled = canImport)
+        SecondaryAction("Importar pacote do corpus", onPickPackage, enabled = canImport)
         Text("Pacote ZIP local: até 128 MiB, manifesto, documentos e gabaritos. Hashes verificam integridade, sem autenticar o autor.")
         if (state.importedCases > 0) Text("Casos importados: ${state.importedCases}. Execuções individuais no histórico.")
         if (state.importing) { CircularProgressIndicator(); Text("Criando cópia privada protegida…") }
@@ -73,14 +84,14 @@ fun ImportScreen(onResults: (String) -> Unit, onHistory: () -> Unit, model: Impo
             Text("Páginas concluídas: ${state.completedPages} de ${state.totalPages ?: "total ainda desconhecido"}. Falhas: ${state.failedPages}.")
             if (status in setOf(RunState.QUEUED, RunState.RUNNING)) {
                 if (status == RunState.RUNNING) LinearProgressIndicator(Modifier.fillMaxWidth())
-                TextButton(enabled = !state.actionBusy, onClick = model::cancel) { Text("Cancelar processamento") }
-                if (status == RunState.QUEUED) TextButton(enabled = !state.actionBusy, onClick = model::reschedule) { Text("Tentar agendamento") }
+                ExamesTextButton(enabled = !state.actionBusy, onClick = onCancel) { Text("Cancelar processamento") }
+                if (status == RunState.QUEUED) ExamesTextButton(enabled = !state.actionBusy, onClick = onReschedule) { Text("Tentar agendamento") }
             }
             if (status in setOf(RunState.PARTIAL, RunState.FAILED, RunState.CANCELLED))
-                TextButton(enabled = !state.actionBusy, onClick = model::retry) { Text("Reprocessar em nova execução") }
+                ExamesTextButton(enabled = !state.actionBusy, onClick = onRetry) { Text("Reprocessar em nova execução") }
         }
         state.message?.let { Text(it) }
-        state.runId?.let { id -> TextButton(onClick = { onResults(id) }) { Text("Revisar resultados") } }
-        TextButton(onClick = onHistory, modifier = Modifier.heightIn(min = MinTouchTarget)) { Text("Histórico local") }
+        state.runId?.let { id -> ExamesTextButton(onClick = { onResults(id) }) { Text("Revisar resultados") } }
+        ExamesTextButton(onClick = onHistory, modifier = Modifier.heightIn(min = MinTouchTarget)) { Text("Histórico local") }
     }
 }

@@ -75,7 +75,7 @@ fun ExamesNavigation() {
                 onHistory = { nav.selectTab(ShellRoutes.EXAMS) }, model = importer) }
             composable(ShellRoutes.EXAMS) { HistoryScreen(onBack = { nav.selectTab(ShellRoutes.HOME) },
                 onRun = { nav.navigate(ResultRoutes.route(it)) { launchSingleTop = true } }, model = history) }
-            composable(ShellRoutes.HELP) { HelpPlaceholder() }
+            composable(ShellRoutes.HELP) { HelpScreen(onExams = { nav.selectTab(ShellRoutes.EXAMS) }) }
             composable(ResultRoutes.PATTERN) { entry -> ResultsScreen(entry.arguments?.getString("runId").orEmpty(),
                 onBack = { nav.popBackStack() }, model = results) }
         }

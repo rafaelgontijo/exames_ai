@@ -36,10 +36,10 @@ fun ResultsScreen(runId: String, onBack: () -> Unit, model: ResultsViewModel = v
     LazyColumn(Modifier.fillMaxSize().padding(24.dp).testTag("results-list"), state = listState,
         verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item { Text("Revisão dos resultados", style = MaterialTheme.typography.headlineMedium, color = ExamesTheme.palette.title) }
-        item { TextButton(onClick = onBack) { Text("Voltar") } }
+        item { ExamesTextButton(onClick = onBack) { Text("Voltar") } }
         if (state.loading) item { CircularProgressIndicator() }
         state.message?.let { item { Text(it) } }
-        if (state.unavailable) item { TextButton(onClick = { model.open(runId) }) { Text("Tentar reabrir execução") } }
+        if (state.unavailable) item { ExamesTextButton(onClick = { model.open(runId) }) { Text("Tentar reabrir execução") } }
         state.run?.let { run ->
             item {
                 val summary = remember(run, state.rows, state.checkpoints, state.pageCount) {
@@ -72,10 +72,10 @@ fun ResultsScreen(runId: String, onBack: () -> Unit, model: ResultsViewModel = v
                 })
                 Text("A sinalização de referência não define diagnóstico ou urgência.")
                 if (run.outputBasis != OutputBasis.AUTOMATIC) Text("Esta saída não executou novamente OCR ou IA. As métricas originais permanecem na execução de origem.")
-                run.parentRunId?.let { parent -> TextButton(onClick = { model.open(parent) }, enabled = !state.reviewBusy) { Text("Abrir execução de origem") } }
+                run.parentRunId?.let { parent -> ExamesTextButton(onClick = { model.open(parent) }, enabled = !state.reviewBusy) { Text("Abrir execução de origem") } }
                 if (run.state !in setOf(RunState.QUEUED, RunState.RUNNING)) {
-                    TextButton(onClick = model::reevaluate, enabled = !state.reviewBusy, modifier = Modifier.testTag("reevaluate")) { Text("Criar reavaliação com correções salvas") }
-                    TextButton(onClick = model::reextract, enabled = !state.reviewBusy, modifier = Modifier.testTag("reextract")) { Text("Nova extração sem IA da fonte original") }
+                    ExamesTextButton(onClick = model::reevaluate, enabled = !state.reviewBusy, modifier = Modifier.testTag("reevaluate")) { Text("Criar reavaliação com correções salvas") }
+                    ExamesTextButton(onClick = model::reextract, enabled = !state.reviewBusy, modifier = Modifier.testTag("reextract")) { Text("Nova extração sem IA da fonte original") }
                 }
                 if (state.reviewBusy) CircularProgressIndicator()
                 if (state.rows.isEmpty()) Text("Nenhuma observação disponível nesta execução.")
@@ -87,13 +87,13 @@ fun ResultsScreen(runId: String, onBack: () -> Unit, model: ResultsViewModel = v
             item(key = "source-preview") {
                 Text("Cópia privada do documento", style = MaterialTheme.typography.titleMedium)
                 Row(Modifier.horizontalScroll(rememberScrollState())) {
-                    for (page in 1..(state.pageCount ?: 0)) TextButton(onClick = { model.showPage(page) }) { Text("Página $page") }
+                    for (page in 1..(state.pageCount ?: 0)) ExamesTextButton(onClick = { model.showPage(page) }) { Text("Página $page") }
                 }
                 if (state.previewBusy) CircularProgressIndicator()
                 state.preview?.let { bitmap ->
                     EvidenceSourcePreview(bitmap, requireNotNull(state.previewPage), state.selectedEvidence)
                 }
-                if (state.previewPage != null) TextButton(onClick = model::closePreview) { Text("Fechar página") }
+                if (state.previewPage != null) ExamesTextButton(onClick = model::closePreview) { Text("Fechar página") }
             }
             item { Text("Gabaritos associados", style = MaterialTheme.typography.titleMedium)
                 if (state.groundTruth.isEmpty()) Text("Nenhum gabarito associado a este documento.")
@@ -101,7 +101,7 @@ fun ResultsScreen(runId: String, onBack: () -> Unit, model: ResultsViewModel = v
                 else {
                     Text("Selecione explicitamente as execuções para A/B. Devem usar a mesma fonte, parser e regra.")
                     for(candidate in state.relatedRuns.filter { it.outputBasis==OutputBasis.AUTOMATIC && it.state !in setOf(RunState.QUEUED,RunState.RUNNING) }) {
-                        TextButton(onClick={ model.selectPair(candidate.mode,candidate.runId) },enabled=!state.reviewBusy) {
+                        ExamesTextButton(onClick={ model.selectPair(candidate.mode,candidate.runId) },enabled=!state.reviewBusy) {
                             val chosen=if(candidate.mode==ExtractionMode.BASELINE) state.baselineId==candidate.runId else state.assistedId==candidate.runId
                             Text("${if(chosen) "Selecionada" else "Selecionar"} ${if(candidate.mode==ExtractionMode.BASELINE) "sem IA" else "assistida"} · ${candidate.startedAt} · ${candidate.runId}")
                         }
@@ -112,18 +112,18 @@ fun ResultsScreen(runId: String, onBack: () -> Unit, model: ResultsViewModel = v
                 GroundTruthResult(snapshot) { observationId, field, page ->
                     model.showGroundTruthEvidence(snapshot.groundTruth.caseId, snapshot.groundTruth.version, observationId, field, page)
                 }
-                TextButton(onClick = { model.editGroundTruth(snapshot.sha256) }, enabled = !state.reviewBusy,
+                ExamesTextButton(onClick = { model.editGroundTruth(snapshot.sha256) }, enabled = !state.reviewBusy,
                     modifier = Modifier.testTag("revise-truth-${snapshot.sha256}")) { Text("Revisar este gabarito em nova versão") }
                 if (!snapshot.groundTruth.hasReviewedMetadata()) Text("Gabarito pendente: excluído das comparações e dos denominadores de acerto.")
-                TextButton(onClick = { model.compare(snapshot.sha256) }, enabled = !state.reviewBusy && snapshot.groundTruth.hasReviewedMetadata() && run.state !in setOf(RunState.QUEUED, RunState.RUNNING),
+                ExamesTextButton(onClick = { model.compare(snapshot.sha256) }, enabled = !state.reviewBusy && snapshot.groundTruth.hasReviewedMetadata() && run.state !in setOf(RunState.QUEUED, RunState.RUNNING),
                     modifier = Modifier.testTag("compare-truth-${snapshot.sha256}")) {
                     Text("Comparar execução com gabarito versão ${snapshot.groundTruth.version}")
                 }
                 snapshot.parentSha256?.let { Text("Revisão vinculada ao gabarito anterior: $it") }
                 if(state.corpusCase!=null) {
-                    TextButton(onClick={ model.showReport(snapshot.sha256) },enabled=!state.reviewBusy && run.state !in setOf(RunState.QUEUED,RunState.RUNNING),
+                    ExamesTextButton(onClick={ model.showReport(snapshot.sha256) },enabled=!state.reviewBusy && run.state !in setOf(RunState.QUEUED,RunState.RUNNING),
                         modifier=Modifier.testTag("report-${snapshot.sha256}")) { Text("Relatório desta execução com gabarito ${snapshot.groundTruth.version}") }
-                    TextButton(onClick={ model.showReport(snapshot.sha256,true) },enabled=!state.reviewBusy && snapshot.groundTruth.hasReviewedMetadata() && state.baselineId!=null && state.assistedId!=null,
+                    ExamesTextButton(onClick={ model.showReport(snapshot.sha256,true) },enabled=!state.reviewBusy && snapshot.groundTruth.hasReviewedMetadata() && state.baselineId!=null && state.assistedId!=null,
                         modifier=Modifier.testTag("paired-report-${snapshot.sha256}")) { Text("Comparar os modos selecionados com esta versão") }
                 }
             }
@@ -138,12 +138,12 @@ fun ResultsScreen(runId: String, onBack: () -> Unit, model: ResultsViewModel = v
                     Text("Obtido registrado: ${difference.actual ?: "ausente"}")
                     val sources = differenceEvidence(comparison, difference, run, state.rows, state.groundTruth)
                     sources.original?.let { source -> for (page in source.pages) {
-                        TextButton(onClick = { model.showEvidence(source.observationId, source.field, page) }) {
+                        ExamesTextButton(onClick = { model.showEvidence(source.observationId, source.field, page) }) {
                             Text("Destacar fonte extraída da diferença — página $page")
                         }
                     } }
                     sources.expected?.let { source -> for (page in source.pages) {
-                        TextButton(onClick = { sources.truth?.groundTruth?.let { truth ->
+                        ExamesTextButton(onClick = { sources.truth?.groundTruth?.let { truth ->
                             model.showGroundTruthEvidence(truth.caseId, truth.version, source.observationId, source.field, page)
                         } }) { Text("Destacar fonte esperada da diferença — página $page") }
                     } }

@@ -1,5 +1,6 @@
 package br.com.exames.featureresults
 
+import br.com.exames.coreui.ExamesTextButton
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -26,7 +27,7 @@ internal fun GroundTruthResult(snapshot: GroundTruthSnapshot, onEvidence: (Strin
             Text(ReasonCode.entries.firstOrNull { it.name == expected.expectedReason }?.let(::reason)
                 ?: "Motivo do gabarito indisponível nesta versão.")
             for ((field, page) in expected.evidence.map { it.field to it.region.page }.distinct()) {
-                TextButton(modifier = Modifier.testTag("evidence-truth-${truth.version}-${expected.observationId}-$field-$page"),
+                ExamesTextButton(modifier = Modifier.testTag("evidence-truth-${truth.version}-${expected.observationId}-$field-$page"),
                     onClick = { onEvidence(expected.observationId, field, page) }) {
                     Text("Destacar ${fieldLabel(field)} do gabarito — página $page")
                 }
