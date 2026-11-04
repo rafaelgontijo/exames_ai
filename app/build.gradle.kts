@@ -58,6 +58,7 @@ kapt { correctErrorTypes = true }
 dependencies {
     coreLibraryDesugaring(libs.desugar.jdk)
     implementation(project(":domain"))
+    implementation(project(":core-ui"))
     implementation(libs.coroutines.android)
     implementation(project(":feature-import"))
     implementation(project(":feature-results"))

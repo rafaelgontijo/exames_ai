@@ -27,6 +27,7 @@ kapt { correctErrorTypes = true }
 dependencies {
     coreLibraryDesugaring(libs.desugar.jdk)
     implementation(project(":domain"))
+    implementation(project(":core-ui"))
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)

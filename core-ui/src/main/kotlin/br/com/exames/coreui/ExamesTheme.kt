@@ -1,4 +1,4 @@
-package br.com.exames.app.ui
+package br.com.exames.coreui
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*

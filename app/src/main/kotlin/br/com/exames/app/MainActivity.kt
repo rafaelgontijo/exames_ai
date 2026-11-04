@@ -7,7 +7,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.ui.Modifier
-import br.com.exames.app.ui.ExamesTheme
+import br.com.exames.coreui.ExamesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
