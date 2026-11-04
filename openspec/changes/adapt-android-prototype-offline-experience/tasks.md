@@ -4,7 +4,7 @@
 
 - [x] 1.1 Criar `:core-ui` e conectar app/features sem dependências circulares; verificar compilação e independência Android de `:domain`.
 - [x] 1.2 Implementar tokens claros/escuros, tipografia e componentes do HTML descritos em design.md; adaptar ThemeContrastTest para medir os pares reais, texto 4,5:1 e controles 3:1.
-- [ ] 1.3 Empacotar Figtree Android local com pesos necessários, origem/licença e hashes fixados; verificar carregamento API 24 e ausência de fonte/download em rede.
+- [x] 1.3 Empacotar Figtree Android local com pesos necessários, origem/licença e hashes fixados; verificar carregamento API 24 e ausência de fonte/download em rede.
 - [x] 1.4 Documentar correspondência das quatro telas e substituições de linguagem em docs/PROTOTYPE_EXPERIENCE.md; conferir dimensões/tokens com o HTML de hash registrado, sem alterá-lo ou versioná-lo.
 
 ## 2. Resumo referencial e dados de apresentação

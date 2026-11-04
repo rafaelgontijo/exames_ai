@@ -14,3 +14,9 @@
 | 800 | `figtree_extrabold.ttf` | `c86cc3d813f6af7723474ff78ba1d1351254d1f4d4bfeedf58d9e8ed389b1dc4` |
 
 `FigtreeFontsTest` verifies these hashes. Changing a font requires updating this table deliberately.
+
+## Verificação de carregamento
+
+`FigtreeLoadTest` (instrumentado) carrega os cinco pesos como recursos locais e confirma ausência de INTERNET.
+Passou em 03/11/2026 em Android 7.0 (API 24, AVD `exames-api24`, imagem `default;arm64-v8a`), no emulador API 36 e no
+Samsung S25 (Android 17).
