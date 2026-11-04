@@ -1,4 +1,4 @@
-package br.com.exames.app
+package br.com.exames.featurehistory
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

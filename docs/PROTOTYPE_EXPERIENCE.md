@@ -47,6 +47,39 @@ existente. Detalhes de bancada (fonte, correções, gabaritos, versões, relató
 | Procure atendimento / UBS / especialidades | conferir a fonte e, se necessário, conversar com quem pediu o exame (sem prazos) |
 | Entenda cada resultado | resultado com referência do próprio documento |
 
-## Pendente de tarefas posteriores
+## Matriz de rotas
 
-A matriz de rotas e as capturas sintéticas (claro/escuro, fonte 200%, TalkBack) entram na tarefa 3.5.
+Rotas carregam somente nomes fixos ou o ID opaco da execução (`ProcessingRunIds`); nenhum texto clínico, valor ou URI.
+
+| Rota | Tela | Barra inferior | Origem → destino | Voltar |
+| --- | --- | --- | --- | --- |
+| `home` | Início | sim | inicial; Enviar, Resultado, Exames | sai do app |
+| `exams` | Exames (histórico/bancada) | sim | aba; Início, Ajuda, Enviar (“Histórico local”) | volta ao Início |
+| `help` | Ajuda | sim | aba; Exames (“Abrir lista de exames”) | volta ao Início |
+| `send` | Enviar exame | não | Início → Enviar; abre Resultado ou Exames | volta à origem |
+| `results/{runId}` | Resultado | não | Início, Exames ou Enviar → Resultado; “Abrir execução de origem” | volta à origem |
+
+Recriação da Activity restaura apenas o destino; rascunhos, imagens e prévias não são salvos. `ShellRoutesTest`,
+`ResultRoutesTest`, `NoRestorableClinicalStateTest` (nenhum `SavedStateHandle`/`rememberSaveable`/`Bundle` em código de
+produção) e `NavigationTest` cobrem esse contrato.
+
+## Verificação das quatro telas (tarefa 3.5)
+
+`:ui-checks` (módulo só de testes, sem o APK de 2 GB) renderiza Início (vazio e com exame), Enviar, Resultado e Ajuda nos
+temas claro/escuro com fonte 100% e 200%, usando o mesmo fundo temado da `MainActivity`, e verifica: checagens de
+acessibilidade do Compose (`enableAccessibilityChecks`), altura e largura de layout de todo controle ≥ 48 dp e alcance por
+rolagem (telas de rolagem simples). Passou em 03/11/2026 em Android 7.0 (API 24) e no emulador API 36.
+
+Capturas sintéticas (sem dado clínico; documento `doc-sintetico`, valores fictícios) em `docs/prototype-screens/`,
+nomeadas `<tela>-<claro|escuro>-<100|200>.png` (20 arquivos, geradas no emulador API 36).
+
+Defeitos encontrados e corrigidos por essa verificação: botões de texto com 40 dp (agora `ExamesTextButton`, ≥ 48 dp) e
+raiz do app usando `surface` em vez de `background`, que deixava telas sem fundo próprio claras no tema escuro.
+
+### Limites
+
+- **TalkBack real não foi executado.** As checagens acima são automatizadas (ATF/semântica); a ordem de leitura e os rótulos
+  falados no TalkBack do S25 ainda precisam de sessão manual.
+- As capturas vêm do emulador, não do S25; não comprovam renderização em hardware.
+- `EvidenceUiTest.overlayPaintsTheCited…` usa `captureToImage`, que não existe em API 24 (`PixelCopy`); falha só ali, desde a
+  change anterior, e não indica defeito do app.

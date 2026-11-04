@@ -1,4 +1,4 @@
-package br.com.exames.app
+package br.com.exames.featurehistory
 
 /** Review help text. Documentary guidance only: no triage, urgency, timing, specialties, diseases or places of care. */
 object HelpContent {

@@ -33,6 +33,12 @@ internal fun inferenceLabel(o: InferenceOutcome) = when (o) {
 @Composable
 fun HomeScreen(onSend: () -> Unit, onOpenRun: (String) -> Unit, onExams: () -> Unit, model: HomeViewModel = viewModel()) {
     val ui by model.state.collectAsStateWithLifecycle()
+    HomeContent(ui, onSend, onOpenRun, onExams, model::reload)
+}
+
+/** Stateless Início so layout and accessibility can be verified with synthetic state. */
+@Composable
+fun HomeContent(ui: HomeUiState, onSend: () -> Unit, onOpenRun: (String) -> Unit, onExams: () -> Unit, onReload: () -> Unit) {
     ExamesScreen("Meu Exame") {
         Text("Leitura referencial de resultados laboratoriais. O processamento acontece neste aparelho.",
             style = MaterialTheme.typography.bodyLarge, color = ExamesTheme.palette.secondaryText)
@@ -42,7 +48,7 @@ fun HomeScreen(onSend: () -> Unit, onOpenRun: (String) -> Unit, onExams: () -> U
             ui.loading -> CircularProgressIndicator()
             ui.home is HomeState.Unavailable -> ExamesCard {
                 Text("Não foi possível acessar o armazenamento protegido. Isso não significa que não há exames.")
-                SecondaryAction("Tentar novamente", model::reload)
+                SecondaryAction("Tentar novamente", onReload)
             }
             ui.home is HomeState.Empty -> ExamesCard(Modifier.testTag("home-empty")) {
                 Text("Nenhum exame importado ainda.", style = MaterialTheme.typography.titleMedium)

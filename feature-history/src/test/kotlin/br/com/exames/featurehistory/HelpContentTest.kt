@@ -1,4 +1,4 @@
-package br.com.exames.app
+package br.com.exames.featurehistory
 
 import org.junit.Assert.*
 import org.junit.Test

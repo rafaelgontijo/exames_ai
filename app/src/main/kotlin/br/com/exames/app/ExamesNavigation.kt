@@ -24,6 +24,7 @@ import br.com.exames.domain.validation.ProcessingRunIds
 import br.com.exames.featurehistory.HistoryScreen
 import br.com.exames.featurehistory.HistoryViewModel
 import br.com.exames.featurehistory.HomeScreen
+import br.com.exames.featurehistory.HelpScreen
 import br.com.exames.featurehistory.HomeViewModel
 import br.com.exames.featureimport.ImportScreen
 import br.com.exames.featureimport.ImportViewModel

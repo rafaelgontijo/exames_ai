@@ -21,7 +21,7 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "ExamesOffline"
-include(":domain", ":data-documents", ":data-local", ":feature-import", ":feature-results", ":feature-history", ":inference-local", ":core-ui", ":app")
+include(":domain", ":data-documents", ":data-local", ":feature-import", ":feature-results", ":feature-history", ":inference-local", ":core-ui", ":ui-checks", ":app")
 // Isolated technical gate; no dependency from the application.
 include(":pdf-spike")
 include(":pdf-local")
