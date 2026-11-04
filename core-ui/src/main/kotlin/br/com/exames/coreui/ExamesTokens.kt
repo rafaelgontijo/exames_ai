@@ -23,10 +23,10 @@ data class ExamesPalette(
 object ExamesTokens {
     val lightScheme: ColorScheme = lightColorScheme(
         primary = Color(0xFF1F5FBF), onPrimary = Color.White,
-        primaryContainer = Color(0xFFDCE9FB), onPrimaryContainer = Color(0xFF0F3A7A),
+        primaryContainer = Color(0xFFDCEAFB), onPrimaryContainer = Color(0xFF0F3A7A),
         background = Color(0xFFF4F8FD), onBackground = Color(0xFF13233A),
         surface = Color.White, onSurface = Color(0xFF13233A),
-        surfaceVariant = Color(0xFFE8F0FA), onSurfaceVariant = Color(0xFF4A5B72),
+        surfaceVariant = Color(0xFFE8F1FC), onSurfaceVariant = Color(0xFF4A5B72),
         outline = Color(0xFF6B7F99), outlineVariant = Color(0xFFD6E6F8),
         error = Color(0xFFB3261E), onError = Color.White,
     )
@@ -42,8 +42,8 @@ object ExamesTokens {
     val lightPalette = ExamesPalette(
         title = Color(0xFF0F3A7A), secondaryText = Color(0xFF4A5B72),
         decorativeBorder = Color(0xFFD6E6F8), controlBorder = Color(0xFF6B7F99),
-        infoContainer = Color(0xFFDCE9FB), onInfoContainer = Color(0xFF0F3A7A),
-        reviewContainer = Color(0xFFFFF1BF), onReviewContainer = Color(0xFF5A4200),
+        infoContainer = Color(0xFFDCEAFB), onInfoContainer = Color(0xFF0F3A7A),
+        reviewContainer = Color(0xFFFFF2D9), onReviewContainer = Color(0xFF5C3600),
         alertContainer = Color(0xFFFDE4E1), onAlertContainer = Color(0xFF8C1D18),
     )
     val darkPalette = ExamesPalette(
