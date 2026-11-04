@@ -1,0 +1,37 @@
+[
+  {
+    "analyteRaw": "Glicose",
+    "resultRaw": "90",
+    "unitRaw": "mg/dL",
+    "referenceRaw": "70-99 mg/dL",
+    "expectedStatus": "WITHIN_RANGE"
+  },
+  {
+    "analyteRaw": "Ureia",
+    "resultRaw": "52",
+    "unitRaw": "mg/dL",
+    "referenceRaw": "15-45 mg/dL",
+    "expectedStatus": "ABOVE_RANGE"
+  },
+  {
+    "analyteRaw": "Creatinina",
+    "resultRaw": "0,4",
+    "unitRaw": "mg/dL",
+    "referenceRaw": "0,6-1,3 mg/dL",
+    "expectedStatus": "BELOW_RANGE"
+  },
+  {
+    "analyteRaw": "Sódio",
+    "resultRaw": "140",
+    "unitRaw": "mmol/L",
+    "referenceRaw": "135-145 mmol/L",
+    "expectedStatus": "WITHIN_RANGE"
+  },
+  {
+    "analyteRaw": "Potássio",
+    "resultRaw": "4,2",
+    "unitRaw": "mmol/L",
+    "referenceRaw": "3,5-5,1 mmol/L",
+    "expectedStatus": "WITHIN_RANGE"
+  }
+]

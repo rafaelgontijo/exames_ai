@@ -108,3 +108,47 @@ desabilitado durante a captura e ausência de aceite clínico. Passaram em Andro
 em 03/11/2026.
 
 Limite: a câmera real e o `ImageProxy` do CameraX só são exercitados na tarefa 4.5; aqui a fonte de captura é simulada.
+
+## Ensaio real no S25 e API 24 (tarefa 4.5)
+
+**Fixture.** `tools/camera/make_camera_fixture.py` gera uma página sintética no layout `simple-v1` (cabeçalho, cinco
+analitos, referência impressa na própria linha) em letra grande e alto contraste; valores esperados em
+`tools/camera/camera-fixture.expected.json`, declarados como entrada e nunca derivados do app. Faixas arbitrárias, nenhum
+dado de paciente.
+
+**S25 (SM-S931B, Android 17), 04/11/2026, pacote separado `…validation.camera`, modo sem IA.** A página foi aberta na tela de
+um computador e fotografada pela câmera traseira, com a permissão pedida na hora e concedida no aparelho. Fluxo completo:
+captura → conferência → “Usar esta foto” → cópia privada → execução (“Todas as páginas foram processadas”, 1 de 1, 0 falhas).
+
+| Campo | Página | Leitura do app | Estado |
+| --- | --- | --- | --- |
+| Glicose | 90 mg/dL, 70-99 | 90, mg/dL, 70-99 mg/dL | dentro da referência informada |
+| Ureia | 52 mg/dL, 15-45 | `oe`, referência `15-45` sem unidade | precisa de revisão (unidade) |
+| Creatinina | 0,4 mg/dL, 0,6-1,3 | `04`, `0,6-1,3 mg/dl` | precisa de revisão |
+| Sódio | 140 mmol/L, 135-145 | 140, unidade ausente, `135-145 mmol` | precisa de revisão (ambiguidade) |
+| Potássio | 4,2 mmol/L, 3,5-5,1 | 4,2, `mimol/l.`, `3,5-5, 1` | precisa de revisão (referência inválida) |
+
+Resumo do app: 1 dentro da referência informada, 4 precisam de revisão, com “ambiguidades a conferir na fonte” e “conteúdo não
+suportado”. O app **não classificou** nenhum campo mal lido: abstenção, como a governança exige.
+
+**Fonte e orientação.** A imagem salva está em retrato, com o texto em pé e legível, sem segunda rotação. A cópia privada
+reabre pela tela de resultados. O destaque do resultado do Potássio cai sobre o valor impresso (4,2) na imagem persistida, ou
+seja, a região citada corresponde à imagem orientada que foi salva.
+
+**API 24 e 36 com câmera.** Os dois emuladores têm câmera traseira emulada. `CameraXPageCapturerTest` (instrumentado) abre o
+`CameraXPageCapturer` real, captura **duas vezes seguidas** (a segunda só funciona se o primeiro `ImageProxy` foi fechado) e
+confere assinatura JPEG, limite de 20 MiB e 2048 px, orientação 1, ausência de EXIF/GPS, validação de transporte e que
+nenhum arquivo novo foi criado (única tolerância: o marcador de 24 bytes `files/profileInstalled` do ProfileInstaller do
+AndroidX, e nenhum arquivo novo contém assinatura de imagem). Passou nos dois.
+
+**Registro:** `validation/results/camera-s25-2026-11-04.json`.
+
+### Limites
+
+- Uma foto, um aparelho, uma página, de tela para câmera (moiré, leve perspectiva, janela do computador visível). É um ensaio
+  técnico de integração, **não** uma medida de acurácia e não autoriza afirmar ganho de acurácia por usar a câmera.
+- A foto introduziu leituras erradas (3 de 5 valores numéricos e várias unidades/referências); o resultado é típico de foto de
+  tela e não foi comparado com o caminho do seletor de arquivos. Papel impresso ou boa iluminação não foram avaliados.
+- Cada captura confirmada cria um JPEG de uma página. **Não há montagem multipágina**; PDFs de várias páginas continuam pelo
+  seletor.
+- O modo assistido (IA) não foi usado neste ensaio.

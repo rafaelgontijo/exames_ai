@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "camera-run/1",
+  "date": "2026-11-04",
+  "notice": "Synthetic page photographed from a computer screen. No patient data. Technical observation, not a clinical or accuracy validation.",
+  "device": {
+    "model": "SM-S931B",
+    "android": "17",
+    "package": "br.com.exames.offline.validation.camera",
+    "build": "debug, app-debug.apk with bundled model"
+  },
+  "fixture": {
+    "generator": "tools/camera/make_camera_fixture.py",
+    "pngSha256": "ed70a0c5f274c78cc3427f57a3130f15b57238c0c1b4544ed36c15d0f2856c4d",
+    "expected": "tools/camera/camera-fixture.expected.json",
+    "layout": "simple-v1"
+  },
+  "flow": {
+    "mode": "BASELINE (sem IA)",
+    "permission": "requested on tap, granted on the device",
+    "captures": 1,
+    "confirmedWithUse": true,
+    "run": "COMPLETE",
+    "pagesCompleted": "1 of 1",
+    "pagesFailed": 0,
+    "inference": "not requested"
+  },
+  "result": {
+    "WITHIN_RANGE": 1,
+    "ABOVE_RANGE": 0,
+    "BELOW_RANGE": 0,
+    "NEEDS_REVIEW": 4,
+    "NOT_CLASSIFIABLE": 0,
+    "limitations": [
+      "ambiguities to check in the source",
+      "unsupported content"
+    ]
+  },
+  "readByField": [
+    {
+      "analyte": "Glicose",
+      "resultRaw": "90",
+      "unitRaw": "mg/dL",
+      "referenceRaw": "70-99 mg/dL",
+      "status": "WITHIN_RANGE",
+      "matchesPage": true
+    },
+    {
+      "analyte": "Ureia",
+      "resultRaw": "oe",
+      "referenceRaw": "15-45",
+      "status": "NEEDS_REVIEW",
+      "reasonShown": "unit absent or incompatible with the reference",
+      "matchesPage": false,
+      "note": "page says 52; reference printed with unit, read without it"
+    },
+    {
+      "analyte": "Creatinina",
+      "resultRaw": "04",
+      "referenceRaw": "0,6-1,3 mg/dl",
+      "status": "NEEDS_REVIEW",
+      "matchesPage": false,
+      "note": "page says 0,4; decimal comma not read"
+    },
+    {
+      "analyte": "Sódio",
+      "resultRaw": "140",
+      "unitRaw": "ausente",
+      "referenceRaw": "135-145 mmol",
+      "status": "NEEDS_REVIEW",
+      "reasonShown": "ambiguity in extracted data or reference association",
+      "matchesPage": false,
+      "note": "unit missing; reference unit truncated"
+    },
+    {
+      "analyte": "Potássio",
+      "resultRaw": "4,2",
+      "unitRaw": "mimol/l.",
+      "referenceRaw": "3,5-5, 1",
+      "status": "NEEDS_REVIEW",
+      "reasonShown": "reference does not form a valid numeric bound",
+      "matchesPage": false,
+      "note": "unit and reference misread"
+    }
+  ],
+  "sourceCheck": {
+    "savedImageOrientation": "portrait, text upright, no second rotation",
+    "privateSourceOpens": true,
+    "highlightAligned": "result field of Potássio: highlighted box covers the printed value 4,2 on the saved image"
+  },
+  "limits": [
+    "one photo, one device, one page, screen-to-camera (moire, slight perspective, window chrome visible)",
+    "3 of 5 numeric values and several units/references misread by OCR; the app abstained instead of classifying",
+    "no accuracy claim and no comparison with the file picker path was made",
+    "no multi-page assembly"
+  ]
+}
