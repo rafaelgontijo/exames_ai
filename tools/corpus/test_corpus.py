@@ -4,6 +4,7 @@ import copy
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -12,7 +13,8 @@ import zipfile
 from PIL import Image
 from pypdf import PdfReader
 
-from generate import ROOT, generate, json_bytes, stable_id
+from generate import ROOT, LOCK, generate, json_bytes, stable_id
+FONT = Path(os.environ.get('EXAMES_CORPUS_FONT', LOCK['fontDefault']))
 from validate import parse_json, safe_path, validate_package
 
 
@@ -22,7 +24,7 @@ class CorpusTest(unittest.TestCase):
         cls.temp = tempfile.TemporaryDirectory()
         cls.root = Path(cls.temp.name)
         cls.output = cls.root / "first"
-        cls.manifest = generate(cls.output)
+        cls.manifest = generate(cls.output, FONT)
         case = cls.manifest["cases"][0]
         cls.minimal_manifest = copy.deepcopy(cls.manifest)
         cls.minimal_manifest["cases"] = [case]
@@ -88,14 +90,14 @@ class CorpusTest(unittest.TestCase):
 
     def test_regeneration_is_byte_identical(self):
         second = self.root / "second"
-        other = generate(second)
+        other = generate(second, FONT)
         self.assertEqual(self.manifest,other)
         self.assertEqual(hashlib.sha256((self.output/"corpus.zip").read_bytes()).hexdigest(),
                          hashlib.sha256((second/"corpus.zip").read_bytes()).hexdigest())
 
     def test_generator_does_not_overwrite_existing_directory(self):
         with self.assertRaises(ValueError):
-            generate(self.output)
+            generate(self.output, FONT)
 
     def test_paths_reject_traversal_absolute_alias_and_windows(self):
         for name in ("../escape", "/tmp/a", "a/../b", "a//b", "a/./b", "C:/a", "a\\b", "", "a/"):

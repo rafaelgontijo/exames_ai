@@ -10,5 +10,6 @@ data class Document(
     val importedAt: Instant,
     val pageCount: Int?,
     val processingState: ProcessingState = ProcessingState.IMPORTED,
+    val corpusCase: br.com.exames.domain.validation.CorpusCase? = null,
 )
 enum class ProcessingState { IMPORTED, PROCESSING, AWAITING_REVIEW, COMPLETED, FAILED, DELETING }

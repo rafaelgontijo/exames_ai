@@ -3,11 +3,14 @@ package br.com.exames.datalocal
 import br.com.exames.domain.model.*
 import kotlinx.serialization.json.*
 import java.time.Instant
+import br.com.exames.domain.validation.ExtractedFieldEvidence
+import br.com.exames.domain.validation.ValidationJson
 
 /** Field names intentionally match v1 payload copies, including flattened bounding boxes. */
 internal object ModelPayloads {
     private fun obj(vararg pairs: Pair<String, Any?>) = JsonObject(pairs.associate { (key, value) -> key to when (value) {
         null -> JsonNull
+        is JsonElement -> value
         is Boolean -> JsonPrimitive(value)
         is Number -> JsonPrimitive(value)
         else -> JsonPrimitive(value.toString())
@@ -18,9 +21,11 @@ internal object ModelPayloads {
 
     fun document(value: Document) = obj("id" to value.id, "uriLocal" to value.uriLocal, "hash" to value.hash,
         "mimeType" to value.mimeType, "importedAt" to value.importedAt.toEpochMilli(), "pageCount" to value.pageCount,
-        "processingState" to value.processingState.name)
+        "processingState" to value.processingState.name,
+        "corpusCase" to value.corpusCase?.let { ValidationJson.format.encodeToJsonElement(it) })
     fun document(value: JsonObject) = Document(value.s("id"), value.s("uriLocal"), value.s("hash"), value.s("mimeType"),
-        value.time("importedAt"), value.n("pageCount")?.toInt(), ProcessingState.valueOf(value.s("processingState")))
+        value.time("importedAt"), value.n("pageCount")?.toInt(), ProcessingState.valueOf(value.s("processingState")),
+        value["corpusCase"]?.takeUnless { it is JsonNull }?.let { ValidationJson.format.decodeFromJsonElement<br.com.exames.domain.validation.CorpusCase>(it) })
 
     fun observation(value: Observation) = obj("id" to value.id, "documentId" to value.documentId,
         "analyteRaw" to value.analyteRaw, "analyteNormalized" to value.analyteNormalized, "resultRaw" to value.resultRaw,
@@ -29,7 +34,10 @@ internal object ModelPayloads {
         "box_left" to value.boundingBox?.left, "box_top" to value.boundingBox?.top,
         "box_right" to value.boundingBox?.right, "box_bottom" to value.boundingBox?.bottom,
         "extractionConfidence" to value.extractionConfidence, "resultComparator" to value.resultComparator.name,
-        "ambiguities" to value.ambiguities.sortedBy { it.name }.joinToString(",") { it.name }, "confirmed" to value.confirmed)
+        "ambiguities" to value.ambiguities.sortedBy { it.name }.joinToString(",") { it.name }, "confirmed" to value.confirmed,
+        "fieldEvidence" to ValidationJson.format.encodeToJsonElement(value.fieldEvidence),
+        "referenceCandidates" to JsonArray(value.referenceCandidates.map { reference(it) }),
+        "referenceRaw" to value.referenceRaw)
     fun observation(value: JsonObject): Observation {
         val left = value.n("box_left")?.toInt()
         val box = left?.let { BoundingBox(it, value.s("box_top").toInt(), value.s("box_right").toInt(), value.s("box_bottom").toInt()) }
@@ -39,7 +47,9 @@ internal object ModelPayloads {
             value.n("extractionConfidence")?.toFloat(), value.n("analyteNormalized"),
             value.n("numericValue")?.toBigDecimal(), value.n("unitNormalized"),
             ResultComparator.valueOf(value.s("resultComparator")),
-            value.s("ambiguities").takeIf { it.isNotEmpty() }?.split(',')?.map(Ambiguity::valueOf)?.toSet() ?: emptySet(), confirmed)
+            value.s("ambiguities").takeIf { it.isNotEmpty() }?.split(',')?.map(Ambiguity::valueOf)?.toSet() ?: emptySet(), confirmed,
+            value["fieldEvidence"]?.let { ValidationJson.format.decodeFromJsonElement<List<ExtractedFieldEvidence>>(it) } ?: emptyList(),
+            value["referenceCandidates"]?.jsonArray?.map { reference(it.jsonObject) } ?: emptyList(), value.n("referenceRaw"))
     }
 
     fun reference(value: ReferenceRange) = obj("observationId" to value.observationId, "low" to value.low?.toPlainString(),

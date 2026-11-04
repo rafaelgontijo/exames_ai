@@ -1,5 +1,28 @@
 # Corpus técnico de bioquímica básica
 
+Atualização aprovada: `cases-v2.json` / schema 1.1 / gabaritos versão 2 acrescentam
+inputs canônicos independentes para medir o avaliador isolado. As fontes/schemas
+v1 foram preservadas. Renderer, dependências, fonte, seed, famílias e partições
+continuam os mesmos; somente gabaritos/manifestos mudam. Referências não resolvidas
+conservam candidatos e ambiguidades, sem selecionar uma faixa. Dois motivos da
+v2 passam a AMBIGUOUS_INPUT pela precedência normativa da regra 2.0; estados
+NEEDS_REVIEW e motivos v1 permanecem preservados.
+
+```sh
+tools/corpus/.venv/bin/python tools/corpus/generate_v2.py --output validation/generated-v2 --font /caminho/DejaVuSans.ttf
+tools/corpus/.venv/bin/python tools/corpus/validate.py validation/generated-v2/corpus.zip
+EXAMES_CORPUS_FONT=/caminho/DejaVuSans.ttf tools/corpus/.venv/bin/python -m unittest discover -s tools/corpus -p 'test_*.py' -v
+```
+
+A fonte ainda exige o SHA-256 original. `generate_v2.py` delega a renderização ao
+gerador v1 inalterado e aplica somente metadados declarados no novo gabarito. O
+lock v2 confere os mesmos pins tipográficos/de dependências. Diretório de saída
+novo/vazio é obrigatório. `validation/generated-v2/` fica fora do Git. O pacote
+gerado nesta sessão tem 216 documentos; os 216 hashes/bytes foram idênticos à v1
+regenerada no mesmo host. O ZIP cloud histórico não estava disponível; não houve
+confronto com seus binários antigos. Relatório:
+`validation/results/ground-truth-v2-2026-10-27.json`.
+
 Este corpus é exclusivamente sintético nesta entrega. Não há pacientes, laudos reais adquiridos ou validação clínica. As faixas são arbitrárias; não são referências para usuários do produto. O processamento Android ainda será conectado nas tarefas seguintes.
 
 ## Geração
@@ -50,3 +73,21 @@ Os testes usam um registro público fictício em `example.org` apenas para verif
 ## Limites de evidência
 
 Os testes verificam geração, contrato e segurança estrutural do pacote. Não medem OCR no Android, precisão em laboratórios reais, latência do LFM, comportamento do Samsung S25 ou validação clínica. Esses itens continuam nas tarefas OpenSpec correspondentes.
+
+## Exposição das primeiras fixtures técnicas — 03/11/2026
+
+O seletor Android inicial tomava o primeiro caso por formato/layout e não filtrava
+partição. Seus oito casos eram HELD_OUT e foram usados no diagnóstico de prompts.
+Isso expôs as famílias listadas em
+`validation/corpus/exposed-held-out-families-2026-11-03.json`. Não usar essas
+famílias para alegar generalização em conjunto intocado. Os casos, hashes,
+gabaritos, rótulos e relatórios originais não foram reatribuídos ou sobrescritos.
+A integridade do pacote e do fluxo técnico não demonstra independência estatística.
+
+`stage_android_fixture.py` agora seleciona somente DEVELOPMENT e exige os oito
+estratos formato/layout; ausência de um estrato falha em vez de emprestar casos
+HELD_OUT. Testes regressivos verificam ordem adversa (HELD_OUT primeiro), bytes
+de documentos/gabaritos preservados e estrato ausente. Novos ensaios têm relatórios
+separados e não são comparações diretas de qualidade com as oito fontes anteriores.
+A bancada continua aceitando os contratos e partições originais; essa restrição
+pertence ao controlador de ajuste de prompt, não altera silenciosamente o corpus.

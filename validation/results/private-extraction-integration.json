@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "private-extraction-validation/1",
+  "toolchain": {
+    "kotlin": "2.3.21",
+    "hilt": "2.58",
+    "room": "2.8.5",
+    "agp": "8.13.2",
+    "jdk": 21,
+    "compileSdk": 36,
+    "minSdk": 24
+  },
+  "distinctJvmTests": 104,
+  "jvmFailures": 0,
+  "emulatorApi": 36,
+  "instrumentedReports": [
+    {
+      "report": "data-local/build/outputs/androidTest-results/connected/debug/TEST-cc_api36(AVD) - 16-_data-local-.xml",
+      "tests": 30,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "5992bdf0934fbf4a6a2f79b3ea790ad1155bb5a306ce9c509dd1cd90abdb098d"
+    }
+  ],
+  "s25EarlierPhase": {
+    "api": 37,
+    "model": "SM-S931B",
+    "tests": 26,
+    "passed": true,
+    "includesFinalLimitsTests": false,
+    "buildLogSha256": "796437bd753dbbd5f95da01fc96fa84b3828b97893ca4212ac2d0704b7ead988",
+    "includesParserTests": false
+  },
+  "productionApkSha256": "e5e1d390957b881f076189884d603887969b5588703e43ad6844fb6dc1408472",
+  "nativeArtifactChecksPassed": true,
+  "clinicalValidation": false,
+  "buildCommands": [
+    "./gradlew assembleDebug test :app:assembleDebugAndroidTest :data-local:connectedDebugAndroidTest"
+  ],
+  "parserVersion": "ptbr-biochemistry-layouts/1",
+  "noInternetPermission": true,
+  "zipalign16KiBPassed": true,
+  "limitations": [
+    "Final limits and parser suite executed on API 36 emulator; S25 disconnected after earlier 26-test phase.",
+    "API 24 and 16 KiB-kernel execution of integrated PDF/parser remain pending.",
+    "Production inference and full pipeline/UI remain pending; no clinical validation."
+  ]
+}

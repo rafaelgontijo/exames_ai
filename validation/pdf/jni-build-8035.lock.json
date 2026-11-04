@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "pdf-jni-build/1",
+  "profile": "pdfium-jni-exames/2",
+  "rebuildScriptSha256": "8c0c59f494faf32ef9c3df753b89bcc079d8baab1c925561c93ac6027c91783a",
+  "upstreamCoreSha256": "dd481598d008ce6b414fa830e691a13fdeec23b185b608fb50ab9ac9be8d5191",
+  "upstreamCommit": "6ae0ef0abb8835d97bf93b0f10494cbbf58d7b38",
+  "sourceLockSha256": "de140f9b2ee47f1db8bb4a66b5ee4d76e070247ccc3161008c764eecf81f7776",
+  "patchSha256": "1d98ec463aac77feb9ad205622f098e672f7e1c48227085ab32b6ea51dbff274",
+  "ndk": "27.1.12297006",
+  "cmake": "3.22.1",
+  "androidApi": 24,
+  "aarSha256": "33a6e34cf77773b3284258170ac8275034ff238255e9a185f657964d9f26d91a",
+  "engineRecompiled": false,
+  "productionApproved": false,
+  "native": [
+    {
+      "abi": "arm64-v8a",
+      "jniSha256": "ed5cc7f9870f7ae2947c8655e2d81bc61e8014234826318b409edd044d7727f6",
+      "engineSha256": "7138ceebb054927a99b2bb2fdf09a8e6de2a14f528725648b18aa6fdeb62af68",
+      "jniLoadAlignments": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "abi": "armeabi-v7a",
+      "jniSha256": "b40cd3a0371b60e081eaaf0db190ea08b68b43e431f445daf7f9a0affa9e53f8",
+      "engineSha256": "df2c2d26ee24af10d8b1ffd77dd29cf3bb9f1002ce3eb593c7658e6ae14b5870",
+      "jniLoadAlignments": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "abi": "x86",
+      "jniSha256": "33fdc7e235a31154dd772e1f189388a2ac38058df4bbde9e6a5b5129d525fc52",
+      "engineSha256": "244c86e8f6be23fff6405c3e02b930c846c6f8ce1e77b14a43d8a9e50b300c70",
+      "jniLoadAlignments": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "abi": "x86_64",
+      "jniSha256": "6a63abbb37f36ca031e43beb077a73c54724dbc6d6c8cda3b2c8d46f6842810e",
+      "engineSha256": "e3c770266cabb1297d99628ffc98b6a501766f8e4609a471375a17c8c2afbfdc",
+      "jniLoadAlignments": [
+        16384,
+        16384,
+        16384
+      ]
+    }
+  ],
+  "engineLockSha256": "257826f4ad5c7f98dad44b68c5d241dd97e7e148f459b981a90d87fd182dde75",
+  "engineVersion": "154.0.8035.0",
+  "engineNoticeFilesBundled": 80
+}

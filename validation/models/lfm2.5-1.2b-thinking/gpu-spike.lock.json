@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "repository": "litert-community/LFM2.5-1.2B-Thinking",
+  "revision": "f8b5b3a3eea2e3859e821ad9d9222c64d649eff7",
+  "file": "LFM2.5-1.2B-Thinking_int4_gpu.litertlm",
+  "backend": "gpu",
+  "sizeBytes": 736220768,
+  "sha256": "51130e6e57a940bbfbb66f67698c47fd10c7051a70e7247fc8b084ccce4d54ae",
+  "license": "LFM Open License v1.0; see LICENSE in this directory",
+  "verification": {
+    "date": "2026-10-26",
+    "actualSizeBytes": 736220768,
+    "actualSha256": "51130e6e57a940bbfbb66f67698c47fd10c7051a70e7247fc8b084ccce4d54ae",
+    "comparedWith": "litertlm_manifest.json at the pinned revision",
+    "selectedForDistribution": false
+  }
+}

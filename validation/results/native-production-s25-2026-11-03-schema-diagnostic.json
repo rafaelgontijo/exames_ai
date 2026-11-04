@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "passed": false,
+  "clinicalValidation": false,
+  "cleanOfflineInstall": false,
+  "reusedDisposableFixtureFrom": "validation/results/native-production-s25-2026-11-03-espresso37.json",
+  "promptVersion": "biochemistry-evidence/1",
+  "events": [
+    {
+      "phase": "generating-0"
+    },
+    {
+      "characters": 148,
+      "startsObject": true,
+      "endsObject": true,
+      "markdown": false,
+      "rootKeys": "observations,schema",
+      "observations": 1,
+      "firstRowKeys": "analyte,context,references,result,unit",
+      "schemaMatches": true,
+      "analyteType": "String",
+      "resultType": "String",
+      "unitType": "String",
+      "referencesType": "JSONArray",
+      "contextType": "",
+      "phase": "invalid-final-shape-0"
+    }
+  ],
+  "failure": "REAL_PROTOCOL_SCHEMA_INVALID",
+  "sourceOrFinalTextExported": false,
+  "thoughtPersisted": false
+}

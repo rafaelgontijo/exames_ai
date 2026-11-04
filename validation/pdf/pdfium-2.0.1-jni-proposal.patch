@@ -1,0 +1,50 @@
+--- a/pdfiumandroid/core/src/main/cpp/pdfiumandroid.cpp
++++ b/pdfiumandroid/core/src/main/cpp/pdfiumandroid.cpp
+@@ -88,7 +88,6 @@
+         FPDF_InitLibrary();
+     }
+     sLibraryReferenceCount++;
+-    sLibraryLock.unlock();
+ }
+ 
+ static void destroyLibraryIfNeed(){
+@@ -393,6 +392,10 @@
+ 
+ static jlong NativeCore_nativeOpenMemDocument(JNIEnv *env, jobject,
+                                                               jbyteArray data, jstring password) {
++    if (data == nullptr) {
++        jniThrowException(env, "java/io/IOException", "Document bytes unavailable");
++        return -1;
++    }
+     auto *docFile = new DocumentFile();
+ 
+     const char *cpassword = nullptr;
+@@ -401,8 +404,27 @@
+     }
+ 
+     int size = (int) env->GetArrayLength(data);
+-    auto *cDataCopy = new jbyte[size];
++    if (size <= 0) {
++        delete docFile;
++        jniThrowException(env, "java/io/IOException", "File is empty");
++        if (cpassword != nullptr) env->ReleaseStringUTFChars(password, cpassword);
++        return -1;
++    }
++    auto *cDataCopy = static_cast<jbyte *>(malloc(static_cast<size_t>(size)));
++    if (cDataCopy == nullptr) {
++        delete docFile;
++        jniThrowException(env, "java/lang/OutOfMemoryError", "Cannot allocate document buffer");
++        if (cpassword != nullptr) env->ReleaseStringUTFChars(password, cpassword);
++        return -1;
++    }
++    // The owner releases the buffer on failed open as well as normal close.
++    docFile->cDataCopy = cDataCopy;
+     env->GetByteArrayRegion(data, 0, size, cDataCopy);
++    if (env->ExceptionCheck()) {
++        delete docFile;
++        if (cpassword != nullptr) env->ReleaseStringUTFChars(password, cpassword);
++        return -1;
++    }
+     FPDF_DOCUMENT document = FPDF_LoadMemDocument( reinterpret_cast<const void*>(cDataCopy),
+                                                    size, cpassword);
+ 

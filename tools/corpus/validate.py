@@ -61,8 +61,11 @@ def parse_json(data: bytes):
         raise ValueError("Invalid package JSON") from error
 
 
-def _schema(name: str):
-    schema = json.loads((ROOT / f"validation/corpus/schema/{name}.schema.json").read_text())
+def _schema(name: str, version: str = '1.0'):
+    if version not in ('1.0', '1.1'):
+        raise ValueError('Unsupported package schema version')
+    suffix = '-1.1' if version == '1.1' else ''
+    schema = json.loads((ROOT / f"validation/corpus/schema/{name}{suffix}.schema.json").read_text())
     return Draft202012Validator(schema, format_checker=FormatChecker())
 
 
@@ -70,6 +73,22 @@ def _validate_schema(validator, value):
     # Do not include clinical values in error messages.
     if next(validator.iter_errors(value), None) is not None:
         raise ValueError("Package does not match declared schema")
+
+
+def validate_evaluation_input(observation):
+    value = observation.get('evaluationInput')
+    if value is None:
+        return
+    state = value['referenceSelection']
+    if (state == 'SELECTED') != (value['selectedReference'] is not None):
+        raise ValueError('Invalid canonical reference selection')
+    if state == 'ABSENT' and (value['candidates'] or observation['referenceRaw'] is not None or
+                              observation['low'] is not None or observation['high'] is not None):
+        raise ValueError('Absent canonical reference has data')
+    if state == 'UNRESOLVED' and (not value['candidates'] or
+            not set(value['ambiguities']) & {'CONTEXT', 'REFERENCE_ASSOCIATION'} or
+            observation['low'] is not None or observation['high'] is not None):
+        raise ValueError('Unresolved canonical reference lacks explicit ambiguity')
 
 
 def validate_package(path: Path) -> dict:
@@ -105,8 +124,8 @@ def validate_package(path: Path) -> dict:
             return data
 
         manifest = parse_json(read("manifest.json", MAX_JSON))
-        _validate_schema(_schema("manifest"), manifest)
-        truth_schema = _schema("ground-truth")
+        _validate_schema(_schema("manifest", manifest.get('schemaVersion')), manifest)
+        truth_schema = _schema("ground-truth", manifest['schemaVersion'])
         ids, families, truth_versions = set(), {}, {}
         referenced = {"manifest.json"}
         reviewed = 0
@@ -152,6 +171,7 @@ def validate_package(path: Path) -> dict:
             if len({obs["observationId"] for obs in observations}) != len(observations):
                 raise ValueError("Duplicate expected observation")
             for obs in observations:
+                validate_evaluation_input(obs)
                 for evidence in obs["evidence"]:
                     r = evidence["region"]
                     if not (0 <= r["left"] < r["right"] <= r["pageWidth"]

@@ -14,7 +14,10 @@ App Android nativo offline-first para análise referencial determinística de ex
 - Proibido registrar conteúdo de exames, nomes, valores clínicos ou URIs em logs de produção, analytics ou crash reports.
 - Manter backups desabilitados; arquivos clínicos persistidos são privados e criptografados com chaves no Android Keystore.
 - DataStore armazena apenas preferências gerais sem PII. Não salvar conteúdo clínico no SavedStateHandle.
-- Não habilitar inferência experimental por padrão ou torná-la dependência dos fluxos do MVP.
+- A bancada inclui inferência textual local LiteRT-LM como entrega P0, ativa em aparelho compatível, e modo sem IA para comparação/fallback. Stub ou fallback exclusivo não conclui essa entrega.
+- O modelo propõe campos sustentados por evidência do documento; validar schema, spans, associação e contexto antes do mesmo avaliador determinístico. Divergências e ambiguidades preservam NEEDS_REVIEW.
+- Usar Engine nova por solicitação até comprovar reset seguro. Validar somente o canal final; não persistir/exibir raciocínio interno. Pesos fixados por revisão/hash ficam fora do Git e são distribuídos para primeira execução offline.
+- Ao integrar ou distribuir inferência, consultar `validation/models/selection.json` e `docs/LITERT_COMPATIBILITY.md` para a configuração selecionada e os limites comprovados.
 
 ## Convenções e verificação
 - Branches: `feat/<descricao>`, `fix/<descricao>`, `chore/<descricao>`.

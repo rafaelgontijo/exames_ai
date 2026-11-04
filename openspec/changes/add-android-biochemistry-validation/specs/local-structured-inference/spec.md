@@ -7,7 +7,7 @@ Estruturar localmente texto de laudos com LiteRT-LM e modelo textual selecionado
 ## ADDED Requirements
 
 ### Requirement: First version includes real on-device structured extraction
-A bancada SHALL incluir inferência textual real no S25 nesta primeira versão. O modo assistido SHALL estar ativo em aparelho compatível, com modo sem IA para comparação. O candidato principal SHALL ser LFM2.5-1.2B-Thinking, com Qwen3 0.6B como alternativa se critérios técnicos ou de licença não forem atendidos. Stub ou fallback exclusivo SHALL NOT satisfazer o aceite.
+A bancada SHALL incluir inferência textual real no S25 nesta primeira versão. O modo assistido SHALL estar ativo em aparelho compatível, com modo sem IA para comparação. O candidato principal SHALL ser LFM2.5-1.2B-Thinking, com Qwen3 0.6B e Gemma 4 E2B como alternativas autorizadas se os ensaios anteriores não atenderem aos critérios técnicos ou de licença. Os mesmos controles de evidência e confidencialidade SHALL valer para todas as famílias. Stub ou fallback exclusivo SHALL NOT satisfazer o aceite.
 
 #### Scenario: Process a document with the bundled model
 - **WHEN** um documento suportado é processado no modo assistido

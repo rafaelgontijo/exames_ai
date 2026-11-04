@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "repository": "litert-community/gemma-4-E2B-it-litert-lm",
+  "revision": "1caa527c1e88b55f046fcd8d2b4265606680663d",
+  "file": "gemma-4-E2B-it-gpu.litertlm",
+  "format": "litertlm",
+  "sizeBytes": 2008432640,
+  "sha256": "a53a59001894c58e6bdb5b9b227709f91a2e3e556baa7d85acf9c55402ba5cf5",
+  "backend": "gpu",
+  "quantization": "Gemma 4 mobile mixed 2/4/8-bit scheme; artifact-specific details not independently inspected",
+  "license": {
+    "name": "Apache-2.0",
+    "file": "LICENSE",
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "declaration": "https://ai.google.dev/gemma/docs/gemma_4_license",
+    "textSource": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+    "baseRepository": "google/gemma-4-E2B-it",
+    "baseRevision": "3e22461f65e89153144f8adb70e3b8c2cc9845a7"
+  },
+  "sources": {
+    "UPSTREAM_README.md": "b044a20b524e854497d5074e3afee2e7b186eb482b9f0c1f499692d5421ecdc7",
+    "BASE_MODEL_CARD.md": "3e0608a6be80e3eb040a5aa6c76707809503deb85be6360184a118fb6156526c",
+    "chat_template.jinja": "02b3091acf53c0b722e3db0c7a1b4980363edcc2d85549dafa339ff5dbfff629"
+  },
+  "verification": {
+    "date": "2026-10-26",
+    "actualSizeBytes": 2008432640,
+    "actualSha256": "a53a59001894c58e6bdb5b9b227709f91a2e3e556baa7d85acf9c55402ba5cf5",
+    "comparedWith": "Hugging Face LFS metadata at the pinned revision",
+    "selectedForDistribution": false
+  }
+}

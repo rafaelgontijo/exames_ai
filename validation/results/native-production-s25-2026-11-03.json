@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-03T23:57:58.964519+00:00",
+  "cleanOfflineInstall": true,
+  "thoughtPersisted": false,
+  "applicationId": "br.com.exames.offline.validation.native",
+  "appApkSha256": "76e1987653bb8afd569b2d2bd4b5b62404bb04891c42418fead8767e5d35476f",
+  "testApkSha256": "59b1a9948b286e3e2757a2c5e14291cdd829291c33fa6aa82d45a4f5c6dbe8e8",
+  "events": [],
+  "device": {
+    "model": "SM-S931B",
+    "android": "17",
+    "api": "37"
+  },
+  "passed": false,
+  "failureType": "java.lang.RuntimeException",
+  "removedCreatedPackages": []
+}

@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-26",
+  "device": {
+    "model": "SM-S931B",
+    "android": "17",
+    "api": "37",
+    "abi": "arm64-v8a",
+    "pageSizeBytes": "4096",
+    "memTotal": "MemTotal:       11379964 kB"
+  },
+  "runtime": "0.18.1",
+  "backend": "GPU",
+  "threads": null,
+  "activationDataType": "runtime-default",
+  "modelFile": "gemma-4-E2B-it-gpu.litertlm",
+  "testApkSha256": "c9d82f3ae49ae4104152a7364b05747bb6cd0701c9c1d409abf51ef541bdb77f",
+  "modelId": "gemma4",
+  "modelRepository": "litert-community/gemma-4-E2B-it-litert-lm",
+  "fixtureVersion": "portuguese-row-copy/1",
+  "modelRevision": "1caa527c1e88b55f046fcd8d2b4265606680663d",
+  "modelSha256": "a53a59001894c58e6bdb5b9b227709f91a2e3e556baa7d85acf9c55402ba5cf5",
+  "contextTokens": 2048,
+  "maxOutputTokens": 1024,
+  "requestedThoughtBudget": null,
+  "qwenEnableThinking": null,
+  "promptVersion": "lfm-device-spike/2-en",
+  "schema": "five-strings/1",
+  "harnessVersion": 12,
+  "api": "async-callback",
+  "outputValidator": "strict-full-json-string-object-no-duplicates/1",
+  "firstFinalTimingMeaning": "first non-empty final-content chunk",
+  "thinkingConfigAtSend": false,
+  "channelPolicy": "bundle-metadata",
+  "foregroundRequested": true,
+  "responseFormat": null,
+  "sampling": {
+    "topK": 1,
+    "topP": 1.0,
+    "temperature": 0.0,
+    "seed": 0,
+    "repetitionPenalty": null
+  },
+  "phaseTimeoutSeconds": 120,
+  "timedOut": false,
+  "instrumentationCode": -1,
+  "processCrashed": false,
+  "testFailureType": null,
+  "freshEnginePerRequest": true,
+  "elapsedSeconds": 23.116,
+  "memoryMethod": "Debug.getPss every 100 ms; sampled maximum, not guaranteed peak",
+  "thoughtPersisted": false,
+  "thoughtTokens": null,
+  "finalTokens": null,
+  "passed": true,
+  "events": [
+    {
+      "interactive": true,
+      "keyguardLocked": false,
+      "case": -1,
+      "phase": "foreground"
+    },
+    {
+      "case": 0,
+      "phase": "load"
+    },
+    {
+      "loadMs": 6860,
+      "case": 0,
+      "phase": "conversation"
+    },
+    {
+      "loadMs": 6860,
+      "conversationMs": 8,
+      "case": 0,
+      "phase": "generate"
+    },
+    {
+      "case": 0,
+      "phase": "submitted"
+    },
+    {
+      "loadMs": 6860,
+      "conversationMs": 8,
+      "callbacks": 45,
+      "firstCallbackMs": 190,
+      "firstFinalMs": 192,
+      "generationMs": 1160,
+      "sampledMaxPssKiB": 3010665,
+      "fieldMatches": {
+        "analito": true,
+        "valor": true,
+        "unidade": true,
+        "referencia": true,
+        "evidencia": true
+      },
+      "fieldLengths": {
+        "analito": 7,
+        "valor": 2,
+        "unidade": 5,
+        "referencia": 7,
+        "evidencia": 2
+      },
+      "trimmedFieldMatchesDiagnosticOnly": {
+        "analito": true,
+        "valor": true,
+        "unidade": true,
+        "referencia": true,
+        "evidencia": true
+      },
+      "emptyFields": 0,
+      "wholeObjectParseable": true,
+      "startsWithCodeFence": false,
+      "endsWithCodeFence": false,
+      "finalHasChannelDelimiter": false,
+      "finalHasThinkDelimiter": false,
+      "objectPrefixChars": 0,
+      "objectSuffixChars": 0,
+      "embeddedObjectParseableDiagnosticOnly": true,
+      "embeddedFieldMatchesDiagnosticOnly": {
+        "analito": true,
+        "valor": true,
+        "unidade": true,
+        "referencia": true,
+        "evidencia": true
+      },
+      "finalChars": 101,
+      "validEvidenceJson": true,
+      "case": 0,
+      "phase": "result"
+    },
+    {
+      "case": 1,
+      "phase": "load"
+    },
+    {
+      "loadMs": 10187,
+      "case": 1,
+      "phase": "conversation"
+    },
+    {
+      "loadMs": 10187,
+      "conversationMs": 2,
+      "case": 1,
+      "phase": "generate"
+    },
+    {
+      "case": 1,
+      "phase": "submitted"
+    },
+    {
+      "loadMs": 10187,
+      "conversationMs": 2,
+      "callbacks": 46,
+      "firstCallbackMs": 180,
+      "firstFinalMs": 180,
+      "generationMs": 1132,
+      "sampledMaxPssKiB": 3014967,
+      "fieldMatches": {
+        "analito": true,
+        "valor": true,
+        "unidade": true,
+        "referencia": true,
+        "evidencia": true
+      },
+      "fieldLengths": {
+        "analito": 7,
+        "valor": 3,
+        "unidade": 5,
+        "referencia": 7,
+        "evidencia": 2
+      },
+      "trimmedFieldMatchesDiagnosticOnly": {
+        "analito": true,
+        "valor": true,
+        "unidade": true,
+        "referencia": true,
+        "evidencia": true
+      },
+      "emptyFields": 0,
+      "wholeObjectParseable": true,
+      "startsWithCodeFence": false,
+      "endsWithCodeFence": false,
+      "finalHasChannelDelimiter": false,
+      "finalHasThinkDelimiter": false,
+      "objectPrefixChars": 0,
+      "objectSuffixChars": 0,
+      "embeddedObjectParseableDiagnosticOnly": true,
+      "embeddedFieldMatchesDiagnosticOnly": {
+        "analito": true,
+        "valor": true,
+        "unidade": true,
+        "referencia": true,
+        "evidencia": true
+      },
+      "finalChars": 102,
+      "validEvidenceJson": true,
+      "case": 1,
+      "phase": "result"
+    }
+  ],
+  "limits": "Plans two synthetic single-row inputs, stops at first failure; no OCR, A/B, safe reset or clinical validation. Manual test model provisioning; not offline APK acceptance."
+}

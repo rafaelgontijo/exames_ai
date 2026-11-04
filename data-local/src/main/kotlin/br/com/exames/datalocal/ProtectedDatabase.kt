@@ -2,6 +2,15 @@ package br.com.exames.datalocal
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+
+@Entity(tableName = "document_tombstones")
+data class DocumentTombstone(@PrimaryKey val documentId: String)
+
+@Entity(tableName = "deletion_work", foreignKeys = [ForeignKey(entity = PendingDeletionEntity::class,
+    parentColumns = ["documentId"], childColumns = ["documentId"], onDelete = ForeignKey.CASCADE)], indices = [Index("documentId")])
+data class DeletionWork(@PrimaryKey val runId: String, val documentId: String)
 
 /** Only opaque identifiers and operational metadata are searchable; sensitive data is ciphertext. */
 @Entity(tableName = "documents")
@@ -71,6 +80,8 @@ abstract class ProtectedDao {
     abstract suspend fun updateRunState(id: String, state: String, payload: ByteArray)
     @Query("SELECT * FROM processing_runs WHERE id = :id")
     abstract suspend fun run(id: String): ProtectedRunRow?
+    @Query("SELECT * FROM processing_runs WHERE state IN ('QUEUED', 'RUNNING') ORDER BY startedAt, id")
+    abstract suspend fun recoverableRuns(): List<ProtectedRunRow>
     @Query("SELECT * FROM observations WHERE runId = :runId ORDER BY page, ordinal, id")
     abstract suspend fun observations(runId: String): List<ProtectedObservationRow>
     @Query("SELECT * FROM observations WHERE id = :id")
@@ -87,8 +98,18 @@ abstract class ProtectedDao {
     abstract suspend fun comparisons(id: String): List<ProtectedComparisonRow>
     @Query("SELECT * FROM page_checkpoints WHERE runId = :id ORDER BY page")
     abstract suspend fun checkpoints(id: String): List<ProtectedPageRow>
+    @Query("SELECT * FROM page_checkpoints WHERE runId = :id ORDER BY page")
+    abstract fun observeCheckpoints(id: String): Flow<List<ProtectedPageRow>>
     @Query("SELECT * FROM pending_deletions ORDER BY documentId")
     abstract suspend fun pendingDeletions(): List<PendingDeletionEntity>
+    @Query("SELECT * FROM document_tombstones WHERE documentId = :id")
+    abstract suspend fun tombstone(id: String): DocumentTombstone?
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insertTombstone(row: DocumentTombstone)
+    @Query("INSERT OR IGNORE INTO deletion_work (runId,documentId) SELECT id,documentId FROM processing_runs WHERE documentId = :id")
+    protected abstract suspend fun captureDeletionWork(id: String)
+    @Query("SELECT runId FROM deletion_work WHERE documentId = :id ORDER BY runId")
+    abstract suspend fun deletionRunIds(id: String): List<String>
 
     // ABORT is intentional: audit outputs are never silently replaced.
     @Insert abstract suspend fun insertDocument(row: ProtectedDocumentRow)
@@ -109,7 +130,10 @@ abstract class ProtectedDao {
 
     @Transaction
     open suspend fun deleteCompletely(id: String) {
+        if (tombstone(id) != null) return
+        insertTombstone(DocumentTombstone(id))
         enqueueDeletion(PendingDeletionEntity(id))
+        captureDeletionWork(id)
         deleteDocumentRows(id)
     }
 }
@@ -118,7 +142,17 @@ abstract class ProtectedDao {
 @Database(entities = [ProtectedDocumentRow::class, ProtectedRunRow::class, ProtectedObservationRow::class,
     ProtectedReferenceRow::class, ProtectedAssessmentRow::class, ProtectedCorrectionRow::class,
     ProtectedGroundTruthRow::class, ProtectedComparisonRow::class, ProtectedPageRow::class,
-    PendingDeletionEntity::class], version = 2, exportSchema = true)
+    PendingDeletionEntity::class, DocumentTombstone::class, DeletionWork::class], version = 3, exportSchema = true)
 abstract class ProtectedDatabase : RoomDatabase() {
     abstract fun records(): ProtectedDao
+    companion object {
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE IF NOT EXISTS document_tombstones (documentId TEXT NOT NULL, PRIMARY KEY(documentId))")
+                db.execSQL("CREATE TABLE IF NOT EXISTS deletion_work (runId TEXT NOT NULL, documentId TEXT NOT NULL, PRIMARY KEY(runId), FOREIGN KEY(documentId) REFERENCES pending_deletions(documentId) ON UPDATE NO ACTION ON DELETE CASCADE)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_deletion_work_documentId ON deletion_work(documentId)")
+                db.execSQL("INSERT OR IGNORE INTO document_tombstones(documentId) SELECT documentId FROM pending_deletions")
+            }
+        }
+    }
 }

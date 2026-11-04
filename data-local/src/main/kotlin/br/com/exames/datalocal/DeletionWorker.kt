@@ -1,6 +1,7 @@
 package br.com.exames.datalocal
 
 import android.content.Context
+import br.com.exames.datadocuments.SafDocumentReader
 import androidx.work.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -11,13 +12,14 @@ class DeletionWorker(context: Context, params: WorkerParameters) : CoroutineWork
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         var db: ProtectedDatabase? = null
         try {
-            val database = ProtectedDatabaseFactory(applicationContext).open()
+            val factory = ProtectedDatabaseFactory(applicationContext)
+            val database = factory.open()
             db = database
             val store = EncryptedArtifactStore(applicationContext)
-            database.records().pendingDeletions().forEach {
-                store.deleteDocument(it.documentId)
-                database.records().acknowledgeDeletion(it.documentId)
-            }
+            ProtectedDocumentImporter(applicationContext,
+                SafDocumentReader(applicationContext.contentResolver), store,
+                ProtectedValidationRepository(factory)).reconcile()
+            ProtectedDeletionCleanup(factory, store, AndroidRunWorkScheduler(applicationContext)).run()
             Result.success()
         } catch (e: kotlinx.coroutines.CancellationException) {
             throw e

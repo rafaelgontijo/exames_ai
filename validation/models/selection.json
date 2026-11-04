@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "biochemistry-fields/1",
+  "date": "2026-11-03",
+  "status": "reference-workbench-technically-accepted",
+  "modelId": "gemma4",
+  "modelLock": "gemma4-e2b/model.lock.json",
+  "modelRevision": "1caa527c1e88b55f046fcd8d2b4265606680663d",
+  "modelSha256": "a53a59001894c58e6bdb5b9b227709f91a2e3e556baa7d85acf9c55402ba5cf5",
+  "runtime": {
+    "coordinate": "com.google.ai.edge.litertlm:litertlm-android:0.18.1",
+    "aarSha256": "05c6bdc8acda834efcca12c0ad5d06d2cd8c83e60770f056d8d222f699f3012b"
+  },
+  "backend": "GPU",
+  "activationDataType": "runtime-default",
+  "input": "positioned-text-only",
+  "api": "synchronous",
+  "contextTokens": 2048,
+  "maxOutputTokens": 1024,
+  "nativeResponseFormat": false,
+  "outputValidator": "strict-biochemistry-schema-and-source-evidence/1",
+  "promptVersion": "biochemistry-evidence/5",
+  "fixtureVersion": "synthetic-prefix-isolation-and-development-pdf/2",
+  "channelPolicy": "bundle-metadata-final-only",
+  "thinkingConfig": null,
+  "thoughtPersisted": false,
+  "sampler": {
+    "topK": 1,
+    "topP": 1.0,
+    "temperature": 0.0,
+    "seed": 0
+  },
+  "freshEnginePerRequest": true,
+  "nativeCache": ":nocache",
+  "referenceDevice": {
+    "model": "SM-S931B",
+    "android": "17",
+    "api": 37,
+    "pageSizeBytes": 4096
+  },
+  "evidenceReports": [
+    "validation/results/gemma4-s25-spike-2026-10-26-gpu-sync-strict.json",
+    "validation/results/gemma4-s25-spike-2026-10-26-gpu-async-strict.json",
+    "validation/results/gemma4-s25-production-adapter-2026-10-27-unlocked.json",
+    "validation/results/gemma4-s25-bundled-offline-2026-10-27.json",
+    "validation/results/inference-process-controls-2026-10-27.json",
+    "validation/results/native-production-s25-2026-11-03-protocol3.json",
+    "validation/results/final-workbench-s25-2026-11-03.json",
+    "validation/results/full-page-protocol3-s25-2026-11-03-diagnostic.json",
+    "validation/results/full-page-protocol4-s25-2026-11-03-diagnostic.json",
+    "validation/results/full-page-protocol5-development-s25-2026-11-03.json",
+    "validation/results/native-production-s25-2026-11-03-protocol5-development.json",
+    "validation/results/final-workbench-s25-2026-11-03-protocol5-development-verified.json"
+  ],
+  "rationale": [
+    "Both fixed Portuguese rows passed exact field/evidence validation with fresh engines in synchronous and asynchronous APIs.",
+    "Gemma GPU generation was about 1.1 seconds with sampled process PSS about 2.88 GiB; LFM CPU required about 7.08 GiB in the initial spike.",
+    "Qwen did not pass the tested controls; Gemma native ResponseFormat failed and is disabled in the selected path.",
+    "Apache-2.0 declaration and fixed provenance are preserved in the model lock."
+  ],
+  "integrationStatus": "Production protocol v5 and complete clean offline workbench passed on S25. Eight DEVELOPMENT pairs: one accepted model page (digital simple-v1), seven explicit fallback pages. Correction, original metrics, restart/private reopen, deletion and static weights preservation verified. No clinical or held-out generalization acceptance.",
+  "distributionStatus": "Bundled uncompressed APK asset with atomic private preparation; clean S25 install passed in airplane mode, validation/results/gemma4-s25-bundled-offline-2026-10-27.json",
+  "fallbackContract": "Explicit inference failure preserves deterministic baseline and ambiguity safeguards; no automatic switch to unvalidated model/backend.",
+  "limitations": [
+    "Only two synthetic single-row inputs of one analyte; no corpus-wide or clinical validation.",
+    "API 24 model execution, a 16 KiB kernel, 4 GB devices and other GPUs have not been tested.",
+    "PSS is sampled process memory, not guaranteed peak or complete GPU-driver accounting.",
+    "SDK aggregate prefill/decode/context counts returned unavailable in production controls; separate thought/final counts remain unavailable.",
+    "Oversized native context returned sanitized RUNTIME_FAILURE; no calibrated token count or truncation inference is made.",
+    "Historical full-document A/B v3 failed on all eight exposed held-out technical cases; they are not untouched evaluation evidence.",
+    "Full v5 workbench acceptance is technical: only 1/8 pages accepted; seven fallback pages and classification regressions are reported.",
+    "Only eight DEVELOPMENT cases; not corpus-wide, public-document, untouched held-out or clinical validation."
+  ],
+  "apiDecision": "Synchronous production inference verified with fresh processes on S25; private child process enforces deadlines and cancellation.",
+  "promptPurpose": "Strict production extraction from literal source groups with original IDs and positions; no truth/parser answers supplied. Eight DEVELOPMENT cases measured; limitations and errors preserved.",
+  "lifecycle": {
+    "version": "process-isolation/1",
+    "process": ":inference",
+    "freshProcessPerRequest": true,
+    "loadTimeoutMillis": 120000,
+    "generationTimeoutMillis": 120000,
+    "retireTimeoutMillis": 5000,
+    "maxInputUtf8Bytes": 16384,
+    "maxFinalCharacters": 16384,
+    "concurrency": 1,
+    "overflowPolicy": "reject-no-queue",
+    "acceptance": "Real Gemma process path passed two shared-prefix rows, oversized native context rejection, and native cancellation retirement on S25; synthetic timeout/late callback controls remain complementary."
+  },
+  "lastAcceptedProductionProtocol": {
+    "promptVersion": "biochemistry-evidence/5",
+    "evidenceReport": "validation/results/native-production-s25-2026-11-03-protocol5-development.json",
+    "scope": "Native security/lifecycle controls plus complete offline development-only workbench acceptance; only 1/8 document pages accepted by model."
+  }
+}

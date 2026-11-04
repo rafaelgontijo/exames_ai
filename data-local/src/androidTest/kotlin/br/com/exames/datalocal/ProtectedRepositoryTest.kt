@@ -29,7 +29,11 @@ class ProtectedRepositoryTest {
         RunState.RUNNING, now.toString(), "synthetic-device", "24", parentRunId = parent)
     private fun batch(run: ProcessingRun, id: String = "obs", raw: String = "15"): PageBatch {
         val observation = Observation(id, run.documentId, "SYNTHETIC-CLINICAL-MARKER", raw, "u/L", 1,
-            "SYNTHETIC-FIELD-SOURCE", numericValue = raw.toBigDecimal(), confirmed = false)
+            "SYNTHETIC-FIELD-SOURCE", numericValue = raw.toBigDecimal(), confirmed = false,
+            fieldEvidence = listOf(ExtractedFieldEvidence("resultRaw", "SYNTHETIC-EVIDENCE-MARKER",
+                SourceRegion(1, 10.0, 20.0, 30.0, 40.0, 600.0, 800.0), "span", "PDF_TEXT", "fixture/1")),
+            referenceCandidates = listOf(ReferenceRange(id, "SYNTHETIC-CANDIDATE-MARKER", "u/L", 1)),
+            referenceRaw = "SYNTHETIC-RAW-REFERENCE-MARKER")
         val reference = ReferenceRange(id, "10–20 u/L", "u/L", 1, "10".toBigDecimal(), "20".toBigDecimal(),
             applicability = Applicability.APPLICABLE)
         return PageBatch(PageCheckpoint(run.runId, 1, run.mode, PageState.COMPLETE, 12),
@@ -81,6 +85,7 @@ class ProtectedRepositoryTest {
         assertEquals(2, repository.observeRuns("doc").first().size)
         assertEquals("15", repository.observations("original").single().resultRaw)
         assertFalse(repository.observations("original").single().confirmed)
+        assertEquals(original.observations.single(), repository.observations("original").single())
         assertEquals("16", repository.observations("corrected").single().resultRaw)
         assertEquals(AssessmentStatus.WITHIN_RANGE, repository.assessments("original").single().status)
         assertEquals(original.references.single(), repository.reference("obs"))
@@ -117,6 +122,34 @@ class ProtectedRepositoryTest {
         try { repository.save(document); fail("Pending deletion was ignored") }
         catch (_: IllegalStateException) { }
         assertNotNull(repository.find("other-doc"))
+    }
+
+    @Test fun canonicalTruthAndSeparateMeasurementKindsSurviveReopeningWithoutReplacingV1() = withRepository { factory, repository ->
+        repository.save(document)
+        val sourceRun = run("canonical-run")
+        repository.createRun(sourceRun); repository.commitPage(batch(sourceRun))
+        repository.updateRunState(sourceRun.runId, RunState.COMPLETE, InferenceOutcome.NOT_ATTEMPTED)
+        val legacy = truth("1")
+        val canonical = truth("2").copy(schemaVersion = "1.1", observations = legacy.observations.map { expected ->
+            expected.copy(evidence = listOf(ExtractedFieldEvidence("analyteRaw", expected.analyteRaw,
+                SourceRegion(1, 10.0, 20.0, 30.0, 40.0, 600.0, 800.0), "canonical-source", "SYNTHETIC", "test/1")),
+                evaluationInput = CanonicalEvaluationInput("REF_NUMERIC/2.0.0", ResultComparator.EQ, emptySet(),
+                ReferenceSelection.SELECTED, CanonicalReferenceMetadata(expected.observationId, 1, "u/L",
+                    ReferenceComparator.RANGE, true, true, Applicability.APPLICABLE, null), emptyList()))
+        })
+        repository.appendGroundTruth("doc", GroundTruthSnapshot("a".repeat(64), legacy))
+        repository.appendGroundTruth("doc", GroundTruthSnapshot("b".repeat(64), canonical))
+        val originals = repository.observations(sourceRun.runId)
+        val measured = MeasureValidation(repository).measure(sourceRun.runId, "b".repeat(64))
+        assertEquals(1, measured.isolated.evaluated)
+        factory.open().close()
+        assertEquals(listOf(legacy, canonical), repository.groundTruth("doc").map { it.groundTruth })
+        assertEquals(originals, repository.observations(sourceRun.runId))
+        assertEquals(setOf(MeasurementKind.END_TO_END, MeasurementKind.EVALUATOR_ISOLATED),
+            repository.comparisons(sourceRun.runId).map { it.kind }.toSet())
+        assertTrue(repository.comparisons(sourceRun.runId).all { it.groundTruthVersion == "2" })
+        val again = MeasureValidation(repository).measure(sourceRun.runId, "b".repeat(64))
+        assertEquals(measured.comparisons, again.comparisons)
     }
 
     @Test fun incompleteRunsCannotBeReportedCompleteOrReopenedByStateUpdates() = withRepository { _, repository ->
@@ -157,7 +190,8 @@ class ProtectedRepositoryTest {
         for (file in files) {
             val content = file.readBytes().toString(Charsets.UTF_8)
             for (marker in listOf("SYNTHETIC-PRIVATE-SOURCE", "SYNTHETIC-CLINICAL-MARKER", "SYNTHETIC-FIELD-SOURCE",
-                "SYNTHETIC-CORRECTION-MARKER", "SYNTHETIC-EXPECTED-MARKER", "INSIDE_REFERENCE", "WITHIN_RANGE")) {
+                "SYNTHETIC-CORRECTION-MARKER", "SYNTHETIC-EXPECTED-MARKER", "SYNTHETIC-EVIDENCE-MARKER",
+                "SYNTHETIC-CANDIDATE-MARKER", "SYNTHETIC-RAW-REFERENCE-MARKER", "INSIDE_REFERENCE", "WITHIN_RANGE")) {
                 assertFalse("Sensitive synthetic marker persisted in plaintext", content.contains(marker))
             }
         }
@@ -167,6 +201,14 @@ class ProtectedRepositoryTest {
         repository.save(document)
         repository.createRun(run("run"))
         val first = batch(run("run"))
+        for (invalid in listOf(
+            first.observations.single().copy(referenceCandidates = listOf(ReferenceRange("wrong-observation", "10–20 u/L", "u/L", 1))),
+            first.observations.single().copy(fieldEvidence = first.observations.single().fieldEvidence.map {
+                it.copy(region = it.region.copy(page = 2))
+            }))) {
+            try { repository.commitPage(first.copy(observations = listOf(invalid))); fail("Foreign evidence accepted") }
+            catch (_: IllegalArgumentException) { }
+        }
         try {
             repository.commitPage(first.copy(checkpoint = first.checkpoint.copy(page = 2),
                 observations = first.observations.map { it.copy(page = 2) }))

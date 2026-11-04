@@ -45,3 +45,14 @@ O sistema SHALL permitir conferir e corrigir o gabarito contra a fonte, registra
 #### Scenario: Public example has no reviewed ground truth
 - **WHEN** a extração roda em exemplo público ainda não conferido
 - **THEN** a saída pode ser inspecionada, mas o exemplo não contribui para métricas de acerto
+
+### Requirement: Canonical evaluator inputs are independently versioned
+O gabarito v2/schema 1.1 SHALL declarar inputs canônicos do avaliador independentemente de expectedStatus/expectedReason, com comparadores, inclusividades, unidade, aplicabilidade, vínculo e ambiguidades. Gabaritos v1 SHALL continuar legíveis e imutáveis. Ausência desses inputs SHALL produzir indisponibilidade/N/A no ensaio isolado, sem completar dados pelo parser ou resposta esperada.
+
+#### Scenario: Unresolved references in an isolated measurement
+- **WHEN** o snapshot declara referências concorrentes sem seleção inequívoca
+- **THEN** conserva candidatos/ambiguidade e não escolhe uma faixa para forçar classificação
+
+#### Scenario: Upgrade ground truth without changing documents
+- **WHEN** a geração v2 acrescenta somente metadados canônicos e motivos revisados
+- **THEN** os documentos, IDs, famílias e partições permanecem os mesmos e novos hashes identificam gabaritos/manifestos, preservando v1

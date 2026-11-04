@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -20,10 +22,14 @@ android {
     buildFeatures { compose = true }
 }
 kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) } }
+kapt { correctErrorTypes = true }
 
 dependencies {
     coreLibraryDesugaring(libs.desugar.jdk)
     implementation(project(":domain"))
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    kapt(libs.kotlin.metadata)
     implementation(libs.coroutines.android)
     implementation(project(":data-documents"))
     implementation(libs.androidx.activity.compose)

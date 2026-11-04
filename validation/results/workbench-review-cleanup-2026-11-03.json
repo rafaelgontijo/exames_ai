@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-03T18:21:26.085662+00:00",
+  "device": "emulator-5554",
+  "originReport": "workbench-review-emulator-2026-11-03.json",
+  "verifiedReport": "workbench-review-verified-emulator-2026-11-03.json",
+  "installedBeforeSession": {
+    "br.com.exames.offline.validation.workbench": false,
+    "br.com.exames.offline.validation.workbench.test": false
+  },
+  "removedPackages": [
+    "br.com.exames.offline.validation.workbench",
+    "br.com.exames.offline.validation.workbench.test"
+  ],
+  "uninstallResults": [
+    "Success",
+    "Success"
+  ],
+  "normalAppTargeted": false,
+  "s25Targeted": false
+}

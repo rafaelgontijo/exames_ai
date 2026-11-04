@@ -5,9 +5,19 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 
 /** No broad storage permission. URI and display name are sensitive; never log them. */
 class SafDocumentReader(private val resolver: ContentResolver) {
+    /** Provider name/size are never trusted or persisted. No URI grant is retained. */
+    suspend fun readValidated(uri: Uri): ValidatedDocument = withContext(Dispatchers.IO) {
+        require(uri.scheme == ContentResolver.SCHEME_CONTENT) { "DOCUMENT_URI_INVALID" }
+        val context = currentCoroutineContext()
+        val mime = resolver.getType(uri)
+        val input = checkNotNull(resolver.openInputStream(uri)) { "DOCUMENT_UNAVAILABLE" }
+        input.use { ValidatedDocumentInput.read(it, mime) { context.ensureActive() } }
+    }
     suspend fun inspect(uri: Uri): SelectedDocument = withContext(Dispatchers.IO) {
         require(uri.scheme == ContentResolver.SCHEME_CONTENT)
         val mime = resolver.getType(uri) ?: error("Formato desconhecido")
@@ -20,7 +30,7 @@ class SafDocumentReader(private val resolver: ContentResolver) {
     }
     companion object {
         val SUPPORTED = setOf("application/pdf", "image/jpeg", "image/png")
-        const val MAX_BYTES = 20L * 1024 * 1024 // Provisional limit; measure on target devices.
+        val MAX_BYTES = DocumentLimits.MAX_BYTES.toLong() // Technical limit; measure on target devices.
     }
 }
 data class SelectedDocument(val uri: Uri, val mimeType: String, val sizeBytes: Long?)

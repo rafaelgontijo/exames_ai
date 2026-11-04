@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-04T00:11:10.112958+00:00",
+  "cleanOfflineInstall": true,
+  "thoughtPersisted": false,
+  "applicationId": "br.com.exames.offline.validation.native",
+  "appApkSha256": "a7be89af4a04fb6bdb828074ff1834e317c8e762d174f1040827ea624c3d915f",
+  "testApkSha256": "d710d6db4bbd4748ba644d82911d52fb8bab90a5b3a3b21f7a8989150478a6af",
+  "events": [
+    {
+      "phase": "generating-0"
+    },
+    {
+      "accepted": true,
+      "issueCodes": "",
+      "loadMillis": 9769,
+      "generationMillis": 1999,
+      "measurements": {
+        "elapsedMillis": 14058,
+        "sampledMaxPssKiB": 3001427,
+        "availableBytesBefore": 5682020352,
+        "availableBytesAfter": 6034010112,
+        "totalRamBytes": 11653074944,
+        "prefillTokens": null,
+        "decodedTokens": null,
+        "contextTokensAfter": null,
+        "thoughtTokens": null,
+        "finalTokens": null,
+        "tokenChannelsUnavailable": "SDK_NO_CHANNEL_TOKEN_COUNTS",
+        "memoryMethod": "ANDROID_DEBUG_PSS_100MS_SAMPLED_MAX_NOT_PEAK_GPU_ACCOUNTING_INCOMPLETE",
+        "freshEngine": true,
+        "processId": 22186
+      },
+      "phase": "validated-0"
+    },
+    {
+      "phase": "generating-1"
+    },
+    {
+      "accepted": true,
+      "issueCodes": "",
+      "loadMillis": 11741,
+      "generationMillis": 1814,
+      "measurements": {
+        "elapsedMillis": 16132,
+        "sampledMaxPssKiB": 3000597,
+        "availableBytesBefore": 6089965568,
+        "availableBytesAfter": 6692118528,
+        "totalRamBytes": 11653074944,
+        "prefillTokens": null,
+        "decodedTokens": null,
+        "contextTokensAfter": null,
+        "thoughtTokens": null,
+        "finalTokens": null,
+        "tokenChannelsUnavailable": "SDK_NO_CHANNEL_TOKEN_COUNTS",
+        "memoryMethod": "ANDROID_DEBUG_PSS_100MS_SAMPLED_MAX_NOT_PEAK_GPU_ACCOUNTING_INCOMPLETE",
+        "freshEngine": true,
+        "processId": 22228
+      },
+      "phase": "validated-1"
+    },
+    {
+      "phase": "malicious-input"
+    },
+    {
+      "outcome": "SUCCEEDED",
+      "disposition": "ACCEPTED",
+      "phase": "malicious-guarded"
+    },
+    {
+      "rejected": true,
+      "phase": "input-limit"
+    },
+    {
+      "phase": "native-context-limit"
+    },
+    {
+      "failure": "RUNTIME_FAILURE",
+      "phase": "native-context-result"
+    },
+    {
+      "phase": "native-cancel"
+    },
+    {
+      "passed": true,
+      "sharedPrefixIsolated": true,
+      "nativeProcessRetired": true,
+      "thoughtPersisted": false,
+      "phase": "complete"
+    }
+  ],
+  "device": {
+    "model": "SM-S931B",
+    "android": "17",
+    "api": "37"
+  },
+  "passed": true,
+  "removedCreatedPackages": [
+    "br.com.exames.offline.validation.native.test",
+    "br.com.exames.offline.validation.native"
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-26",
+  "device": {
+    "model": "SM-S931B",
+    "android": "17",
+    "api": "37",
+    "abi": "arm64-v8a",
+    "pageSizeBytes": "4096",
+    "memTotal": "MemTotal:       11379964 kB"
+  },
+  "runtime": "0.18.1",
+  "backend": "GPU",
+  "threads": null,
+  "activationDataType": "runtime-default",
+  "modelFile": "Qwen3-0.6B_dynamic_wi4b32_afp32.litertlm",
+  "testApkSha256": "cf110b709581c1e423779d917509de02b3293d13f1e4b7256672cd091da4ee9f",
+  "modelId": "qwen3",
+  "modelRepository": "litert-community/Qwen3-0.6B",
+  "fixtureVersion": "portuguese-row-copy/1",
+  "modelRevision": "e6687177e00897731e7716267eebd4eba0dde7c2",
+  "modelSha256": "03e7da1eb1108b50dffaa9bb52cc7bcbad2eb0c66ca990267f480c1e545d2856",
+  "contextTokens": 2048,
+  "maxOutputTokens": 1024,
+  "requestedThoughtBudget": null,
+  "promptVersion": "lfm-device-spike/2-en",
+  "schema": "five-strings/1",
+  "harnessVersion": 7,
+  "api": "async-callback",
+  "thinkingConfigAtSend": false,
+  "foregroundRequested": true,
+  "responseFormat": "json-schema-five-strings-length1to128/2",
+  "sampling": {
+    "topK": 1,
+    "topP": 1.0,
+    "temperature": 0.0,
+    "seed": 0,
+    "repetitionPenalty": null
+  },
+  "phaseTimeoutSeconds": 120,
+  "timedOut": false,
+  "instrumentationCode": -1,
+  "processCrashed": false,
+  "testFailureType": "java.lang.AssertionError",
+  "freshEnginePerRequest": true,
+  "elapsedSeconds": 8.721,
+  "memoryMethod": "Debug.getPss every 100 ms; sampled maximum, not guaranteed peak",
+  "thoughtPersisted": false,
+  "thoughtTokens": null,
+  "finalTokens": null,
+  "passed": false,
+  "events": [
+    {
+      "interactive": true,
+      "keyguardLocked": false,
+      "case": -1,
+      "phase": "foreground"
+    },
+    {
+      "case": 0,
+      "phase": "load"
+    },
+    {
+      "loadMs": 3706,
+      "case": 0,
+      "phase": "conversation"
+    },
+    {
+      "loadMs": 3706,
+      "conversationMs": 1018,
+      "case": 0,
+      "phase": "generate"
+    },
+    {
+      "case": 0,
+      "phase": "submitted"
+    },
+    {
+      "loadMs": 3706,
+      "conversationMs": 1018,
+      "callbacks": 45,
+      "firstCallbackMs": 546,
+      "firstFinalMs": 547,
+      "generationMs": 1467,
+      "sampledMaxPssKiB": 2138622,
+      "fieldMatches": {
+        "analito": false,
+        "valor": false,
+        "unidade": false,
+        "referencia": false,
+        "evidencia": false
+      },
+      "fieldLengths": {
+        "analito": 3,
+        "valor": 3,
+        "unidade": 6,
+        "referencia": 8,
+        "evidencia": 3
+      },
+      "emptyFields": 0,
+      "finalChars": 92,
+      "validEvidenceJson": false,
+      "case": 0,
+      "phase": "result"
+    }
+  ],
+  "limits": "Plans two synthetic single-row inputs, stops at first failure; no OCR, A/B, safe reset or clinical validation. Manual test model provisioning; not offline APK acceptance."
+}

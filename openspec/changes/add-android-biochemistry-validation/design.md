@@ -5,13 +5,13 @@
 Ver `proposal.md` para motivação e `specs/*/spec.md` para os contratos. A base observada é `59ee91a`:
 
 - `ImportViewModel` apenas inspeciona URI; resultados e histórico ainda são estados vazios.
-- `LocalTextRecognizer` já inclui OCR Latin; confiança desconhecida é `null`.
+- `LocalTextRecognizer` inclui Tesseract com português empacotado; confiança desconhecida é `null`.
 - `PdfPreviewRenderer` renderiza URI externa, sem extrair texto embutido ou resolver reabertura criptografada.
 - O avaliador `REF_NUMERIC/1.0.0` exige confirmação e tem testes numéricos/conservadores existentes.
 - Room v1 guarda campos sensíveis em claro; avaliação keyed por observação é sobrescrita, sem histórico de execuções.
 - Arquivos já usam AES-GCM/Keystore. Exclusão tem outbox e worker, sem integração UI; `DeletionWorker` abre sua própria base.
-- `:inference-experimental` é stub desconectado de `:app`. O usuário autorizou inferência P0, substituindo a exclusão anterior do MVP, e sugeriu LFM2.5-1.2B-Thinking no lugar do Qwen.
-- O minSdk original era 23; o usuário aprovou elevar para 24 após inspeção dos AARs LiteRT-LM. SDK de compilação permanece 36. Não houve teste físico no S25 nesta conversa.
+- `:inference-experimental` era stub desconectado de `:app`. O usuário autorizou inferência P0, substituindo a exclusão anterior do MVP, e sugeriu LFM2.5-1.2B-Thinking no lugar do Qwen. A implementação posterior promoveu `:inference-local`, com resultados/limites em `docs/BUNDLED_INFERENCE.md`; a ativação na UI permanece pendente.
+- O minSdk original era 23; o usuário aprovou elevar para 24 após inspeção dos AARs LiteRT-LM. SDK de compilação permanece 36. Ensaios físicos incrementais no S25 estão registrados em `docs/VALIDACAO.md`, sem validação clínica.
 
 Esta proposta foi reconstruída após substituição do ambiente que continha o commit local `754820d`, antes do push. Preserva o escopo acordado e incorpora a avaliação de LFM solicitada durante a recuperação; não é uma recuperação byte a byte do objeto Git antigo.
 
@@ -64,7 +64,43 @@ Adaptador PDF recebe bytes autenticados limitados do store e fornece texto posic
 
 O spike deve abrir texto/raster sem URI original e sem gravar PDF descriptografado em disco. Substituir biblioteca se necessário, mantendo o contrato; não relaxar criptografia. O `PdfRenderer` atual só pode ser reutilizado com descritor seguro compatível com esse contrato.
 
+**Investigação em 27/10/2026:** após identificar logs de tokens do documento no
+PDFBox-Android e autorização do usuário para seguir com PDFium, ensaiar
+`io.legere:pdfiumandroid:2.0.1` em `:pdf-spike`, Java isolado, sem dependência do
+app. A 2.0.3 exige compileSdk 37; a 2.0.1 preserva SDK 36/minSdk 24 e possui
+metadados Kotlin 2.3/Java 21, ainda sem integração com Kotlin 2.1 do projeto.
+Usar fonte customizada sobre buffer autenticado, logger sem saída e fechamento
+por página. Ensaios funcionais passaram no S25 e emulador API 36, incluindo
+texto/raster híbrido, rotação, coordenadas e entrada adulterada; não concluem o
+gate de produção. A revisão do JNI da tag 2.0.1 encontrou desbloqueio de mutex
+sob `lock_guard` e problemas de ownership/alocação no caminho direto por bytes.
+O usuário autorizou o build JNI próprio: patch aplicado e recompilado nas quatro
+ABIs com NDK 27.1/CMake 3.22/API 24, fontes fixadas por hash. O perfil corrigido
+com motor original passou no S25, inclusive retenção de buffers inválidos. Para
+resolver a origem/avisos do motor, o perfil 2 usa PDFium 154.0.8035.0 sem V8/XFA,
+distribuição fixada em `validation/pdf/engine.lock.json`, com avisos incorporados
+e conferidos no APK. Esse perfil passou no emulador API 36 e no S25 API 37 após
+reconexão, incluindo 32 ciclos em duas threads. Selecionar esse perfil para a
+próxima integração PDF. Compatibilidade de produção e promoção ao app continuam
+pendentes; nenhum teste usou sanitizer ou kernel de 16 KiB.
+Resultados, limites e decisão atual em `docs/PDF_COMPATIBILITY.md`.
+
 Decidir por página em PDF híbrido: texto posicionado quando utilizável, OCR do raster em fallback. Existência de texto não garante associação confiável. Registrar dimensões, escala, rotação e transformação, incluindo EXIF de imagens. Cada campo aponta para span/região consultável; mapear para o mesmo sistema de coordenadas da prévia. Não inventar confiança de extração.
+
+**Integração posterior:** `:pdf-local` encapsula o binding Java e o AAR corrigido
+feito por staging num repositório Maven local exclusivo. `PdfPreviewRenderer`
+abre por ID privado, confere hash e mantém texto/raster no mesmo viewport.
+`PrivatePageLoader`, singleton Hilt, limita uma página ativa até fechar o resultado;
+seleciona texto PDF utilizável ou OCR português empacotado e preserva texto embutido
+rejeitado. JPEG/PNG são amostrados antes de alocar e orientados por leitor limitado
+da tag numérica EXIF, sem nomes/GPS/XMP ou logs de metadados. Os oito valores são
+testados nos dois formatos. A Task OCR conclui antes de liberar bitmap/client,
+mesmo após cancelamento; isso não comprova interrupção JNI imediata.
+
+O classpath do consumidor trouxe stdlib 2.3 apesar da separação Java. Alinhar
+Kotlin 2.3.21, Hilt 2.58 e Room 2.8.5 resolveu o build mantendo AGP 8.13.2/SDK 36/
+minSdk 24 e schemas Room exportados. Não é validação de LiteRT-LM em produção.
+Contratos, limites, ownership, staging e resultados em `docs/DOCUMENT_EXTRACTION.md`.
 
 ### 5. Parser e motor determinístico
 
@@ -75,6 +111,8 @@ Introduzir `REF_NUMERIC/2.0.0`: remover exclusivamente a confirmação prévia, 
 Atualizar o teste de não confirmado para classificação automática inequívoca e estado de revisão intacto; conservar e ampliar testes de todos os bloqueios e limites. Execuções legadas permanecem na regra 1.0.0. LLM apenas propõe campos: usa os mesmos validadores e o mesmo avaliador, nunca conhecimento de referência externo.
 
 ### 6. Comparações e métricas
+
+**Atualização aprovada pelo usuário (27/10/2026):** manter corpus/schema v1 e acrescentar fonte `cases-v2.json`, gabarito v2/schema 1.1 e snapshot `evaluationInput` opcional. O snapshot declara comparadores, unidades próprias da referência, inclusividades, aplicabilidade, vínculo e ambiguidades independentemente das respostas esperadas. Referências não resolvidas não são selecionadas. Ausência de snapshot legado produz N/A no ensaio isolado. O renderer v1 permanece inalterado e os documentos/famílias/partições foram confrontados em bytes/hashes; apenas metadados/gabaritos/manifesto mudam. A implementação `MeasureValidation` mede uma execução finalizada contra um SHA de gabarito explícito, persiste tipos END_TO_END/EVALUATOR_ISOLATED e não reprocessa nem modifica a saída original. Decisão, compatibilidade e limites em `docs/GROUND_TRUTH_V2_PROPOSAL.md` e `docs/VALIDATION_COMPARISON.md`.
 
 Comparação pura no domínio, pareamento um-para-um por caso/página/analito/evidência, sem casar pela resposta esperada. Duplicatas/associações não resolvidas são divergências. Relatar texto bruto e normalização separadamente.
 
@@ -94,6 +132,14 @@ Codec separado com AES-GCM/Keystore, IV novo por gravação e AAD por entidade/I
 Redesenhar entidades/mapeamentos sem duplicar campos sensíveis em claro. Repositórios decodificam em memória; pesquisa sensível fica limitada à aplicação, sem índice SQL em claro. Outbox opera com IDs opacos sem precisar descriptografar. Arquivos, prévias, OCR e eventuais traces persistidos seguem o store criptografado. Não persistir raciocínio intermediário; desabilitar caches sensíveis não protegidos. Pesos estáticos não contêm dados clínicos e podem ser privados sem criptografia clínica.
 
 SQLCipher foi alternativa considerada; payloads evitam outra dependência nativa e atendem à bancada sem busca clínica SQL. O contêiner SQLite/metadados operacionais não é integralmente cifrado; documentar esse limite. Falha de chave produz indisponibilidade explícita, sem fallback em claro nem recriação silenciosa.
+
+**Implementação da exclusão (27/10/2026):** Room 3 separa tombstone permanente,
+outbox e IDs de trabalhos a cancelar, preservando payloads/AAD v2. A migração
+explícita 2→3 não reescreve payloads e recupera intenções conhecidas. A exclusão
+oculta/cascateia registros antes de cancelar; a limpeza confirma outbox somente
+após cancelamento e barreira durável nos arquivos. Locks por documento e um byte
+permanente de exclusão impedem escritas posteriores ao ack. Limites e verificação
+em `docs/DELETION_COORDINATION.md`; UI e encerramento de JNI seguem separados.
 
 ### 8. UI nos módulos existentes
 
@@ -118,6 +164,31 @@ LFM CPU INT4: SHA-256 publicado `da3c0ad154b78f33537b117fbe747cc1d4fd3507479002b
 
 **Decisão:** começar o ensaio com LFM CPU INT4, manter Qwen como alternativa e selecionar o único artefato da distribuição após testes de JSON, evidência, pt-BR, memória, latência, isolamento e adequação da licença. A proposta aceita a consideração do LFM, sem declarar que já superou Qwen nem exigir baixar dois modelos no app. Se houver inviabilidade, registrar evidência da seleção da alternativa; não substituir por stub.
 
+**Terceiro candidato autorizado:** testar Gemma 4 E2B quando os ensaios anteriores
+não atenderem aos critérios. O artefato inicial para esse controle é
+`litert-community/gemma-4-E2B-it-litert-lm`, revisão
+`1caa527c1e88b55f046fcd8d2b4265606680663d`, arquivo
+`gemma-4-E2B-it-gpu.litertlm`, 2008432640 bytes, SHA-256
+`a53a59001894c58e6bdb5b9b227709f91a2e3e556baa7d85acf9c55402ba5cf5`.
+Pin, licença Apache-2.0 declarada e proveniência ficam em
+`validation/models/gemma4-e2b/`; pesos permanecem fora do Git. Usar somente texto,
+sem inicializar encoders de imagem/áudio e sem reaproveitar marcadores ou controles
+de pensamento específicos do LFM/Qwen: os canais Gemma vêm de seus metadados.
+Aplicar os mesmos validadores e registrar divergências; não inferir segurança,
+correção geral ou validação clínica de exemplos sintéticos pequenos. A inclusão
+no spike não seleciona o artefato para distribuição nem conclui a integração.
+
+**Escolha do spike em 26/10/2026:** selecionar Gemma 4 E2B GPU para a integração,
+com LiteRT-LM 0.18.1, contexto/saída 2048/1024 e validação externa estrita do canal
+final. Não usar `ResponseFormat` nativo nessa configuração: o controle Gemma
+com esse caminho reprovou, e os controles sem ele passaram em modo síncrono e
+assíncrono nos dois exemplos com Engine nova. Decisão fixa em
+`validation/models/selection.json`, com comandos/resultados/limitações em
+`docs/MODEL_COMPARISON_S25.md`. O resultado cobre duas linhas sintéticas, não o
+corpus nem validação clínica. Resolver compatibilidade Kotlin, lifecycle,
+ambiguidades e distribuição nas tarefas seguintes; não promover os controles
+de diagnóstico para regras clínicas nem afrouxar fallback para fazer outro modelo passar.
+
 **Licença:** a LFM Open License v1.0 exige retenção de licença/avisos e contém limitação de uso comercial associada ao limiar de US$ 10 milhões de receita anual. Confirmar adequação do uso concreto antes da distribuição; não rotular LFM como Apache-2.0 nem presumir uso comercial irrestrito. Planejamento e comparação técnica não estabelecem elegibilidade jurídica do distribuidor.
 
 **Runtime:** fixar versão estável do AAR `com.google.ai.edge.litertlm:litertlm-android`, sem `latest.release`. O card LFM exige pelo menos 0.15 para o tipo lfm2, e pelo menos 0.16 para GPU; contém relatos sobre 0.18 que devem ser verificados na versão escolhida. Verificar minSdk, arm64 e páginas de memória de 16 KiB sem elevar API mínima silenciosamente ou supor NPU do S25. Versões mínimas publicadas não substituem teste integrado.
@@ -127,6 +198,44 @@ LFM CPU INT4: SHA-256 publicado `da3c0ad154b78f33537b117fbe747cc1d4fd3507479002b
 **Estado:** manifesto/card relatam problemas de estado ShortConv ao criar novas conversas na mesma engine, além de problemas multi-turn. Por padrão criar nova engine por requisição, sem reaproveitar KV/estado entre documentos ou trechos até teste comprovar reset. Medir custo de reinicialização. Os relatos externos são condições a testar, não bugs do aplicativo já reproduzidos.
 
 ### 10. Contrato e lifecycle da inferência
+
+**Implementação parcial de 4.12 (27/10/2026):** serviço bound privado em processo
+descartável por solicitação, com prazos de carga/geração, morte do filho em
+cancelamento/timeout e confirmação de encerramento antes de nova chamada.
+Controles de IPC com backend simulado passaram no emulador; quotas de bytes
+não são usadas como estimativa de tokens. Aceitação de contexto/truncamento,
+Gemma real e prefixos iguais no novo caminho permanece para o ensaio final do
+S25. Não ativa agendamento assistido nem conclui 4.12. Ver `docs/INFERENCE_PROCESS.md`.
+
+**Complemento de 30/10/2026:** a mesma quota de 16384 bytes combinados é aplicada
+durante a construção do prompt, incluindo JSON escapado e delimitadores, antes
+de criar um payload completo. A lista de entrada tem barreira de trabalho de
+16384 fragmentos, contando vazios. Excesso preserva o parser e suas ambiguidades
+com fallback `INPUT_LIMIT`, sem chamar o backend ou truncar a evidência. Testes
+JVM de fronteira/UTF-8/escaping/fragmentação passaram; segmentação e orçamento
+real em tokens continuam pendentes. Nenhum critério de 4.10/4.12 foi dispensado.
+
+**Marco de implementação em 27/10/2026:** contrato JVM `TextInference`, adaptador
+Java/Kotlin e Hilt no app passaram em build e controle real no S25. Gemma GPU usa
+API síncrona, já aprovada nos controles anteriores e novamente no adaptador;
+`selection.json` registra a API efetiva. D8/R8 9.1.31 e leitor de metadados 2.3.21
+nos processadores mantêm as checagens estritas com o AAR Kotlin 2.4, sem elevar
+minSdk/SDK. BASELINE retorna antes de preparar modelo; a resposta assistida é
+`UnvalidatedFinal` e não autoriza avaliação direta. Ativação na bancada segue em 4.8.
+
+O staging empacota um único peso verificado, manifesto e licença, sem compressão.
+Preparação privada usa hash/tamanho, reserva de espaço, fsync, lock e rename
+atômico. Instalação limpa em pacote separado passou no S25 em modo avião/Wi-Fi
+desligado, sem provisionamento posterior. Esse aceite conclui 4.9. Falta de espaço
+foi simulada; não foi preenchido o armazenamento do aparelho.
+
+`ProposalProtocol` e `ProposalEvidenceValidator` estão em implementação, com
+testes JVM de schema estrito, citações e associação contra a evidência original.
+Após reconexão e reposição do cache do harness, o novo prompt/schema gerou uma
+resposta no S25, rejeitada pelo schema estrito já no primeiro controle; o segundo
+não executou. A conexão caiu antes do diagnóstico estrutural. 4.10/4.11 permanecem
+abertas, sem relaxar o validador. Deadlines/isolamento do runtime (4.12),
+persistência de tentativas (4.13), pipeline e UI também permanecem pendentes.
 
 Promover/renomear o módulo para `:inference-local`, interface pura no domínio e DI no Android. Entrada é texto posicionado com IDs de spans; saída JSON versionada contém apenas analito, valor bruto, unidade, faixa, condições e evidências. Ausências ficam null. Não enviar pixels nem fornecer gabarito, correções posteriores ou outra sessão.
 
@@ -139,6 +248,60 @@ Timeout de coroutine não garante cancelamento JNI: provar interrupção; se nec
 **Distribuição:** empacotar um artefato validado em asset sem compressão na distribuição interna e copiar atomicamente para noBackupFilesDir/models com verificação de tamanho/hash e espaço. Staging reproduzível no build; não adicionar centenas de MB ao Git comum. Considerar espaço de APK e cópia. A primeira instalação é autossuficiente offline, sem importação manual do modelo posterior. Pesos compartilhados permanecem após excluir documento; sessões/derivados não.
 
 Aceite P0 exige inferência real na instalação limpa offline do S25, com modelo selecionado, versões e métricas A/B. Fallback exclusivo não satisfaz a entrega. Benchmarks de raciocínio matemático, outros aparelhos e backends não demonstram acerto de extração de laudos em pt-BR.
+
+**Rastreabilidade implementada em 30/10/2026 (4.13):** configuração atestada pelo
+adaptador, conferida com selection/lock e AAR realmente resolvido pelo Gradle,
+deve coincidir integralmente com o run. Intenção cifrada no checkpoint precede
+a chamada; resultado e histórico são concluídos na transação da página.
+Reabertura preserva intenção inconclusa, nova submissão a marca interrompida;
+cancelamento, inclusive após final e antes de commit, não publica saída. Legado
+permanece sem metadados inventados. Histórico tem barreira de 128 intenções,
+sem descarte silencioso. Resumo/diário não aceitam prompt, resposta, pensamento
+ou exceção; cascata/tombstone impedem ressurreição e preservam pesos compartilhados.
+Não altera estrutura Room 3. Testes JVM e emulador passaram sem Gemma; ativação e
+aceite real continuam pendentes. Detalhes em `docs/INFERENCE_TRACE.md` e evidência
+em `validation/results/inference-trace-emulator-2026-10-30.json`.
+
+**Bancada implementada em 30–31/10/2026 (7.4 e partes de 7.1/7.2/7.3):** UI Hilt/
+StateFlow importa documento individual para o store protegido e cria run QUEUED
+antes de agendar WorkManager. Exibe estados/páginas, cancelamento e retry filho.
+Histórico reabre campos, avaliações originais, correções, gabaritos, comparações
+e página privada sem URI inicial; confirmação de exclusão aciona tombstone/outbox
+e limpa o conteúdo observado. Rotas contêm somente ID opaco; dados clínicos e
+bitmap não entram no saved state. Ensaio Compose com force-stop e URI revogada
+passou no emulador API 36 em PIDs diferentes, incluindo recriação da Activity,
+cancelamento da confirmação e exclusão efetiva. Não executou IA/S25. Pacotes,
+destaque, edição/reavaliação, relatórios/acessibilidade e modo assistido continuam
+pendentes; apenas 7.4 está concluída. Procedimento e limites em
+`docs/WORKBENCH_FLOW.md`, evidência em
+`validation/results/workbench-reopen-emulator-2026-10-31.json`.
+
+**Revisão visual implementada em 03/11/2026 (7.2):** seleção de campo/página para
+originais e gabaritos, estados/motivos e revisão documental separados, e vínculo
+de diferenças por hash/versões e pareamento sem valores. As regiões são do
+viewport já orientado; Canvas usa limites normalizados, rejeita frames
+incompatíveis e não estima caixas ausentes. Respostas tardias são invalidadas
+por geração da seleção. Referências legadas permanecem legíveis, sem criar
+coordenadas ou recalcular a avaliação. Passaram JVM/Compose/pixels e fluxo com
+PDF privado após force-stop/URI revogada no emulador, sem modelo ou S25. Edição,
+relatórios/acessibilidade e ativação assistida permanecem nas tarefas próprias.
+Detalhes em `docs/EVIDENCE_REVIEW.md` e evidência em
+`validation/results/evidence-review-emulator-2026-11-03.json`.
+
+**Revisão interativa implementada em 03/11/2026 (7.3):** correções append-only
+mostram antes/depois, sem alterar a observação ou avaliação original. Reavaliação
+cria execução filha atômica, IDs novos, base CORRECTED/REASSESSED e snapshot exato
+das correções; usa a regra atual e mantém ambiguidades, páginas incompletas e a
+proveniência. Não executa OCR/IA ou inventa latência/participação. A reextração
+explicitamente sem IA cria outra execução AUTOMATIC sobre o original privado.
+Revisão de gabarito edita o contrato independente, começa pendente, calcula SHA
+real e vincula o envelope ao SHA anterior; não muda schemas 1.0/1.1. Comparação
+seleciona versão/hash revisado; gabarito pendente fica fora dos denominadores.
+Relatórios separam as três bases e rejeitam identidade incompatível. Rascunhos
+controlados por TextFieldValue vivem só no ViewModel. Fluxo real Compose/Hilt/
+WorkManager passou no emulador com revisão/novas saídas, métricas originais
+preservadas, recriação com rascunhos, exclusão e source highlights. Detalhes em
+`docs/REVIEW_WORKFLOW.md`; S25/IA real continuam reservados ao aceite final.
 
 ## Risks / Trade-offs
 

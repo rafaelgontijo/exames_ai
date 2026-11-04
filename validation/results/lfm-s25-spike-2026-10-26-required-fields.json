@@ -1,0 +1,252 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-26",
+  "device": {
+    "model": "SM-S931B",
+    "android": "17",
+    "api": "37",
+    "abi": "arm64-v8a",
+    "pageSizeBytes": "4096",
+    "memTotal": "MemTotal:       11379964 kB"
+  },
+  "runtime": "0.18.1",
+  "backend": "CPU",
+  "threads": 4,
+  "modelRevision": "f8b5b3a3eea2e3859e821ad9d9222c64d649eff7",
+  "modelSha256": "da3c0ad154b78f33537b117fbe747cc1d4fd3507479002b159998f4023f32a84",
+  "contextTokens": 2048,
+  "maxOutputTokens": 1024,
+  "requestedThoughtBudget": null,
+  "promptVersion": "lfm-device-spike/2-en",
+  "schema": "five-strings/1",
+  "harnessVersion": 5,
+  "api": "async-callback",
+  "thinkingConfigAtSend": false,
+  "foregroundRequested": true,
+  "responseFormat": "json-schema-five-strings-length1to128/2",
+  "sampling": {
+    "topK": 1,
+    "topP": 1.0,
+    "temperature": 0.0,
+    "seed": 0,
+    "repetitionPenalty": null
+  },
+  "phaseTimeoutSeconds": 120,
+  "timedOut": false,
+  "instrumentationCode": -1,
+  "processCrashed": false,
+  "testFailureType": null,
+  "freshEnginePerRequest": true,
+  "elapsedSeconds": 103.852,
+  "memoryMethod": "Debug.getPss every 100 ms; sampled maximum, not guaranteed peak",
+  "thoughtPersisted": false,
+  "thoughtTokens": null,
+  "finalTokens": null,
+  "passed": true,
+  "events": [
+    {
+      "interactive": true,
+      "keyguardLocked": false,
+      "case": -1,
+      "phase": "foreground"
+    },
+    {
+      "case": 0,
+      "phase": "load"
+    },
+    {
+      "loadMs": 12904,
+      "case": 0,
+      "phase": "conversation"
+    },
+    {
+      "loadMs": 12904,
+      "conversationMs": 1659,
+      "case": 0,
+      "phase": "generate"
+    },
+    {
+      "case": 0,
+      "phase": "submitted"
+    },
+    {
+      "generationElapsedMs": 5023,
+      "cpuMs": 6465,
+      "callbacks": 0,
+      "finalChars": 0,
+      "finalStartsWithObject": false,
+      "finalHasThinkDelimiter": false,
+      "sampledMaxPssKiB": 7109761,
+      "firstCallbackMs": -1,
+      "firstFinalMs": -1,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 10038,
+      "cpuMs": 14379,
+      "callbacks": 0,
+      "finalChars": 0,
+      "finalStartsWithObject": false,
+      "finalHasThinkDelimiter": false,
+      "sampledMaxPssKiB": 7109761,
+      "firstCallbackMs": -1,
+      "firstFinalMs": -1,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 15048,
+      "cpuMs": 18837,
+      "callbacks": 0,
+      "finalChars": 0,
+      "finalStartsWithObject": false,
+      "finalHasThinkDelimiter": false,
+      "sampledMaxPssKiB": 7109761,
+      "firstCallbackMs": -1,
+      "firstFinalMs": -1,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 20083,
+      "cpuMs": 23940,
+      "callbacks": 0,
+      "finalChars": 0,
+      "finalStartsWithObject": false,
+      "finalHasThinkDelimiter": false,
+      "sampledMaxPssKiB": 7109761,
+      "firstCallbackMs": -1,
+      "firstFinalMs": -1,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 25106,
+      "cpuMs": 27745,
+      "callbacks": 0,
+      "finalChars": 0,
+      "finalStartsWithObject": false,
+      "finalHasThinkDelimiter": false,
+      "sampledMaxPssKiB": 7109761,
+      "firstCallbackMs": -1,
+      "firstFinalMs": -1,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 30111,
+      "cpuMs": 33998,
+      "callbacks": 0,
+      "finalChars": 0,
+      "finalStartsWithObject": false,
+      "finalHasThinkDelimiter": false,
+      "sampledMaxPssKiB": 7220068,
+      "firstCallbackMs": -1,
+      "firstFinalMs": -1,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "loadMs": 12904,
+      "conversationMs": 1659,
+      "callbacks": 41,
+      "firstCallbackMs": 31906,
+      "firstFinalMs": 31922,
+      "generationMs": 33279,
+      "sampledMaxPssKiB": 7389875,
+      "fieldMatches": {
+        "analito": true,
+        "valor": true,
+        "unidade": true,
+        "referencia": true,
+        "evidencia": true
+      },
+      "emptyFields": 0,
+      "finalChars": 92,
+      "validEvidenceJson": true,
+      "case": 0,
+      "phase": "result"
+    },
+    {
+      "case": 1,
+      "phase": "load"
+    },
+    {
+      "loadMs": 21655,
+      "case": 1,
+      "phase": "conversation"
+    },
+    {
+      "loadMs": 21655,
+      "conversationMs": 670,
+      "case": 1,
+      "phase": "generate"
+    },
+    {
+      "case": 1,
+      "phase": "submitted"
+    },
+    {
+      "generationElapsedMs": 5032,
+      "cpuMs": 7522,
+      "callbacks": 0,
+      "finalChars": 0,
+      "finalStartsWithObject": false,
+      "finalHasThinkDelimiter": false,
+      "sampledMaxPssKiB": 7351506,
+      "firstCallbackMs": -1,
+      "firstFinalMs": -1,
+      "case": 1,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 10039,
+      "cpuMs": 13446,
+      "callbacks": 0,
+      "finalChars": 0,
+      "finalStartsWithObject": false,
+      "finalHasThinkDelimiter": false,
+      "sampledMaxPssKiB": 7424366,
+      "firstCallbackMs": -1,
+      "firstFinalMs": -1,
+      "case": 1,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 15235,
+      "cpuMs": 18032,
+      "callbacks": 0,
+      "finalChars": 0,
+      "finalStartsWithObject": false,
+      "finalHasThinkDelimiter": false,
+      "sampledMaxPssKiB": 7424366,
+      "firstCallbackMs": -1,
+      "firstFinalMs": -1,
+      "case": 1,
+      "phase": "progress"
+    },
+    {
+      "loadMs": 21655,
+      "conversationMs": 670,
+      "callbacks": 41,
+      "firstCallbackMs": 18071,
+      "firstFinalMs": 18071,
+      "generationMs": 19660,
+      "sampledMaxPssKiB": 7424366,
+      "fieldMatches": {
+        "analito": true,
+        "valor": true,
+        "unidade": true,
+        "referencia": true,
+        "evidencia": true
+      },
+      "emptyFields": 0,
+      "finalChars": 93,
+      "validEvidenceJson": true,
+      "case": 1,
+      "phase": "result"
+    }
+  ],
+  "limits": "Plans two synthetic single-row inputs, stops at first failure; no OCR, A/B, safe reset or clinical validation. Manual test model provisioning; not offline APK acceptance."
+}

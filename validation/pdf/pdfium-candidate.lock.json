@@ -1,0 +1,117 @@
+{
+  "schemaVersion": "pdf-candidate/1",
+  "status": "corrected-spike-passed-selected-for-integration",
+  "upstreamRepository": "https://github.com/johngray1965/PdfiumAndroidKt",
+  "tag": "2.0.1",
+  "tagCommit": "6ae0ef0abb8835d97bf93b0f10494cbbf58d7b38",
+  "compileSdk": 36,
+  "minSdk": 24,
+  "artifacts": [
+    {
+      "coordinate": "io.legere:pdfiumandroid:2.0.1",
+      "bytes": 346484,
+      "sha256": "91411c86dee49772300c516a0911341e7e2d7f1e3cb22a5ef429948d9c3c0b5f",
+      "native": [],
+      "publishedSourcesSha256": "ce27ec7229bb5f1d54017fbb8fac184e010b6dd1d4131687229e79b793dd980a"
+    },
+    {
+      "coordinate": "io.legere:pdfiumandroid-api:2.0.1",
+      "bytes": 44392,
+      "sha256": "e15102dc268614a76826b1af531fb828aaf78b53affa6c0c4ca6fd1e8905d583",
+      "native": [],
+      "publishedSourcesSha256": "580451e5d6f071c71b4d85db7811c5e65ea27d44c419ab0e0a486573d2111877"
+    },
+    {
+      "coordinate": "io.legere:pdfiumandroid-core:2.0.1",
+      "bytes": 9776500,
+      "sha256": "dd481598d008ce6b414fa830e691a13fdeec23b185b608fb50ab9ac9be8d5191",
+      "native": [
+        {
+          "path": "jni/arm64-v8a/libpdfium.so",
+          "sha256": "ebbc6aaa2c37c3d54041bf2e14c2bb21946d212ed38bf2c860bb09fcf79d91b9",
+          "loadSegmentAlignments": [
+            16384,
+            16384,
+            16384
+          ]
+        },
+        {
+          "path": "jni/arm64-v8a/libpdfiumandroid.so",
+          "sha256": "3d495ba13b2ed0815deefee0ae052cd7f49721edd705b5ca4a79761520c61c6d",
+          "loadSegmentAlignments": [
+            16384,
+            16384,
+            16384
+          ]
+        },
+        {
+          "path": "jni/armeabi-v7a/libpdfium.so",
+          "sha256": "dbe87889b12b861585edd505c45eb91c67a70aa941a8b2d98eef0c46ece3b024",
+          "loadSegmentAlignments": [
+            4096,
+            4096,
+            4096
+          ]
+        },
+        {
+          "path": "jni/armeabi-v7a/libpdfiumandroid.so",
+          "sha256": "a6c456af3cfbc91385990510ebab25b3b545b03047d5d48c53add150733b6679",
+          "loadSegmentAlignments": [
+            4096,
+            4096,
+            4096
+          ]
+        },
+        {
+          "path": "jni/x86/libpdfium.so",
+          "sha256": "828960dda5e6e9a118d19e7e0861ea23e08f7861870e122ef2bf47cfe4492f1a",
+          "loadSegmentAlignments": [
+            4096,
+            4096,
+            4096
+          ]
+        },
+        {
+          "path": "jni/x86/libpdfiumandroid.so",
+          "sha256": "383908685dc44a96682c6b0ab44d414822f905dc37eba49c862d5b2e4b96a35d",
+          "loadSegmentAlignments": [
+            4096,
+            4096,
+            4096
+          ]
+        },
+        {
+          "path": "jni/x86_64/libpdfium.so",
+          "sha256": "5f98a1b298d0c1d6558aa656cf92ee11f4f0f8df0371f871948af1c003ce1784",
+          "loadSegmentAlignments": [
+            16384,
+            16384,
+            16384
+          ]
+        },
+        {
+          "path": "jni/x86_64/libpdfiumandroid.so",
+          "sha256": "34bf2f3df59a6aa166c7ecf511f3786611f729583a0cbbae057785aba8c2268a",
+          "loadSegmentAlignments": [
+            16384,
+            16384,
+            16384
+          ]
+        }
+      ],
+      "publishedSourcesSha256": "dd2720f41c0ab81398edad484e99010a95518a2c7a5c04d00f4d765234288d09"
+    }
+  ],
+  "jniSourceSha256": "615bb2ce2ae0151db628a6743c0c73ec3c5f62ba8fc948774712e4018a1e7e9c",
+  "bindingLicense": "Apache-2.0",
+  "proposalPatchSha256": "1d98ec463aac77feb9ad205622f098e672f7e1c48227085ab32b6ea51dbff274",
+  "proposalPatchBuiltOrExecuted": true,
+  "applicationDependsOnCandidate": false,
+  "originalPrebuiltEngineLicenseNoticesAuditComplete": false,
+  "selectedEngineLock": "validation/pdf/engine.lock.json",
+  "selectedEngineNoticeFilesRetainedAndBundled": true,
+  "selectedNativeProfile": "pdfium-jni-exames/2",
+  "selectedBuildReport": "validation/pdf/jni-build-8035.lock.json",
+  "productionApproved": false,
+  "selectedDeviceReport": "validation/results/pdfium-8035-s25-patched-jni-retry.json"
+}

@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-03",
+  "status": "evidence-review-controls-passed",
+  "build": "test assembleDebug :app:assembleDebugAndroidTest passed with default applicationId",
+  "jvm": { "distinctTests": 223, "passed": 223, "domainDistinctTests": 184, "newTests": 10 },
+  "compose": {
+    "module": ":feature-results",
+    "device": "emulator-5554",
+    "avd": "cc_api36",
+    "api": 36,
+    "distinctTests": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "xmlSha256": "1336f3a16dd1ed3016f87fef6950ea7155bc7bfe2c84426539a05a0e0eb4d913"
+  },
+  "appControlReport": "validation/results/workbench-evidence-final-emulator-2026-11-03.json",
+  "verified": [
+    "Cited field bounds render at expected pixel positions after proportional scaling in four already-oriented frames.",
+    "Incompatible frames, unavailable pages and bounds collapsing at float drawing precision do not produce estimated or partial highlights.",
+    "All reference evidence is preserved; extracted and exact-version ground-truth selections stay separate.",
+    "Documentary review and corrections do not hide NEEDS_REVIEW or NOT_CLASSIFIABLE or change the original result/assessment.",
+    "Reviewed ground truth can still require contextual review; pending versions stay labeled outside accuracy denominators.",
+    "Differences use exact truth hash and versioned source matching; wrong clinical values do not choose rows, duplicate rows and unsupported versions do not silently select one.",
+    "Late responses/errors from an older selection on the same page cannot replace the current preview.",
+    "Legacy reference rows reopen without inventing field regions or recomputing the saved assessment.",
+    "Actual private PDF extracted/ground-truth reference highlights passed after force-stop and URI revocation, with Activity recreation/saved-state inspection and recoverable deletion."
+  ],
+  "limits": [
+    "Pixel/orientation controls use synthetic bitmaps; existing PDF/OCR/EXIF adapter evidence is documented separately.",
+    "App control uses one synthetic PDF and directly invokes the SAF result callback; DocumentsUI is not automated.",
+    "Reference ground-truth regions in the app fixture are declared from its layout, not an accuracy measurement.",
+    "No real model, S25, A/B, complete TalkBack/font-scale audit, 4 GB acceptance or clinical validation in this step.",
+    "Editing/reassessment, corpus package UI and assisted activation remain pending."
+  ]
+}

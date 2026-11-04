@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "s25-private-extraction-validation/1",
+  "device": {
+    "model": "SM-S931B",
+    "android": "17",
+    "api": 37,
+    "pageSizeBytes": 4096
+  },
+  "reports": [
+    {
+      "report": "data-local/build/outputs/androidTest-results/connected/debug/TEST-SM-S931B - 17-_data-local-.xml",
+      "tests": 30,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "b3ff945a08adc004cd00c52d1fade7c101f30a8a72bed0ab4d29dcc451bce206"
+    }
+  ],
+  "buildLogSha256": "65f33c94b5ee65f2b04a23f36c1e2e87c8281169418f5ad9ddf0b91137e51f17",
+  "productionApkSha256": "e5e1d390957b881f076189884d603887969b5588703e43ad6844fb6dc1408472",
+  "scope": [
+    "protected storage and migration",
+    "private PDF/image/OCR",
+    "resource limits",
+    "both parser layouts and field provenance"
+  ],
+  "clinicalValidation": false,
+  "modelPreparationReports": [
+    {
+      "report": "inference-local/build/outputs/androidTest-results/connected/debug/TEST-SM-S931B - 17-_inference-local-.xml",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "96cf7cf10b517cb42305ab15efdb36b53c2b5f1cad506b5bc8d8d40b7c213578"
+    }
+  ]
+}

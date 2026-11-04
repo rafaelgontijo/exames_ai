@@ -1,0 +1,138 @@
+[
+  {
+    "format": "JPEG",
+    "layout": "footnote-v1",
+    "state": "COMPLETE",
+    "errors": "null",
+    "warnings": "",
+    "fragments": 69,
+    "detectedLayout": "FOOTNOTE",
+    "observations": 5,
+    "headers": [
+      "Layout:",
+      "footnote-v1",
+      "Analito",
+      "Resultado",
+      "Unidade",
+      "Refer\u00eancia"
+    ],
+    "frame": "1200x1600"
+  },
+  {
+    "format": "PNG",
+    "layout": "footnote-v1",
+    "state": "COMPLETE",
+    "errors": "null",
+    "warnings": "",
+    "fragments": 69,
+    "detectedLayout": "FOOTNOTE",
+    "observations": 5,
+    "headers": [
+      "Layout:",
+      "footnote-V1",
+      "Analito",
+      "Resultado",
+      "Unidade",
+      "Refer\u00eancia"
+    ],
+    "frame": "1200x1600"
+  },
+  {
+    "format": "PDF_SCANNED",
+    "layout": "footnote-v1",
+    "state": "COMPLETE",
+    "errors": "null",
+    "warnings": "",
+    "fragments": 69,
+    "detectedLayout": "FOOTNOTE",
+    "observations": 5,
+    "headers": [
+      "Layout:",
+      "footnote-V1",
+      "Analito",
+      "Resultado",
+      "Unidade",
+      "Refer\u00eancia"
+    ],
+    "frame": "1200x1600"
+  },
+  {
+    "format": "PDF_TEXT",
+    "layout": "footnote-v1",
+    "state": "COMPLETE",
+    "errors": "null",
+    "warnings": "",
+    "fragments": 417,
+    "detectedLayout": "FOOTNOTE",
+    "observations": 5,
+    "headers": [],
+    "frame": "1200x1600"
+  },
+  {
+    "format": "JPEG",
+    "layout": "simple-v1",
+    "state": "FAILED",
+    "errors": "PAGE_UNSUPPORTED_LAYOUT",
+    "warnings": "UNSUPPORTED_LAYOUT",
+    "fragments": 48,
+    "observations": 5,
+    "headers": [
+      "Layout:",
+      "Analito",
+      "Resultado",
+      "Unidade",
+      "Refer\u00eancia"
+    ],
+    "frame": "1200x1600"
+  },
+  {
+    "format": "PNG",
+    "layout": "simple-v1",
+    "state": "COMPLETE",
+    "errors": "null",
+    "warnings": "",
+    "fragments": 49,
+    "detectedLayout": "SIMPLE",
+    "observations": 5,
+    "headers": [
+      "Layout:",
+      "simple-v1",
+      "Analito",
+      "Resultado",
+      "Unidade",
+      "Refer\u00eancia"
+    ],
+    "frame": "1200x1600"
+  },
+  {
+    "format": "PDF_SCANNED",
+    "layout": "simple-v1",
+    "state": "COMPLETE",
+    "errors": "null",
+    "warnings": "",
+    "fragments": 49,
+    "detectedLayout": "SIMPLE",
+    "observations": 5,
+    "headers": [
+      "Layout:",
+      "simple-v1",
+      "Analito",
+      "Resultado",
+      "Unidade",
+      "Refer\u00eancia"
+    ],
+    "frame": "1200x1600"
+  },
+  {
+    "format": "PDF_TEXT",
+    "layout": "simple-v1",
+    "state": "COMPLETE",
+    "errors": "null",
+    "warnings": "",
+    "fragments": 330,
+    "detectedLayout": "SIMPLE",
+    "observations": 5,
+    "headers": [],
+    "frame": "1200x1600"
+  }
+]

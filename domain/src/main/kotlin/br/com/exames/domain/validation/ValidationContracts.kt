@@ -1,3 +1,4 @@
+@file:OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
 package br.com.exames.domain.validation
 
 import kotlinx.serialization.Serializable
@@ -24,6 +25,11 @@ object StableIds {
     }
 }
 
+object ProcessingRunIds {
+    private val pattern = Regex("(?:[0-9a-f]{64}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})")
+    fun isOpaque(value: String): Boolean = pattern.matches(value)
+}
+
 @Serializable enum class CorpusOrigin { SYNTHETIC, PUBLIC_DEMONSTRATION }
 @Serializable enum class CorpusFormat { PDF_TEXT, PDF_SCANNED, PNG, JPEG }
 @Serializable enum class CorpusPartition { DEVELOPMENT, HELD_OUT }
@@ -32,8 +38,10 @@ object StableIds {
 @Serializable enum class ExpectedStatus { BELOW_RANGE, WITHIN_RANGE, ABOVE_RANGE, NOT_CLASSIFIABLE, NEEDS_REVIEW }
 @Serializable enum class ExtractionMode { BASELINE, ASSISTED }
 @Serializable enum class RunState { QUEUED, RUNNING, COMPLETE, PARTIAL, FAILED, CANCELLED }
+@Serializable enum class RunFailure { UNSUPPORTED_CONFIGURATION, WORKER_FAILURE }
 @Serializable enum class PageState { PENDING, COMPLETE, FAILED, CANCELLED }
 @Serializable enum class InferenceOutcome { NOT_ATTEMPTED, SUCCEEDED, FALLBACK, FAILED, CANCELLED }
+@Serializable enum class MeasurementKind { END_TO_END, EVALUATOR_ISOLATED }
 
 @Serializable
 data class PublicProvenance(
@@ -120,6 +128,9 @@ data class ExpectedObservation(
     val expectedReason: String,
     val recoverable: Boolean,
     val evidence: List<ExtractedFieldEvidence>,
+    /** v1 has no canonical snapshot; isolated evaluation is unavailable for those records. */
+    @kotlinx.serialization.EncodeDefault(kotlinx.serialization.EncodeDefault.Mode.NEVER)
+    val evaluationInput: CanonicalEvaluationInput? = null,
 )
 
 @Serializable
@@ -167,6 +178,10 @@ data class ProcessingRun(
     val inference: InferenceConfiguration? = null,
     val inferenceOutcome: InferenceOutcome = InferenceOutcome.NOT_ATTEMPTED,
     val parentRunId: String? = null,
+    val failure: RunFailure? = null,
+    val outputBasis: OutputBasis = OutputBasis.AUTOMATIC,
+    val correctionIds: List<String> = emptyList(),
+    val projectionVersion: String? = null,
 )
 
 @Serializable
@@ -177,6 +192,14 @@ data class PageCheckpoint(
     val state: PageState,
     val durationMillis: Long?,
     val errorCode: String? = null,
+    /** Null identifies a legacy checkpoint with unknown inference participation. */
+    val inferenceOutcome: InferenceOutcome? = null,
+    val parseWarnings: Set<String> = emptySet(),
+    /** Null is legacy or interrupted before a completed attempt; never fabricate success details. */
+    val inferenceAttempt: br.com.exames.domain.inference.PageInferenceAttempt? = null,
+    val inferenceAttemptId: String? = null,
+    val inferenceHistory: List<br.com.exames.domain.inference.InferenceAttemptRecord> = emptyList(),
+    val measurements: PageMeasurements? = null,
 )
 
 @Serializable
@@ -193,4 +216,9 @@ data class Comparison(
     val differences: List<FieldDifference>,
     val missingObservationIds: List<String>,
     val extraObservationIds: List<String>,
+    val kind: MeasurementKind = MeasurementKind.END_TO_END,
+    val comparatorVersion: String? = null,
+    val ruleVersion: String? = null,
+    val evaluatedObservations: Int? = null,
+    val unavailableReasons: Map<String, String> = emptyMap(),
 )

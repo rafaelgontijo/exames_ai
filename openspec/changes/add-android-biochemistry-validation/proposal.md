@@ -6,10 +6,11 @@ O projeto tem um scaffolding Android e um avaliador numérico testado, mas ainda
 
 ## What Changes
 
-- Integrar importação privada de JPEG/PNG, PDF digital e PDF escaneado, extração com proveniência e processamento recuperável por página, offline desde a primeira abertura com o OCR Latin empacotado.
+- Integrar importação privada de JPEG/PNG, PDF digital e PDF escaneado, extração com proveniência e processamento recuperável por página, offline desde a primeira abertura com o OCR português empacotado.
 - Restringir o parser a português do Brasil e glicose, ureia, creatinina, sódio e potássio, em layouts explicitamente suportados. Referências vêm exclusivamente do documento; ambiguidades exigem revisão.
 - Incluir LiteRT-LM como entrega P0 para estruturar texto de PDF/OCR em campos com evidência, validados antes da avaliação. O modo assistido fica ativo em aparelho compatível; o caminho sem IA permanece para comparação e fallback.
 - Considerar **LFM2.5-1.2B-Thinking** como candidato principal, conforme sugestão do usuário, em substituição ao Qwen3 0.6B inicialmente proposto. Começar pelo arquivo INT4 CPU e avaliar a variante GPU separadamente no S25. Manter Qwen3 0.6B como alternativa técnica, sem empacotar dois modelos por padrão nem presumir superioridade do LFM.
+- Avaliar **Gemma 4 E2B** como terceiro candidato autorizado quando os ensaios anteriores não atenderem aos critérios de extração/recursos, com os mesmos controles de evidência, privacidade, revisão/hash e execução real no S25. A comparação não implica empacotar vários modelos.
 - Distribuir o modelo selecionado com o aplicativo, com revisão, licença, quantização e hash fixados. Exigir execução real offline no S25 nesta versão; um stub ou fallback exclusivo não conclui a entrega de inferência.
 - **BREAKING**: avaliar automaticamente campos inequívocos e completos sem confirmação humana prévia, substituindo a condição atual `Observation.confirmed` no fluxo interno. Preservar as demais barreiras conservadoras e versionar a regra; não simular confirmação humana.
 - Criar corpus sintético reproduzível com gabarito anterior à geração e permitir exemplos públicos demonstrativos com procedência, condições de uso e conferência pelo usuário. A aquisição na internet ocorre fora do APK.

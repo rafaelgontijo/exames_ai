@@ -1,0 +1,9 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application android:allowBackup="false" android:usesCleartextTraffic="false">
+        <service android:name="br.com.exames.inferencelocal.InferenceProcessService" android:exported="false" android:process=":inference" android:stopWithTask="true" />
+        <service android:name="br.com.exames.inferencelocal.FakeInferenceService" android:exported="false" android:process=":inference_test" />
+        <uses-native-library android:name="libvndksupport.so" android:required="false" />
+        <uses-native-library android:name="libOpenCL.so" android:required="false" />
+        <activity android:name="br.com.exames.inferenceexperimental.SpikeActivity" android:exported="false" />
+    </application>
+</manifest>

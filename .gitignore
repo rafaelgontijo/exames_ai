@@ -7,7 +7,13 @@ local.properties
 *.jks
 *.keystore
 validation/generated/
+validation/generated-v2/
 tools/corpus/__pycache__/
+tools/litert/__pycache__/
 tools/corpus/.venv/
 *.litertlm
 *.litertlm.part
+*.traineddata
+__pycache__/
+*.py[cod]
+.DS_Store

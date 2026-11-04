@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-28T00:20:04.140365+00:00",
+  "testApkSha256": "085b3ebd0436be0535213124ae4b4372003582feabf57453a8ac40719b75137d",
+  "deviceModel": "sdk_gphone64_arm64",
+  "api": "36",
+  "installedBefore": false,
+  "phases": [
+    {
+      "phase": "prepare",
+      "passed": true,
+      "pid": 15596
+    },
+    {
+      "phase": "resume",
+      "passed": true,
+      "pid": 15646
+    }
+  ],
+  "passed": true,
+  "limits": "Two-page synthetic private PDF, baseline only, explicit restart after force-stop; no automatic execution during force-stop, native cancellation, real AI or clinical validation.",
+  "forceStopIssued": true,
+  "removedCreatedTestPackage": true
+}

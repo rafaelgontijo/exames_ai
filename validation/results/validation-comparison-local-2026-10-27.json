@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "comparison-local-validation/1",
+  "distinctJvmTests": 139,
+  "jvmFailures": 0,
+  "emulatorApi": 36,
+  "instrumentedReports": [
+    {
+      "report": "data-local/build/outputs/androidTest-results/connected/debug/TEST-cc_api36(AVD) - 16-_data-local-.xml",
+      "tests": 30,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sha256": "1a2f56187a3d95a7907abe19e08a5ee80c17dcab3eb8764714d61a3dd6070795"
+    }
+  ],
+  "pythonControllerTests": 15,
+  "appApkSha256": "9b2b0e2e0736a7c6b533e35b8caf4a982287c027a10df2a53501d69a7f6e828d",
+  "appApkBytes": 2142643313,
+  "nativePdfHashesAndNoticesVerified": true,
+  "dexerVersion": "9.1.31",
+  "completedTasks": [
+    "4.9",
+    "6.1",
+    "6.2"
+  ],
+  "openSpecComplete": 27,
+  "scope": "Synthetic unit and instrument fixtures; no corpus-wide benchmark or clinical validation",
+  "realProtocolStatus": "One generated response rejected by strict schema; structural diagnostic blocked by USB/ADB disconnect",
+  "groundTruthV2Status": "Proposal only; existing ground truth preserved"
+}

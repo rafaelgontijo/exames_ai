@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-03T18:18:16.163467+00:00",
+  "applicationId": "br.com.exames.offline.validation.workbench",
+  "appApkSha256": "6b2aa5cc98fbcd7bf9d3dd73de31e426bd854a557ec72027867b8b4781b284c4",
+  "testApkSha256": "198e673fc802bd7502f9a9a1a20b79ae6645926bc4bd290dfce6e7164d97f2bb",
+  "deviceModel": "sdk_gphone64_arm64",
+  "api": "36",
+  "installedBefore": {
+    "br.com.exames.offline.validation.workbench": true,
+    "br.com.exames.offline.validation.workbench.test": true
+  },
+  "phases": [
+    {
+      "phase": "prepare",
+      "passed": true,
+      "pid": 18013,
+      "rows": 1,
+      "evidenceHighlighted": false,
+      "reviewChecked": false,
+      "deleted": false
+    },
+    {
+      "phase": "resume",
+      "passed": true,
+      "pid": 18081,
+      "rows": 5,
+      "evidenceHighlighted": true,
+      "reviewChecked": true,
+      "deleted": true
+    }
+  ],
+  "passed": true,
+  "scope": "Actual Hilt import callback, encrypted private copy, baseline WorkManager, force-stop reopening, source highlights, UI correction/reassessment/truth revision/version-specific comparison/new baseline extraction, original metrics preservation, deletion and clinical-draft saved-state inspection.",
+  "limits": "Single synthetic PDF on API 36 emulator; invokes SAF result callback directly instead of automating DocumentsUI. No real AI, S25, A/B, TalkBack audit or clinical validation.",
+  "controllerStage": "cleanup",
+  "reusedMatchingTargetApk": true,
+  "navigationPassed": true,
+  "forceStopIssued": true,
+  "removedCreatedPackages": []
+}

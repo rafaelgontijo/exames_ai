@@ -10,15 +10,44 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
       - uses: android-actions/setup-android@v3
-      - run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - run: sdkmanager "platforms;android-36" "build-tools;36.0.0" "ndk;27.1.12297006" "cmake;3.22.1"
       - uses: gradle/actions/setup-gradle@v4
-      - run: ./gradlew assembleDebug test :app:assembleDebugAndroidTest :inference-experimental:assembleDebug --no-daemon
+      - name: Rebuild and stage pinned private PDF adapter
+        run: |
+          curl --fail --location --retry 2 --output "$RUNNER_TEMP/pdfium-core.aar" https://repo.maven.apache.org/maven2/io/legere/pdfiumandroid-core/2.0.1/pdfiumandroid-core-2.0.1.aar
+          python3 tools/pdf/rebuild_jni.py --sdk "$ANDROID_HOME" --core-aar "$RUNNER_TEMP/pdfium-core.aar" --engine-lock validation/pdf/engine.lock.json
+          python3 tools/pdf/stage_core.py
+      - name: Obtain selected model outside Git
+        run: |
+          curl --fail --location --retry 2 --max-time 1800 --output "$RUNNER_TEMP/gemma4.litertlm" https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm/resolve/1caa527c1e88b55f046fcd8d2b4265606680663d/gemma-4-E2B-it-gpu.litertlm
+          curl --fail --location --retry 2 --output "$RUNNER_TEMP/por.traineddata" https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/65727574dfcd264acbb0c3e07860e4e9e9b22185/por.traineddata
+      - name: Verify and generate independent synthetic corpus
+        run: |
+          python -m venv tools/corpus/.venv
+          tools/corpus/.venv/bin/pip install -r tools/corpus/requirements.txt
+          curl --fail --location --retry 2 --output "$RUNNER_TEMP/fonts-dejavu.deb" https://deb.debian.org/debian/pool/main/f/fonts-dejavu/fonts-dejavu-core_2.37-8_all.deb
+          python3 tools/corpus/stage_font.py --package "$RUNNER_TEMP/fonts-dejavu.deb" --output "$RUNNER_TEMP/DejaVuSans.ttf"
+          EXAMES_CORPUS_FONT="$RUNNER_TEMP/DejaVuSans.ttf" tools/corpus/.venv/bin/python -m unittest discover -s tools/corpus -p 'test_*.py'
+          tools/corpus/.venv/bin/python tools/corpus/generate_v2.py --output validation/generated-v2 --font "$RUNNER_TEMP/DejaVuSans.ttf"
+          tools/corpus/.venv/bin/python tools/corpus/validate.py validation/generated-v2/corpus.zip
+      - name: Build with verified bundled model and run tests
+        run: |
+          python3 -m unittest discover -s tools/litert -p 'test_*.py'
+          ./gradlew assembleDebug test :app:assembleDebugAndroidTest :inference-local:assembleDebug -PexamesModelPath="$RUNNER_TEMP/gemma4.litertlm" -PexamesOcrModelPath="$RUNNER_TEMP/por.traineddata" -PexamesCorpusPath="$PWD/validation/generated-v2/corpus.zip" -PexamesCorpusPython="$PWD/tools/corpus/.venv/bin/python" --no-daemon
+          ./gradlew :app:dependencies --configuration debugRuntimeClasspath --no-daemon > "$RUNNER_TEMP/runtime-dependencies.txt"
+          python3 tools/verify_android_artifact.py --apk app/build/outputs/apk/debug/app-debug.apk --manifest app/build/intermediates/merged_manifests/debug/processDebugManifest/AndroidManifest.xml --aapt "$ANDROID_HOME/build-tools/36.0.0/aapt" --dependencies "$RUNNER_TEMP/runtime-dependencies.txt"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: android-reports
           path: |
             domain/build/reports/tests/
-            app/build/outputs/apk/debug/
+            app/build/reports/
+            data-local/build/reports/
+            inference-local/build/reports/
+            pdf-spike/build/native-rebuild/build-report-2.json

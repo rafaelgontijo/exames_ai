@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "initialReport": "validation/results/workbench-reopen-emulator-2026-10-30.json",
+  "passedReopenReport": "validation/results/workbench-reopen-emulator-2026-10-31.json",
+  "removedSessionCreatedPackages": [
+    "br.com.exames.offline.validation.workbench.test",
+    "br.com.exames.offline.validation.workbench"
+  ]
+}

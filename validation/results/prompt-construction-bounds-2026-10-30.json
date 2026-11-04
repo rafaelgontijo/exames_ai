@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-30",
+  "status": "partial-4.12-memory-guard-verified",
+  "scope": "Bounded prompt construction and deterministic fallback before backend invocation",
+  "command": "./gradlew test assembleDebug :app:assembleDebugAndroidTest --no-daemon --console=plain",
+  "build": "passed",
+  "jvm": {
+    "distinctTests": 188,
+    "passed": 188,
+    "failed": 0,
+    "skipped": 0,
+    "domainDistinctTests": 171,
+    "newBoundaryAndFallbackTests": 5
+  },
+  "policy": {
+    "maxCombinedInstructionAndDocumentUtf8Bytes": 16384,
+    "maxSourceFragmentsIncludingEmpty": 16384,
+    "includesEscapingAndDelimiters": true,
+    "silentTruncation": false,
+    "overLimitFailure": "INPUT_LIMIT",
+    "overLimitCallsBackend": false,
+    "preservesBaselineAndAmbiguities": true
+  },
+  "testXmlSha256": {
+    "ProposalProtocolTest": "aa9b079c8cf5b56b902a243b06d050a20dc6514d10253d8db6eff1144d3b0fe8",
+    "ProcessBiochemistryPageTest": "407bbd9f020ce3b01285f8894ea876387bcbd079b7b6805c46fc47f1677adc8a"
+  },
+  "limitations": [
+    "Byte and fragment quotas are memory/work guards, not token estimates.",
+    "No native model, emulator instrumentation or S25 execution in this verification.",
+    "Input segmentation, actual context overflow, generation truncation and real Gemma process acceptance remain pending.",
+    "Tasks 4.10 and 4.12 remain incomplete; production assisted scheduling remains disabled.",
+    "Synthetic technical controls do not establish clinical validation."
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "reason": "Initial technical fixture selector took first format/layout cases without filtering partition. Prompt diagnostics exposed these families; they cannot support untouched held-out generalization claims. Corpus identities and labels are preserved, not silently reassigned.",
+  "affectedCaseIds": [
+    "1669f147d1ae3147a3d725987f50e41a905ef24cf9c89f0362d9d73696cb87d2",
+    "1971454c51ee9304f6930272b71274930565959843b9cad1dea4bf75ad0c9f5d",
+    "3a597c85f61c83edcf22e7fd429639e2786d6739d2e012ba90a78c21241dee99",
+    "3f90e31ff754942946c525bf533068f57308535c44ca0b22d55e5dfee4959259",
+    "9dd0aa565d457dc6ce76124083554acd5a3b708f56130f174701c4cbfedd653a",
+    "c713ef2c26fe24b8273c3e663b42dc0e2cb7c88c8809046bd0faa68eb9d137b6",
+    "c8ef71f4ab6043bb4960d21ec91c34b2a2760b34147fadfcd0c9a013c0e30797",
+    "f5fa7cf0eb9678f59fbb8d904d3e6d7aa2d238d33b424158212ef5fdf9d69d75"
+  ],
+  "affectedFamilyIds": [
+    "ab645164c2ac8b95c454e8a655b6efa1fd8fedd868eebf947c1cefe7e974c772"
+  ],
+  "affectedPartition": "HELD_OUT",
+  "futureTuningPartition": "DEVELOPMENT",
+  "evidence": "validation/results/final-workbench-s25-2026-11-03.json",
+  "clinicalValidation": false
+}

@@ -1,0 +1,184 @@
+{
+  "schemaVersion": "pdf-native-source/1",
+  "repository": "https://github.com/johngray1965/PdfiumAndroidKt",
+  "commit": "6ae0ef0abb8835d97bf93b0f10494cbbf58d7b38",
+  "ndkVersion": "27.1.12297006",
+  "cmakeVersion": "3.22.1",
+  "androidApi": 24,
+  "sources": [
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/CMakeLists.txt",
+      "sha256": "cb546e80f65de053668d1962afcc712674958770995b78709446a96d9fccd6f0",
+      "bytes": 2590,
+      "gitBlob": "550f1f71380d20169b70fd6f15e2e387982dc7c7"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/cpp/fpdf_deleters.h",
+      "sha256": "8020789862e81775e777c3bb6e44eb429eaba6cbf8904bdf2e915fa50d38c47d",
+      "bytes": 2206,
+      "gitBlob": "55b85d9ed7c841769284dc119513e08aed1d6de3"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/cpp/fpdf_scopers.h",
+      "sha256": "8d2bd2da93bd5564660268203e66576dc82c23bd17157969758ab7c51355c055",
+      "bytes": 2167,
+      "gitBlob": "34cf9c46a94b080767930f13e23140ed13c0c74c"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_annot.h",
+      "sha256": "16d2e4359af3e54572e77a80baae0312bf0c9664dac313e6a7d2f0769d44d2e8",
+      "bytes": 43063,
+      "gitBlob": "0aa9f688663448008bbd7bfa67f759758737ebb9"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_attachment.h",
+      "sha256": "0d4c3228f69ea3ae4f4e5946957b35c28159a9f539de1acc2ec0fb5e5e0a11d9",
+      "bytes": 8133,
+      "gitBlob": "a8a40b34b9f4f0324b947ab13b5d02c717f67f7a"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_catalog.h",
+      "sha256": "ea625698fbba4eccf5d0b8c7b9e85b3cf4250e463455ec8b4e4607e22375a4be",
+      "bytes": 1048,
+      "gitBlob": "033cca5fd965d3027f1527a280fc44f0ded917ac"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_dataavail.h",
+      "sha256": "23a4c77273cdc11b77f4d7ff40e9290429854cd45708f89c93c424b9ecfdab77",
+      "bytes": 7757,
+      "gitBlob": "004d9beb34edc78955b325db062d786a5990ddd2"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_doc.h",
+      "sha256": "d0096283d65d077137b6de70651a19d88abf742c4ee1149b5bcabb6fd94a902d",
+      "bytes": 17860,
+      "gitBlob": "2dc22d9c97686836649b57074932a1ec9c49df49"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_edit.h",
+      "sha256": "7e0c2d840a6312bea4dc92779c48e18ac1f6f6b18edd3615a476f9b091d00881",
+      "bytes": 65058,
+      "gitBlob": "c6b63f65f31ea3e06b118bea7fb7ea1bddc2913a"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_ext.h",
+      "sha256": "ef813297753feeecd685ef60a6a6f1ad00f43156615d5570f827c9283e435461",
+      "bytes": 3844,
+      "gitBlob": "068a977c123ea08f4befa783d086a93e1c8dddb6"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_flatten.h",
+      "sha256": "b2cf5ed9a7ead79c6d6685a7369573f0a55b16cc9972537d1405f19847504ca3",
+      "bytes": 1137,
+      "gitBlob": "aba5186baf540585e69b287aa7fb37849347db81"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_formfill.h",
+      "sha256": "7340dcbe4f12771ae5bb1cc3009b46ee139c132f118d0bcd0cba900b74aa1e47",
+      "bytes": 82202,
+      "gitBlob": "1f0b1298f7c2ea3b6057e7e5e8516e5822764941"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_fwlevent.h",
+      "sha256": "60585b9c92227790d7dcce482b2b8f8ebabc810c24aebc83cf6564fc140f06db",
+      "bytes": 5206,
+      "gitBlob": "e61606d3844f325fdc4d0ff51dbb5a571fe59670"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_javascript.h",
+      "sha256": "e1655b56183d1c7dcf68b1bcd73ebb67ee13ea44f506d03d46ed44e9bd0e974c",
+      "bytes": 2699,
+      "gitBlob": "2b0240563f4edc184b0e64958c06175a7fb358ba"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_ppo.h",
+      "sha256": "6706cbab8ad2e7841177cca2577c2bc78b3303ed1dbc17d5d724766d06a29b24",
+      "bytes": 4468,
+      "gitBlob": "1734bc6825f249f4cb8490d2b8ce4d87d7ce4abf"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_progressive.h",
+      "sha256": "0e99f7e7d2a818ed56ff8529f7a90a121cc86cdecda6b1682eadd60259021b16",
+      "bytes": 7421,
+      "gitBlob": "0505a54b0404fd658bda19992432906912322f08"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_save.h",
+      "sha256": "8aa9945b37ac4b5de9490996dd902b6f504628c045178beb0f98051753e4a7fc",
+      "bytes": 2928,
+      "gitBlob": "ca7009030d7fce37472f8e9ce73fe89355fcdf08"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_searchex.h",
+      "sha256": "30cee4b25aa8015687a55fd628f84188aed8289e4bd5a3469b8813bbf3de8991",
+      "bytes": 1259,
+      "gitBlob": "9c980dbea5f20e24d825b72c5fa0161be79be17a"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_signature.h",
+      "sha256": "eadfabc91722d1247321d31dab6a94f8284e36717c0019cc38f54b7c51ec826b",
+      "bytes": 6768,
+      "gitBlob": "9a075e5f8429bc63d61d3ae2f33a1edbf8c7bc41"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_structtree.h",
+      "sha256": "4d1e2a20978619d9817f683e5e404abcb5f1d95bc0f3fe15187bc67020c609d5",
+      "bytes": 24577,
+      "gitBlob": "ea67fefd2a9397405a40662e2bbe6deb4aa9216f"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_sysfontinfo.h",
+      "sha256": "32084850aba131138993e0f5ea1b7049792a26b6a375c13debd00b5df2428a6b",
+      "bytes": 12247,
+      "gitBlob": "f3bc544b5d773ed72916675e9806b298d0ab1c03"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_text.h",
+      "sha256": "4682f8553dc1d29bbee95cdcddefebbd96522c5be654807906240f8571593726",
+      "bytes": 31639,
+      "gitBlob": "fe96ccd5b2a5355868957df738a8ca01ddc5ee0a"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_thumbnail.h",
+      "sha256": "b223e622889bca40e4ce709e934bc11a8696a054c97a605486eb7c214e4db197",
+      "bytes": 1932,
+      "gitBlob": "27b6d497198c003d3b9aab685abe653d0c3a2083"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdf_transformpage.h",
+      "sha256": "15321dc2311ea60e04c28deb75a5decb560d29a3bc4b007588a9dbec6430f867",
+      "bytes": 12081,
+      "gitBlob": "3df743bd475631db1cc24eb80fdcc85cfe117b00"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/fpdfview.h",
+      "sha256": "4d1e76b2bdc6d4f830b85c75e7a3a56c38164bb55cd7226ba6825b6bbc3fe402",
+      "bytes": 64841,
+      "gitBlob": "d96556b4755474a4dda6903bfda73df1f5451b8f"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/utils/Errors.h",
+      "sha256": "e16f6257b3251e1ef16abf5cbbbb24b6841bb9e905068b47e505f40fa61fee4c",
+      "bytes": 2557,
+      "gitBlob": "46173db4a3de82ed345db92f4a4bc7489e8efa92"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/include/utils/Mutex.h",
+      "sha256": "c06e79e4cc2af43dffc807befe98445a06b03357026225cf90cf0dbb94608aba",
+      "bytes": 3784,
+      "gitBlob": "4f85add90923947edbd2f64862a418e7833c88af"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/pdfiumandroid.cpp",
+      "sha256": "615bb2ce2ae0151db628a6743c0c73ec3c5f62ba8fc948774712e4018a1e7e9c",
+      "bytes": 106909,
+      "gitBlob": "83cf0430202895b121f2b3db0afc3ff324b9548f"
+    },
+    {
+      "path": "pdfiumandroid/core/src/main/cpp/util.h",
+      "sha256": "3f9a1f19b3b61623ba1ba36a6b218a15e39495bf986ec6f3149d8b100c8c4b35",
+      "bytes": 651,
+      "gitBlob": "1b83ddc07ab447512f8ba314801d00f88e74a0fe"
+    }
+  ]
+}

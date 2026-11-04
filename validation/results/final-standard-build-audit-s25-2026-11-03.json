@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-04T01:07:59.495336+00:00",
+  "applicationId": "br.com.exames.offline",
+  "appApkBytes": 2129770549,
+  "appApkSha256": "91549d1709a373207b30356c389158dc6a5524c2a95bd4efb57a5873be7246bb",
+  "appTestApkSha256": "aaa9ecd721a8dc2aaf8c0703d23bcda3183a32474ae93ebdc33279ef3ed8adad",
+  "build": "./gradlew assembleDebug test :app:assembleDebugAndroidTest --no-daemon --console=plain",
+  "buildPassed": true,
+  "jvmDistinctPassed": 269,
+  "jvmFailures": 0,
+  "corpusPythonPassed": 24,
+  "liteRtHostPassed": 15,
+  "emulatorInstrumented": {
+    "selectedInferenceTests": 16,
+    "dataLocalTests": 62,
+    "dataLocalSkipped": 1,
+    "failures": 0
+  },
+  "s25NativeEvidence": "validation/results/native-production-s25-2026-11-03-protocol5-development.json",
+  "s25FullWorkflowEvidence": "validation/results/final-workbench-s25-2026-11-03-protocol5-development-verified.json",
+  "s25WorkflowPassed": true,
+  "s25ModeledPagesAccepted": 1,
+  "s25FallbackPages": 7,
+  "productionProtocolAccepted": true,
+  "promptVersion": "biochemistry-evidence/5",
+  "selectionSha256": "92fd21f56451a8e9e887931c95a56b94441cd3664da1f1309d597f45dc7d1347",
+  "audit": {
+    "modelHashesLicensesAndUncompressedAssets": true,
+    "minSdk": 24,
+    "noInternetPermission": true,
+    "backupDisabled": true,
+    "cleartextDisabled": true,
+    "noApplicationNetworkOrTelemetryClients": true,
+    "zipAlignment16KiB": true,
+    "strictOpenSpec": true,
+    "gitDiffWhitespaceCheck": true
+  },
+  "networkRestorationReadback": {
+    "airplaneMode": 0,
+    "wifi": 1
+  },
+  "openSpecProgress": {
+    "total": 51,
+    "complete": 51,
+    "remaining": 0
+  },
+  "clinicalValidation": false,
+  "remoteCiExecuted": false,
+  "limitations": [
+    "Eight DEVELOPMENT cases; one accepted page and seven fallbacks; classification regressions retained.",
+    "Historical held-out family exposure recorded; no untouched-held-out generalization claim.",
+    "4 GB device and 16 KiB kernel execution pending.",
+    "SDK aggregate and separate thought/final token counts unavailable in these controls.",
+    "PSS sampled, not peak or complete GPU accounting; OS cache and thermals uncontrolled."
+  ]
+}

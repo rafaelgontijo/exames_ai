@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 enum class ProtectedMigrationStep { COPY_VERIFIED, SOURCE_RENAMED, TARGET_RENAMED }
 
-/** Copy-and-install migration. Never opens a v1 database as v2 or falls back to deletion. */
+/** Copy-and-install legacy migration, followed by explicit protected-schema upgrades. No destructive fallback. */
 class ProtectedDatabaseFactory(
     context: Context,
     private val name: String = "exames.db",
@@ -59,6 +59,7 @@ class ProtectedDatabaseFactory(
 
     private fun build(file: File): ProtectedDatabase = Room.databaseBuilder(context,
         ProtectedDatabase::class.java, file.absolutePath)
+        .addMigrations(ProtectedDatabase.MIGRATION_2_3)
         .setJournalMode(RoomDatabase.JournalMode.TRUNCATE).build()
 
     private fun version(file: File): Int? = if (!file.exists()) null else
@@ -72,7 +73,7 @@ class ProtectedDatabaseFactory(
         active.parentFile!!.mkdirs()
         context.noBackupFilesDir.mkdirs()
         var phase = phase()
-        if (phase == null && version(active) == 2) {
+        if (phase == null && version(active) in setOf(2, 3)) {
             keys.existing()
             return
         }
@@ -100,7 +101,7 @@ class ProtectedDatabaseFactory(
             phase = "READY"
         }
         if (phase == "READY") {
-            check(version(staging) == 2) { "Protected staging database is unavailable" }
+            check(version(staging) in setOf(2, 3)) { "Protected staging database is unavailable" }
             build(staging).useDatabase { verify(it.openHelper.writableDatabase); verifyMigrationPayloads(it.openHelper.writableDatabase) }
             writePhase("INSTALLING")
             phase = "INSTALLING"
@@ -113,16 +114,16 @@ class ProtectedDatabaseFactory(
                 afterStep(ProtectedMigrationStep.SOURCE_RENAMED)
             }
             if (!active.exists()) {
-                check(version(staging) == 2) { "Protected destination is unavailable" }
+                check(version(staging) in setOf(2, 3)) { "Protected destination is unavailable" }
                 move(staging, active)
                 afterStep(ProtectedMigrationStep.TARGET_RENAMED)
             }
-            check(version(active) == 2) { "Invalid protected destination" }
+            check(version(active) in setOf(2, 3)) { "Invalid protected destination" }
             build(active).useDatabase { verify(it.openHelper.writableDatabase); verifyMigrationPayloads(it.openHelper.writableDatabase) }
             writePhase("INSTALLED")
             phase = "INSTALLED"
         }
-        check(phase == "INSTALLED" && version(active) == 2) { "Protected installation incomplete" }
+        check(phase == "INSTALLED" && version(active) in setOf(2, 3)) { "Protected installation incomplete" }
         build(active).useDatabase { verify(it.openHelper.writableDatabase); verifyMigrationPayloads(it.openHelper.writableDatabase) }
         // At this point the verified encrypted destination is durable before deleting the source.
         removeGroup(backup)
@@ -188,6 +189,7 @@ class ProtectedDatabaseFactory(
                 }
                 rows(source, "pending_deletions") { row ->
                     target.execSQL("INSERT INTO pending_deletions (documentId) VALUES (?)", arrayOf(row.text("documentId")))
+                    target.execSQL("INSERT OR IGNORE INTO document_tombstones(documentId) VALUES (?)", arrayOf(row.text("documentId")))
                 }
                 for (table in listOf("documents", "observations", "reference_ranges", "assessments", "manual_corrections", "pending_deletions")) {
                     val expected = source.rawQuery("SELECT COUNT(*) FROM $table", null).use { it.moveToFirst(); it.getLong(0) }

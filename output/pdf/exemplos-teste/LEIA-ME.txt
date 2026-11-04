@@ -1,0 +1,11 @@
+EXEMPLOS SINTETICOS - SEM VALIDADE CLINICA
+
+01: PDF simples de uma pagina.
+02: PDF com ambiguidades numericas, unidades diferentes, comparador e referencia ausente.
+03: PDF de duas paginas com valores nos limites e fora deles.
+04 e 05: mesmo exame simples em PNG e JPEG.
+06: TXT nao suportado; pode ser ocultado pelo seletor.
+
+Nesta versao, os cinco arquivos PDF/PNG/JPEG devem ser aceitos apenas quanto ao formato/tamanho. OCR, previa e analise ainda nao estao integrados a tela. Todos estao abaixo de 20 MB.
+
+Valores e intervalos arbitrarios para testes de software. Nao sao referencias laboratoriais reais. Casos ambiguos ou com unidades incompativeis devem permanecer em revisao quando o processamento for integrado.

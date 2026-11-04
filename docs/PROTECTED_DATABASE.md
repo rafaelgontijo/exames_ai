@@ -1,14 +1,14 @@
-# Schema protegido v2
+# Schema protegido v3
 
-`ProtectedDatabase` define o destino da migração v1→v2. A abertura de produção usa `ProtectedDatabaseFactory`, compartilhada por Hilt e pelo worker de limpeza. O schema legado permanece para migração/fixtures, sem abertura independente em produção.
+`ProtectedDatabase` define o schema protegido atual v3. A abertura de produção usa `ProtectedDatabaseFactory`, compartilhada por Hilt e pelo worker de limpeza. A migração v1 por cópia/troca e a atualização explícita 2→3 preservam os payloads; a versão de AAD continua `2`. O schema legado permanece para migração/fixtures, sem abertura independente em produção.
 
-Tabelas: documentos, execuções, observações, referências, avaliações, correções, versões de gabarito, comparações, checkpoints e outbox de exclusão. Os campos sensíveis ficam em `payload` BLOB autenticado. Em claro ficam identificadores opacos, relações, ordem/página, timestamps e estados operacionais necessários ao agendamento; isso não equivale a criptografar todo o contêiner SQLite.
+Tabelas: documentos, execuções, observações, referências, avaliações, correções, versões de gabarito, comparações, checkpoints, outbox de exclusão, tombstones permanentes e trabalhos a cancelar. Os campos sensíveis ficam em `payload` BLOB autenticado. Em claro ficam identificadores opacos, relações, ordem/página, timestamps e estados operacionais necessários ao agendamento; isso não equivale a criptografar todo o contêiner SQLite.
 
 Observações pertencem a uma execução e ao mesmo documento por chave estrangeira composta. Comparações pertencem a uma execução e a um gabarito do mesmo documento. Avaliações são vinculadas a observação/execução. As tabelas de saída/auditoria usam INSERT com ABORT: um segundo registro com a mesma identidade falha em vez de substituir o original. Checkpoints operacionais podem ser atualizados, sem sobrescrever a saída automática.
 
-Excluir remove o documento e seus registros em cascata na mesma transação que inclui a intenção na outbox. A outbox sobrevive ao documento e só será confirmada após a limpeza dos arquivos. A coordenação de writers/arquivos e a integração com a UI continuam nas tarefas próprias.
+Excluir captura trabalhos, grava tombstone/outbox e remove o documento e seus registros em cascata na mesma transação. A outbox só é confirmada após cancelamento, barreira durável de arquivos e limpeza. O tombstone permanece para impedir ressurreição depois do ack. Detalhes em [DELETION_COORDINATION.md](DELETION_COORDINATION.md); a integração com UI permanece pendente.
 
-O schema exportado fica em `data-local/schemas/br.com.exames.datalocal.ProtectedDatabase/2.json`. Os testes instrumentados de schema verificam preservação de saída em colisão de identidade, proibição de associação entre documentos e cascata de todas as relações com outbox preservada.
+Os schemas exportados ficam em `data-local/schemas/br.com.exames.datalocal.ProtectedDatabase/2.json` e `3.json`. Os testes instrumentados verificam colisões/associação, cascata, migração 2→3 preservando ciphertext, tombstones e bloqueio de escritores após o ack.
 
 ## Migração por cópia e troca
 
@@ -31,4 +31,4 @@ Os testes de migração incluem conteúdo bruto/correções/versão de regra, au
 
 O commit de página insere observações, referências, avaliações e checkpoint na mesma transação. Tentativa repetida de página concluída não substitui a saída original; colisão durante a escrita reverte a página inteira. Correção com valor anterior obsoleto é rejeitada, inclusive após uma correção para null. Reexecução usa outra identidade e pode apontar para a original. Concluir execução exige todas as páginas concluídas; transição de execução final para RUNNING é rejeitada.
 
-A UI, o pipeline de extração e o controle completo de escritores/arquivos ainda dependem das tarefas seguintes; a fundação de armazenamento não representa o MVP integrado.
+A UI e a aceitação completa de inferência ainda dependem das tarefas seguintes; a fundação de armazenamento não representa o MVP integrado. O pipeline e seus limites atuais estão em [PROCESSING_PIPELINE.md](PROCESSING_PIPELINE.md).

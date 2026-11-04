@@ -1,0 +1,122 @@
+{
+  "controllerVersion": "pdf-spike/2",
+  "apkSha256": "83db833be80cb0f711ead43352ddad2086f88b15919d9503b3079ba74c615aa3",
+  "passed": true,
+  "nativeBuild": {
+    "schemaVersion": "pdf-jni-build/1",
+    "profile": "pdfium-jni-exames/1",
+    "upstreamCoreSha256": "dd481598d008ce6b414fa830e691a13fdeec23b185b608fb50ab9ac9be8d5191",
+    "upstreamCommit": "6ae0ef0abb8835d97bf93b0f10494cbbf58d7b38",
+    "sourceLockSha256": "de140f9b2ee47f1db8bb4a66b5ee4d76e070247ccc3161008c764eecf81f7776",
+    "patchSha256": "1d98ec463aac77feb9ad205622f098e672f7e1c48227085ab32b6ea51dbff274",
+    "ndk": "27.1.12297006",
+    "cmake": "3.22.1",
+    "androidApi": 24,
+    "aarSha256": "f1fbe606e80b9551cb862fff899e63bb50dff7ee711eb9120a2baca6afdf5be5",
+    "engineRecompiled": false,
+    "productionApproved": false,
+    "native": [
+      {
+        "abi": "arm64-v8a",
+        "jniSha256": "7aa804ffadc1ad798697f31460a55d067745746573df8bd0ea9766b17f6025d0",
+        "engineSha256": "ebbc6aaa2c37c3d54041bf2e14c2bb21946d212ed38bf2c860bb09fcf79d91b9",
+        "jniLoadAlignments": [
+          16384,
+          16384,
+          16384
+        ]
+      },
+      {
+        "abi": "armeabi-v7a",
+        "jniSha256": "c9a36662934b209086d1be2ea96ed0c8e0fc668b27c7139dd1ab3109575931b8",
+        "engineSha256": "dbe87889b12b861585edd505c45eb91c67a70aa941a8b2d98eef0c46ece3b024",
+        "jniLoadAlignments": [
+          16384,
+          16384,
+          16384
+        ]
+      },
+      {
+        "abi": "x86",
+        "jniSha256": "d86ff77fd75e9e51bcb5b807c467823a31a0c5b54238684f989129ce03b9ff75",
+        "engineSha256": "828960dda5e6e9a118d19e7e0861ea23e08f7861870e122ef2bf47cfe4492f1a",
+        "jniLoadAlignments": [
+          16384,
+          16384,
+          16384
+        ]
+      },
+      {
+        "abi": "x86_64",
+        "jniSha256": "e29bfb16d1937c4b68dcf5bb659c649bd36c93ddca1c2efcfe83c0b73f30672a",
+        "engineSha256": "5f98a1b298d0c1d6558aa656cf92ee11f4f0f8df0371f871948af1c003ce1784",
+        "jniLoadAlignments": [
+          16384,
+          16384,
+          16384
+        ]
+      }
+    ]
+  },
+  "instrumentationPassed": true,
+  "metrics": {
+    "schemaVersion": "pdf-buffer-spike/1",
+    "runtime": "io.legere:pdfiumandroid:2.0.1",
+    "nativeProfile": "pdfium-jni-exames/1",
+    "inputMode": "custom-authenticated-memory-source",
+    "api": 37,
+    "deviceModel": "SM-S931B",
+    "abis": [
+      "arm64-v8a"
+    ],
+    "processId": 29966,
+    "pages": [
+      {
+        "page": 1,
+        "renderMillis": 2,
+        "mappedGlyphsWithInk": 74,
+        "bitmapWidth": 600,
+        "bitmapHeight": 800,
+        "bitmapBytes": 1920000,
+        "rotationQuarterTurns": 0,
+        "textCharacters": 94
+      },
+      {
+        "page": 2,
+        "renderMillis": 2,
+        "mappedGlyphsWithInk": 0,
+        "bitmapWidth": 600,
+        "bitmapHeight": 800,
+        "bitmapBytes": 1920000,
+        "rotationQuarterTurns": 0,
+        "textCharacters": 0
+      },
+      {
+        "page": 3,
+        "renderMillis": 1,
+        "mappedGlyphsWithInk": 27,
+        "bitmapWidth": 800,
+        "bitmapHeight": 600,
+        "bitmapBytes": 1920000,
+        "rotationQuarterTurns": 1,
+        "textCharacters": 35
+      }
+    ],
+    "pssBeforeOpenKiB": 50104,
+    "openMillis": 51,
+    "maxSampledPssKiB": 56754,
+    "invalidDocumentsRejected": 8,
+    "directBufferValidOpenCloseCycles": 16,
+    "directBufferInvalidFourMiBRejected": 8,
+    "directBufferNullRejected": true,
+    "directBufferEmptyRejected": true,
+    "nativeAllocatedDeltaAfterFailedOpensBytes": 0,
+    "mutexSanitizerTested": false,
+    "tamperingRejectedBeforeDecode": true,
+    "createdFilesInspected": 0,
+    "passed": true,
+    "elapsedMillis": 985
+  },
+  "sourceMarkerFoundInProcessLogs": false,
+  "kernelPageSize": 4096
+}

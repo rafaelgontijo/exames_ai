@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-03T18:21:26.084480+00:00",
+  "scope": "Synthetic correction/reassessment/truth revision and immutable version-specific measurements; no real AI/S25/clinical validation.",
+  "jvmDistinct": 245,
+  "domainDistinct": 200,
+  "instrumentedSuites": [
+    {
+      "name": "br.com.exames.datalocal.ReviewWorkflowTest",
+      "tests": "11",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "3.579",
+      "timestamp": "2026-11-03T18:21:07",
+      "hostname": "localhost",
+      "xmlSha256": "37940a36d1238400719d078a93a3436cdbdee910df2247c0bac15def5987eeaa"
+    }
+  ],
+  "build": "test assembleDebug :app:assembleDebugAndroidTest :data-local:connectedDebugAndroidTest; class filter ReviewWorkflowTest,ProtectedRepositoryTest,MeasurementIntegrationTest; default applicationId; emulator-5554/API36",
+  "uiReport": "workbench-review-verified-emulator-2026-11-03.json",
+  "passed": true
+}

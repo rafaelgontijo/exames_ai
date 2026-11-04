@@ -1,0 +1,59 @@
+{
+  "controllerVersion": "pdf-spike/1",
+  "apkSha256": "f7afc0e34dac5311b97a73f65aa7e02a42f4f1b9a100d4bd008e63f77c18c905",
+  "passed": true,
+  "instrumentationPassed": true,
+  "metrics": {
+    "schemaVersion": "pdf-buffer-spike/1",
+    "runtime": "io.legere:pdfiumandroid:2.0.1",
+    "inputMode": "custom-authenticated-memory-source",
+    "api": 36,
+    "deviceModel": "sdk_gphone64_arm64",
+    "abis": [
+      "arm64-v8a"
+    ],
+    "processId": 7095,
+    "pages": [
+      {
+        "page": 1,
+        "renderMillis": 2,
+        "mappedGlyphsWithInk": 74,
+        "bitmapWidth": 600,
+        "bitmapHeight": 800,
+        "bitmapBytes": 1920000,
+        "rotationQuarterTurns": 0,
+        "textCharacters": 94
+      },
+      {
+        "page": 2,
+        "renderMillis": 1,
+        "mappedGlyphsWithInk": 0,
+        "bitmapWidth": 600,
+        "bitmapHeight": 800,
+        "bitmapBytes": 1920000,
+        "rotationQuarterTurns": 0,
+        "textCharacters": 0
+      },
+      {
+        "page": 3,
+        "renderMillis": 0,
+        "mappedGlyphsWithInk": 27,
+        "bitmapWidth": 800,
+        "bitmapHeight": 600,
+        "bitmapBytes": 1920000,
+        "rotationQuarterTurns": 1,
+        "textCharacters": 35
+      }
+    ],
+    "pssBeforeOpenKiB": 57711,
+    "openMillis": 69,
+    "maxSampledPssKiB": 63799,
+    "invalidDocumentsRejected": 8,
+    "tamperingRejectedBeforeDecode": true,
+    "createdFilesInspected": 0,
+    "passed": true,
+    "elapsedMillis": 179
+  },
+  "sourceMarkerFoundInProcessLogs": false,
+  "kernelPageSize": 4096
+}

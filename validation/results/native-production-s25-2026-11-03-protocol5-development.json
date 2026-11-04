@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-04T00:43:42.915056+00:00",
+  "applicationId": "br.com.exames.offline.validation.final",
+  "cleanOfflineInstall": false,
+  "fixtureOrigin": "Fresh offline development-only fixture installed by this session; native control reuses verified static weights.",
+  "promptVersion": "biochemistry-evidence/5",
+  "schema": "biochemistry-fields/1",
+  "clinicalValidation": false,
+  "thoughtPersisted": false,
+  "appApkSha256": "f5fc95b56b8e93a90de044402179c9a54e47d925d18eeecbb62f9117a06c228a",
+  "testApkSha256": "f1030065ff3dfa2805c2f0c00b0d1fae1377bf3c67356f335809dd53410cb174",
+  "events": [
+    {
+      "phase": "generating-0"
+    },
+    {
+      "accepted": true,
+      "issueCodes": "",
+      "loadMillis": 7645,
+      "generationMillis": 1913,
+      "measurements": {
+        "elapsedMillis": 11258,
+        "sampledMaxPssKiB": 2997133,
+        "availableBytesBefore": 6506680320,
+        "availableBytesAfter": 6532042752,
+        "totalRamBytes": 11653074944,
+        "prefillTokens": null,
+        "decodedTokens": null,
+        "contextTokensAfter": null,
+        "thoughtTokens": null,
+        "finalTokens": null,
+        "tokenChannelsUnavailable": "SDK_NO_CHANNEL_TOKEN_COUNTS",
+        "memoryMethod": "ANDROID_DEBUG_PSS_100MS_SAMPLED_MAX_NOT_PEAK_GPU_ACCOUNTING_INCOMPLETE",
+        "freshEngine": true,
+        "processId": 30946
+      },
+      "phase": "validated-0"
+    },
+    {
+      "phase": "generating-1"
+    },
+    {
+      "accepted": true,
+      "issueCodes": "",
+      "loadMillis": 8616,
+      "generationMillis": 1877,
+      "measurements": {
+        "elapsedMillis": 12243,
+        "sampledMaxPssKiB": 2998045,
+        "availableBytesBefore": 6595555328,
+        "availableBytesAfter": 6521892864,
+        "totalRamBytes": 11653074944,
+        "prefillTokens": null,
+        "decodedTokens": null,
+        "contextTokensAfter": null,
+        "thoughtTokens": null,
+        "finalTokens": null,
+        "tokenChannelsUnavailable": "SDK_NO_CHANNEL_TOKEN_COUNTS",
+        "memoryMethod": "ANDROID_DEBUG_PSS_100MS_SAMPLED_MAX_NOT_PEAK_GPU_ACCOUNTING_INCOMPLETE",
+        "freshEngine": true,
+        "processId": 31056
+      },
+      "phase": "validated-1"
+    },
+    {
+      "phase": "malicious-input"
+    },
+    {
+      "outcome": "SUCCEEDED",
+      "disposition": "ACCEPTED",
+      "phase": "malicious-guarded"
+    },
+    {
+      "rejected": true,
+      "phase": "input-limit"
+    },
+    {
+      "phase": "native-context-limit"
+    },
+    {
+      "failure": "RUNTIME_FAILURE",
+      "phase": "native-context-result"
+    },
+    {
+      "phase": "native-cancel"
+    },
+    {
+      "passed": true,
+      "sharedPrefixIsolated": true,
+      "nativeProcessRetired": true,
+      "thoughtPersisted": false,
+      "phase": "complete"
+    }
+  ],
+  "passed": true,
+  "runnerPassed": true
+}

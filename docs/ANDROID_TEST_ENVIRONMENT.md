@@ -23,3 +23,19 @@ O emulador fica em primeiro plano nesse comando. Em outro terminal, com o mesmo 
 O host precisa permitir os sockets locais usados por ADB/emulador. Não alterar HOME para evitar diretórios sem permissão; os diretórios específicos acima ficam nas raízes de escrita do ambiente. Em uma instância nova será necessário instalar/provisionar a imagem e o AVD novamente se eles não tiverem sido preservados.
 
 Os dados dos testes são sintéticos e as chaves de teste são removidas no teardown. Não declarar testes no aparelho físico, inferência LFM, matriz de 4 GB ou validação clínica a partir desse emulador.
+
+## Android 17: inicialização do Espresso — 03/11/2026
+
+O S25 voltou ao ADB, SM-S931B/API 37. A instalação limpa separada e offline
+funcionou, mas o primeiro ensaio parou antes de qualquer chamada do modelo:
+Espresso antigo tentou refletir `InputManager.getInstance`, removido nesse Android.
+O relatório `validation/results/native-production-s25-2026-11-03.json` conserva
+essa reprovação (sem evento de geração, portanto sem conclusão sobre o modelo).
+Foram removidos somente os dois pacotes descartáveis criados pelo controlador.
+
+O APK de testes do app passa a exigir Espresso core 3.7.0, cuja correção usa
+`getSystemService` em vez daquela reflexão, conforme as
+[notas oficiais AndroidX Test](https://developer.android.com/jetpack/androidx/releases/test#espresso-3.7.0).
+Essa dependência é exclusiva de `androidTest`; não altera o runtime de produção.
+O novo ensaio deve manter instalação limpa e gerar outro relatório, sem substituir
+a evidência da falha original.
