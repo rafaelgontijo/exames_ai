@@ -11,7 +11,7 @@
 
 - [x] 2.1 Adicionar projeção pura de resumo por execução/base/modo/versão, sem nova regra clínica; testar limites, censura, incompatibilidade de unidades, referências ausentes, ambiguidades, parcial e dados não suportados em `:domain:test`.
 - [x] 2.2 Definir texto compartilhado por prévia/áudio/exportação, com limite 64 KiB UTF-8, marcadores para texto livre ambíguo e identidade da saída; testar fronteira exata, Unicode, ausência de PII/cabeçalhos/URIs/pensamento e proibição de truncamento silencioso.
-- [ ] 2.3 Criar projeção do Início sobre documentos e última extração automática identificada por modo; testar vazio versus indisponível, fila/falha/parcial, datas de importação e preservação de execuções corrigidas separadas.
+- [x] 2.3 Criar projeção do Início sobre documentos e última extração automática identificada por modo; testar vazio versus indisponível, fila/falha/parcial, datas de importação e preservação de execuções corrigidas separadas.
 - [ ] 2.4 Documentar contrato do resumo, contagens e limites em docs/REFERENCE_SUMMARY.md; verificar exemplos sintéticos sem diagnósticos ou referências externas.
 
 ## 3. Navegação e quatro telas Compose
