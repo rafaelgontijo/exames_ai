@@ -24,7 +24,7 @@
 
 ## 4. Captura privada pela câmera
 
-- [ ] 4.1 Fixar/auditar CameraX e acrescentar CAMERA sob demanda e câmera opcional; verificar minSdk 24, árvore efetiva sem clientes de rede/telemetria e ausência de permissões de localização, microfone ou armazenamento público.
+- [x] 4.1 Fixar/auditar CameraX e acrescentar CAMERA sob demanda e câmera opcional; verificar minSdk 24, árvore efetiva sem clientes de rede/telemetria e ausência de permissões de localização, microfone ou armazenamento público.
 - [ ] 4.2 Implementar adaptador de captura traseira em memória, limites de resolução/bytes e normalização única de orientação sem GPS; testar orientações, captura inválida, fechamento de ImageProxy e ausência de arquivo em claro.
 - [ ] 4.3 Adicionar entrada validada de bytes ao ProtectedDocumentImporter reutilizando journal/cifragem/commit; testar hash, falha de persistência, cancelamento, reabertura e recuperação sem duplicação ou fallback em claro.
 - [ ] 4.4 Conectar prévia/usar/refazer/cancelar ao pipeline no modo escolhido; testar permissão negada/revogada, morte antes/depois de confirmar, saída da tela e callbacks tardios sem publicação.

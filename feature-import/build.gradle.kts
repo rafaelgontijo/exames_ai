@@ -34,6 +34,7 @@ dependencies {
     kapt(libs.hilt.compiler)
     kapt(libs.kotlin.metadata)
     implementation(libs.coroutines.android)
+    implementation(libs.androidx.camera.view)
     implementation(project(":data-documents"))
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.compose.bom))
