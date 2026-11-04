@@ -17,7 +17,7 @@
 ## 3. Navegação e quatro telas Compose
 
 - [ ] 3.1 Implementar shell Início/Exames/Ajuda e rotas de Enviar/Resultado com IDs opacos; testar Voltar, troca de abas, recriação e ausência de conteúdo clínico em Bundle/SavedStateHandle/rotas.
-- [ ] 3.2 Construir Início e Enviar com componentes do protótipo, documentos reais, acesso ao SAF/corpus e modos/preparação/fallback existentes; testar estados vazios/indisponíveis e ausência dos exemplos clínicos fixos do HTML.
+- [x] 3.2 Construir Início e Enviar com componentes do protótipo, documentos reais, acesso ao SAF/corpus e modos/preparação/fallback existentes; testar estados vazios/indisponíveis e ausência dos exemplos clínicos fixos do HTML.
 - [ ] 3.3 Adaptar cartões e resumo de Resultados, exibindo estados referenciais, motivos, completude, base da saída e participação real da IA; testar NEEDS_REVIEW/NOT_CLASSIFIABLE, valores extensos e proibição de “Tudo normal”/garantia clínica.
 - [ ] 3.4 Integrar Ajuda de revisão e acesso aos detalhes da bancada, histórico e exclusão; verificar por testes Compose o acesso a fonte, correções, gabaritos, versões, relatórios, cancelamento e reexecução sem apagar originais.
 - [ ] 3.5 Verificar as quatro telas em temas claro/escuro, fonte 200% e TalkBack, com alvos 48 dp e rolagem; registrar capturas sintéticas e matriz de rotas em docs/PROTOTYPE_EXPERIENCE.md.

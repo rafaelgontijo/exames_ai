@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.semantics.Role
+import br.com.exames.coreui.*
 import br.com.exames.domain.inference.ModelReadiness
 import br.com.exames.domain.validation.ExtractionMode
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -24,11 +25,14 @@ fun ImportScreen(onResults: (String) -> Unit, onHistory: () -> Unit, model: Impo
         uri?.let(model::select)
     }
     val corpusPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> uri?.let(model::selectPackage) }
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Text("Exames Offline", style = MaterialTheme.typography.headlineMedium)
-        Text("Leitura referencial de resultados laboratoriais, no seu dispositivo.")
-        Text("Não fornece diagnósticos nem recomendações clínicas.")
-        Text("PDF, JPEG ou PNG · até 20 MiB e 20 páginas")
+    ExamesScreen("Enviar exame") {
+        ExamesCard {
+            Text("Leitura referencial de resultados laboratoriais, no seu dispositivo.", style = MaterialTheme.typography.titleMedium)
+            Text("O processamento acontece neste aparelho; nada é enviado para fora. Escolher uma fonte não confirma os valores lidos.")
+            Text("Não fornece diagnósticos nem recomendações clínicas.")
+            Text("PDF, JPEG ou PNG · até 20 MiB e 20 páginas")
+        }
+        Text("Como processar?", style = MaterialTheme.typography.titleLarge, color = ExamesTheme.palette.title)
         for(mode in ExtractionMode.entries) Row(Modifier.fillMaxWidth().heightIn(min=48.dp).selectable(
             selected=state.mode==mode,enabled=!state.importing && !state.actionBusy && state.modelReadiness!=ModelReadiness.PREPARING,
             role=Role.RadioButton,onClick={ model.selectMode(mode) }),horizontalArrangement=Arrangement.spacedBy(12.dp)) {
@@ -52,12 +56,8 @@ fun ImportScreen(onResults: (String) -> Unit, onHistory: () -> Unit, model: Impo
             Text("O modelo propõe campos da fonte; o avaliador determinístico faz a comparação. Falhas usam o caminho sem IA e são identificadas como fallback.")
         }
         val canImport=!state.importing && !state.actionBusy && (state.mode==ExtractionMode.BASELINE || state.modelReadiness==ModelReadiness.READY)
-        Button(enabled = canImport, onClick = { picker.launch(arrayOf("application/pdf", "image/jpeg", "image/png")) }) {
-            Text("Selecionar documento")
-        }
-        OutlinedButton(enabled = canImport, onClick = { corpusPicker.launch(arrayOf("application/zip", "application/x-zip-compressed")) }) {
-            Text("Importar pacote do corpus")
-        }
+        PrimaryAction("Selecionar documento", { picker.launch(arrayOf("application/pdf", "image/jpeg", "image/png")) }, enabled = canImport)
+        SecondaryAction("Importar pacote do corpus", { corpusPicker.launch(arrayOf("application/zip", "application/x-zip-compressed")) }, enabled = canImport)
         Text("Pacote ZIP local: até 128 MiB, manifesto, documentos e gabaritos. Hashes verificam integridade, sem autenticar o autor.")
         if (state.importedCases > 0) Text("Casos importados: ${state.importedCases}. Execuções individuais no histórico.")
         if (state.importing) { CircularProgressIndicator(); Text("Criando cópia privada protegida…") }
@@ -81,6 +81,6 @@ fun ImportScreen(onResults: (String) -> Unit, onHistory: () -> Unit, model: Impo
         }
         state.message?.let { Text(it) }
         state.runId?.let { id -> TextButton(onClick = { onResults(id) }) { Text("Revisar resultados") } }
-        TextButton(onClick = onHistory) { Text("Histórico local") }
+        TextButton(onClick = onHistory, modifier = Modifier.heightIn(min = MinTouchTarget)) { Text("Histórico local") }
     }
 }

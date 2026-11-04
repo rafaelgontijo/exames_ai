@@ -44,6 +44,7 @@ class CorpusWorkbenchTest {
             results=ViewModelProvider(compose.activity)[ResultsViewModel::class.java]
             history=ViewModelProvider(compose.activity)[br.com.exames.featurehistory.HistoryViewModel::class.java]
         }
+        compose.openSend()
         compose.onNodeWithText("Importar pacote do corpus").performScrollTo().assertIsDisplayed()
         context.contentResolver.call(WorkbenchSyntheticProvider.URI,"allow",context.packageName,null)
         compose.runOnIdle { importer.selectPackage(WorkbenchSyntheticProvider.CORPUS_URI) }

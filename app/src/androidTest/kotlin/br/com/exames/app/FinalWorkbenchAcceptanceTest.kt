@@ -48,6 +48,7 @@ class FinalWorkbenchAcceptanceTest {
         val marker=File(context.noBackupFilesDir,"synthetic-final-ids.json")
         fun clickText(text: String)=compose.onNodeWithText(text).performSemanticsAction(androidx.compose.ui.semantics.SemanticsActions.OnClick) { it() }
         fun openRun(documentId: String,runId: String) {
+            compose.openSend()
             compose.onNodeWithText("Histórico local").performScrollTo();clickText("Histórico local")
             compose.runOnIdle { history.selectDocument(documentId) }
             compose.waitUntil(15000) { history.state.value.runs.any { it.runId==runId } }
@@ -59,6 +60,7 @@ class FinalWorkbenchAcceptanceTest {
         try {
             if(phase=="measure") {
                 assertFalse(marker.exists())
+                compose.openSend()
                 compose.onNodeWithText("Modo assistido local").performScrollTo().performClick()
                 compose.waitUntil(180000) { importer.state.value.modelReadiness!=ModelReadiness.PREPARING }
                 assertEquals(ModelReadiness.READY,importer.state.value.modelReadiness)
