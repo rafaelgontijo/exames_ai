@@ -89,3 +89,15 @@ object PageFrameProcessor {
         frame.close()
     }
 }
+
+object CapturedDocuments {
+    /**
+     * Same signature, truncation and hash validation as any imported JPEG, over a copy of the bytes. The page is not
+     * consumed here: the importer wipes it after persistence, whatever the outcome.
+     */
+    fun validate(page: NormalizedPage): ValidatedDocument {
+        val validated = ValidatedDocumentInput.read(java.io.ByteArrayInputStream(page.jpeg), "image/jpeg")
+        check(validated.mimeType == "image/jpeg") { "CAPTURE_MIME_INVALID" }
+        return validated
+    }
+}

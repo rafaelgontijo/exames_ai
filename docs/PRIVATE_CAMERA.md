@@ -64,3 +64,22 @@ fechamento exato do quadro. Passaram em Android 7.0 (API 24), no emulador API 36
 
 Limite desta etapa: a câmera real ainda não foi exercitada (tarefa 4.5); o fechamento do `ImageProxy` do CameraX é
 verificado pela interface `CapturedFrame`, não por hardware.
+
+## Importação protegida de capturas (tarefa 4.3)
+
+`ProtectedDocumentImporter.importCapture(page)` entra no **mesmo** `persist` do seletor e do corpus: bytes validados,
+marcador no journal, cifragem pelo `EncryptedArtifactStore`, publicação dos metadados e remoção do marcador, com reconciliação
+na reabertura. Não há URI simulada, arquivo temporário nem caminho alternativo em claro. A validação
+(`CapturedDocuments.validate`) usa a mesma checagem de assinatura/truncamento/hash de qualquer JPEG importado. A página é
+zerada em qualquer desfecho.
+
+Testes (`CapturedImportTest`, instrumentados): hash do documento igual ao SHA-256 dos bytes; fonte cifrada que reabre em novas
+instâncias e nenhuma sequência da imagem em claro em `files`, `cache`, `noBackupFiles` ou diretórios externos; falha de
+persistência sem documento, journal ou fonte órfã; banco indisponível mantém a fonte cifrada e o marcador, e a reconciliação
+posterior limpa sem duplicar; cancelamento antes de começar não publica nada; cancelamento durante a publicação resulta em
+exatamente um documento íntegro (a seção de commit não é cancelável, como no seletor); bytes truncados são rejeitados antes de
+qualquer journal; duas capturas viram dois documentos independentes.
+
+Resultado em 03/11/2026: passaram em Android 7.0 (API 24), emulador API 36 e S25. No API 24, `ExtractionLimitsTest` e
+`ProtectedDocumentImporterTest.lyingSizeCannotBypassActualByteLimit` (testes anteriores, não alterados) esgotam a heap do
+emulador ao alocar 20 MiB; não ocorre no S25 nem no API 36.

@@ -26,6 +26,16 @@ class ProtectedDocumentImporter(
 
     suspend fun import(uri: Uri): Document = persist(reader.readValidated(uri))
 
+    /**
+     * Confirmed camera capture: validated bytes enter the same journal/encryption/commit path as a picked file, with no
+     * simulated URI and no plaintext fallback. The page is wiped on every outcome.
+     */
+    suspend fun importCapture(page: br.com.exames.datadocuments.NormalizedPage): Document = try {
+        persist(br.com.exames.datadocuments.CapturedDocuments.validate(page))
+    } finally {
+        page.wipe()
+    }
+
     suspend fun importCase(case: br.com.exames.domain.validation.CorpusPackage.Case): Document {
         val mime = when (case.identity.format) {
             br.com.exames.domain.validation.CorpusFormat.PDF_TEXT, br.com.exames.domain.validation.CorpusFormat.PDF_SCANNED -> "application/pdf"
