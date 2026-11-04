@@ -20,7 +20,7 @@
 - [x] 3.2 Construir Início e Enviar com componentes do protótipo, documentos reais, acesso ao SAF/corpus e modos/preparação/fallback existentes; testar estados vazios/indisponíveis e ausência dos exemplos clínicos fixos do HTML.
 - [x] 3.3 Adaptar cartões e resumo de Resultados, exibindo estados referenciais, motivos, completude, base da saída e participação real da IA; testar NEEDS_REVIEW/NOT_CLASSIFIABLE, valores extensos e proibição de “Tudo normal”/garantia clínica.
 - [x] 3.4 Integrar Ajuda de revisão e acesso aos detalhes da bancada, histórico e exclusão; verificar por testes Compose o acesso a fonte, correções, gabaritos, versões, relatórios, cancelamento e reexecução sem apagar originais.
-- [ ] 3.5 Verificar as quatro telas em temas claro/escuro, fonte 200% e TalkBack, com alvos 48 dp e rolagem; registrar capturas sintéticas e matriz de rotas em docs/PROTOTYPE_EXPERIENCE.md.
+- [x] 3.5 Verificar as quatro telas em temas claro/escuro, fonte 200% e TalkBack, com alvos 48 dp e rolagem; registrar capturas sintéticas e matriz de rotas em docs/PROTOTYPE_EXPERIENCE.md.
 
 ## 4. Captura privada pela câmera
 
