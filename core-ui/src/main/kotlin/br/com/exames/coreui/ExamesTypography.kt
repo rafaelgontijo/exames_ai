@@ -4,13 +4,23 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.exames.coreui.R
 
-/** Replaced by the bundled Figtree family in task 1.3; sizes are in sp so they scale to 200%. */
-object ExamesFonts { var family: FontFamily = FontFamily.Default }
+/** Bundled static Figtree (OFL, see third_party/figtree). Local files only, no font provider; sizes are in sp so they scale to 200%. */
+object ExamesFonts {
+    val family: FontFamily = FontFamily(
+        Font(R.font.figtree_regular, FontWeight.Normal),
+        Font(R.font.figtree_medium, FontWeight.Medium),
+        Font(R.font.figtree_semibold, FontWeight.SemiBold),
+        Font(R.font.figtree_bold, FontWeight.Bold),
+        Font(R.font.figtree_extrabold, FontWeight.ExtraBold),
+    )
+}
 
 fun examesTypography(family: FontFamily = ExamesFonts.family): Typography {
     fun s(size: Int, line: Int, weight: FontWeight) = TextStyle(fontFamily = family, fontSize = size.sp, lineHeight = line.sp, fontWeight = weight)
