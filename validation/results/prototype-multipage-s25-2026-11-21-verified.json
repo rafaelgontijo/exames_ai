@@ -1,0 +1,68 @@
+{
+  "date": "2026-11-21",
+  "device": "SM-S931B",
+  "api": 37,
+  "airplane": true,
+  "wifi": false,
+  "initialInstall": "fresh-disposable-offline",
+  "apkSha256": "61cf0fabddf3331827ee68bcc5bc3f9b2780f648bcfa3efcb1dd20d4b2e491b8",
+  "case": "development-multipage-v1",
+  "runs": [
+    [
+      {
+        "phase": "six-pages",
+        "mode": "BASELINE",
+        "actualPicker": true,
+        "missing": 0,
+        "extra": 0,
+        "fallbackPages": 0,
+        "statuses": {
+          "WITHIN_RANGE": 2,
+          "NEEDS_REVIEW": 1,
+          "NOT_CLASSIFIABLE": 1,
+          "ABOVE_RANGE": 1
+        },
+        "pageErrors": [
+          "PAGE_NO_SUPPORTED_OBSERVATIONS",
+          "PAGE_NO_SUPPORTED_OBSERVATIONS"
+        ]
+      },
+      {
+        "phase": "exact-delivery",
+        "mode": "BASELINE",
+        "matched": true
+      }
+    ],
+    [
+      {
+        "phase": "six-pages",
+        "mode": "ASSISTED",
+        "actualPicker": true,
+        "missing": 0,
+        "extra": 0,
+        "fallbackPages": 5,
+        "statuses": {
+          "NEEDS_REVIEW": 2,
+          "NOT_CLASSIFIABLE": 1,
+          "ABOVE_RANGE": 1,
+          "WITHIN_RANGE": 1
+        },
+        "pageErrors": [
+          "INVALID_EVIDENCE",
+          "PAGE_NO_SUPPORTED_OBSERVATIONS",
+          "INVALID_EVIDENCE",
+          "PAGE_NO_SUPPORTED_OBSERVATIONS",
+          "INVALID_SCHEMA"
+        ]
+      },
+      {
+        "phase": "exact-delivery",
+        "mode": "ASSISTED",
+        "matched": true
+      }
+    ]
+  ],
+  "audioEvidence": "prototype-offline-audio-s25-2026-11-21.json",
+  "technicalAcceptance": true,
+  "clinicalValidation": false
+}

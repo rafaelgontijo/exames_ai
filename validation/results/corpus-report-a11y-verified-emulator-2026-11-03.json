@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-03T19:59:14.248183+00:00",
+  "device": "emulator-5554",
+  "scope": "Eight synthetic corpus cases: four formats/two layouts, baseline production WorkManager, source revocation, independent truth, numeric page measurements, local report, TalkBack focus, font 200%, deletion.",
+  "limits": "Synthetic technical integration only; no real model/S25, speech comprehension or clinical validation.",
+  "installedBefore": {
+    "br.com.exames.offline.validation.workbench": false,
+    "br.com.exames.offline.validation.workbench.test": false
+  },
+  "originalSettings": {
+    "font_scale": "1.0",
+    "enabled_accessibility_services": "null",
+    "accessibility_enabled": "0"
+  },
+  "appApkSha256": "dc8416c4db6c4b2fd79a8ea53fcc9d95b165688910a6c6f405b97e706afaedb1",
+  "testApkSha256": "0093c3d9a9c7db127e5e86d8c126072ad9fefc9326b8a55ead18a1b21cace631",
+  "passed": true,
+  "screenshotSha256": "46717b6a67009f105c523b51e437b9ed6983e00f056db45a7130df35ce263d22",
+  "talkBackChecked": true,
+  "cases": 8,
+  "fontScale200Checked": true,
+  "removedCreatedPackages": [
+    "br.com.exames.offline.validation.workbench.test",
+    "br.com.exames.offline.validation.workbench"
+  ],
+  "settingsRestored": true
+}

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.0",
+  "corpusVersion": "synthetic-1.0",
+  "generatorVersion": "1.0",
+  "seed": 20261021,
+  "fontSha256": "57f73e11f51999432bf7ab22ce55b6f945d5eca1bf824404cfa9ec2e3718c84e",
+  "cases": [
+    {
+      "caseId": "c713ef2c26fe24b8273c3e663b42dc0e2cb7c88c8809046bd0faa68eb9d137b6",
+      "familyId": "ab645164c2ac8b95c454e8a655b6efa1fd8fedd868eebf947c1cefe7e974c772",
+      "origin": "SYNTHETIC",
+      "format": "PDF_TEXT",
+      "partition": "HELD_OUT",
+      "layoutId": "simple-v1",
+      "layoutVersion": "1",
+      "documentPath": "documents/c713ef2c26fe24b8273c3e663b42dc0e2cb7c88c8809046bd0faa68eb9d137b6.pdf",
+      "documentSha256": "05478a4eed83dad7ebfe2ced3e2c0e149b16ed10e49a04db43476c0a06e3b8d1",
+      "documentBytes": 23376,
+      "groundTruthPath": "truth/c713ef2c26fe24b8273c3e663b42dc0e2cb7c88c8809046bd0faa68eb9d137b6.json",
+      "groundTruthSha256": "ea59792c112bb0f847eb6de7436f4c9b6039255f4e9b10e4b2d87f6da59ca823",
+      "transformations": [],
+      "provenance": null
+    }
+  ]
+}

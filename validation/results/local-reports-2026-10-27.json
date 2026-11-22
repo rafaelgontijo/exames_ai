@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-27",
+  "task": "6.4",
+  "reportSchema": "validation-report/1",
+  "jvm": {
+    "distinctTests": 155,
+    "failures": 0,
+    "reportSpecificTests": 8
+  },
+  "build": {
+    "assembleDebug": true,
+    "assembleAppAndroidTest": true
+  },
+  "instrumented": {
+    "device": "emulator-5554",
+    "api": 36,
+    "tests": 1,
+    "failures": 0,
+    "xmlSha256": "9b683a9d710b0bb350f9e4f3669bed4d434ab983ce3ba5d84711f44da4d35ef9"
+  },
+  "controls": [
+    "private PDF extraction and protected database reopen",
+    "explicit truth hashes and separate truth versions",
+    "fractions summed by numerator/denominator",
+    "pending truth excluded with visible counts",
+    "automatic/corrected output groups remain separate",
+    "source/format/analyte/layout/partition and version strata",
+    "family partition leak rejected",
+    "unknown extra observations retained",
+    "JSON round-trip without raw field content"
+  ],
+  "limitations": [
+    "Report screen/export and correction authoring UI remain pending.",
+    "No full corpus OCR/LLM measurements or clinical validation.",
+    "S25 protocol retry stopped at locked-screen guard before model load, then USB became unavailable."
+  ]
+}

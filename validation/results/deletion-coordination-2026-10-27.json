@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-27",
+  "task": "5.3",
+  "jvm": {
+    "distinctTests": 181,
+    "failures": 0
+  },
+  "build": {
+    "assembleDebug": true,
+    "assembleAppAndroidTest": true
+  },
+  "instrumented": {
+    "device": "emulator-5554",
+    "api": 36,
+    "distinctTests": 47,
+    "passed": 46,
+    "skipped": 1,
+    "failures": 0,
+    "newDeletionTests": 7,
+    "xmlSha256": "b553332147903d3d41d69ed24f202156ce1574d1d9f2e101cf8f38f105ab4dbc"
+  },
+  "storage": {
+    "roomVersion": 3,
+    "payloadAadVersion": "2",
+    "v2SchemaSha256": "fd791dd2dafe9fb9c481deccede244303f37afaa9fed01377eba957398374f5d",
+    "v3SchemaSha256": "2dfc01ed9da743bce8eb74dacfddf1c8adbb5acb8f9b22ba6ebf9a0ef339a086"
+  },
+  "controls": [
+    "transaction captures work IDs and persistent tombstone before cascade",
+    "immediate cancellation follows hide; cancellation failure retains outbox",
+    "cleanup waits for active file writer and establishes permanent file barrier before acknowledgement",
+    "late page and simulated inference callbacks cannot recreate output after deletion",
+    "reopen and crash after file cleanup retain recovery state",
+    "v2-to-v3 migration validates schema, retains ciphertext and backfills known pending tombstones",
+    "v1 migration and interruption regression remain passing",
+    "corrupt artifact marker fails closed"
+  ],
+  "limits": [
+    "No new S25 or real-model execution; final device trials remain deferred.",
+    "No immediate JNI/OCR interruption or physical flash erasure claim.",
+    "Opt-in two-invocation process-death test remains skipped in ordinary instrumentation; previous separate report exists.",
+    "Full derivative audit/UI and bounded inference runtime remain pending."
+  ]
+}

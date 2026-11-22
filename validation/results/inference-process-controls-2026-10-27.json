@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-27",
+  "task": "4.12",
+  "status": "partial-pending-real-model-acceptance",
+  "jvm": {
+    "distinctTests": 183,
+    "newPayloadLimitTests": 2,
+    "failures": 0
+  },
+  "build": {
+    "assembleDebug": true,
+    "assembleAppAndroidTest": true
+  },
+  "instrumented": {
+    "device": "emulator-5554",
+    "api": 36,
+    "module": "inference-local",
+    "distinctTests": 19,
+    "passed": 16,
+    "skippedRealModelTests": 3,
+    "failures": 0,
+    "newProcessControls": 7,
+    "xmlSha256": "7c012e9a734d23cbad427f1ef4ec595dc3fdd9a099842463acbfab46b62b2073"
+  },
+  "lifecycle": {
+    "freshProcess": true,
+    "concurrency": 1,
+    "loadTimeoutMillis": 120000,
+    "generationTimeoutMillis": 120000,
+    "retireTimeoutMillis": 5000,
+    "maxInputUtf8Bytes": 16384,
+    "maxFinalCharacters": 16384
+  },
+  "controls": [
+    "private child process per request; parent remains alive under simulated crash/timeouts",
+    "load and generation blocking threads killed",
+    "caller cancellation, no publication and fresh subsequent process",
+    "same-prefix synthetic requests use different process IDs",
+    "BUSY without queue across instances; baseline no binding",
+    "oversized input rejected before service, oversized output rejected",
+    "missing model asset handled by production service before native engine initialization"
+  ],
+  "limitations": [
+    "Six process controls use simulated service, one production missing-asset check; no real Gemma or JNI hang executed.",
+    "Token preflight/segmentation, context-overflow and truncation acceptance remain pending; bytes are not token estimates.",
+    "No S25 test; real-model process path and shared-prefix state acceptance deferred to final S25 stage.",
+    "4.12 checkbox remains open and workbench assisted scheduling remains disabled.",
+    "No memory peak, GPU driver or 4 GB device acceptance."
+  ]
+}

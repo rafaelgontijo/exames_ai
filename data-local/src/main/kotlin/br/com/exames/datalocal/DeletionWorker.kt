@@ -1,7 +1,7 @@
 package br.com.exames.datalocal
 
 import android.content.Context
-import androidx.room.Room
+import br.com.exames.datadocuments.SafDocumentReader
 import androidx.work.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -10,21 +10,30 @@ import java.util.concurrent.TimeUnit
 /** Periodic reconciliation also recovers a crash between DB commit and immediate scheduling. */
 class DeletionWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
-        val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "exames.db").build()
+        var db: ProtectedDatabase? = null
         try {
+            val factory = ProtectedDatabaseFactory(applicationContext)
+            val database = factory.open()
+            db = database
             val store = EncryptedArtifactStore(applicationContext)
-            db.documentDao().pendingDeletions().forEach {
-                store.deleteDocument(it.documentId)
-                db.documentDao().acknowledgeDeletion(it.documentId)
-            }
+            ProtectedDocumentImporter(applicationContext,
+                SafDocumentReader(applicationContext.contentResolver), store,
+                ProtectedValidationRepository(factory)).reconcile()
+            ProtectedDeletionCleanup(factory, store, AndroidRunWorkScheduler(applicationContext)).run()
+            dagger.hilt.android.EntryPointAccessors.fromApplication(applicationContext,
+                ResultShareDependencies::class.java).resultShareStore().reconcile()
             Result.success()
         } catch (e: kotlinx.coroutines.CancellationException) {
             throw e
         } catch (_: Exception) {
             Result.retry()
-        } finally { db.close() }
+        } finally { db?.close() }
     }
     companion object {
+        fun requestCleanup(context: Context) {
+            WorkManager.getInstance(context).enqueueUniqueWork("artifact-cleanup-now",
+                ExistingWorkPolicy.KEEP, OneTimeWorkRequestBuilder<DeletionWorker>().build())
+        }
         fun schedule(context: Context) {
             WorkManager.getInstance(context).enqueueUniquePeriodicWork("artifact-cleanup",
                 ExistingPeriodicWorkPolicy.KEEP,

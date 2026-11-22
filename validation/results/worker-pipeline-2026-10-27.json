@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-27",
+  "task": "5.1",
+  "jvm": {
+    "distinctTests": 174,
+    "newResumeTests": 8,
+    "failures": 0
+  },
+  "build": {
+    "assembleDebug": true,
+    "assembleAppAndroidTest": true
+  },
+  "instrumented": {
+    "device": "emulator-5554",
+    "api": 36,
+    "tests": 2,
+    "failures": 0,
+    "xmlSha256": "f8306bf6e50a820cf4ee93d1c5b893c209a8d7aa2130db58c373566d9b6bc34b"
+  },
+  "processRecoveryReport": "worker-process-recovery-emulator-2026-10-27.json",
+  "limits": [
+    "Real two-invocation recovery uses baseline only; assisted native scheduling remains gated pending 4.12/4.13.",
+    "Both checkpoint modes tested with controlled JVM ports; this is not real AI acceptance.",
+    "Explicit cancellation, retry child runs and orphan reconciliation remain pending in 5.2.",
+    "No new S25 test, full-corpus measurement or clinical validation."
+  ]
+}

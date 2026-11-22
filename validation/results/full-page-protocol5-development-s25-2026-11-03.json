@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "clinicalValidation": false,
+  "promptVersion": "biochemistry-evidence/5",
+  "diagnosticOnly": true,
+  "partition": "DEVELOPMENT",
+  "sourceOrFinalTextExported": false,
+  "thoughtPersisted": false,
+  "events": [
+    {
+      "format": "PDF_TEXT",
+      "inputUtf8Bytes": 2513,
+      "layoutId": "footnote-v1",
+      "partition": "DEVELOPMENT",
+      "fragments": 74,
+      "baselineRows": 5,
+      "characters": 818,
+      "loadMillis": 11960,
+      "generationMillis": 6243,
+      "accepted": false,
+      "issues": [
+        "DIVERGENCE"
+      ],
+      "rows": [
+        {
+          "analyte": "GLUCOSE",
+          "baselineFound": true,
+          "analyteEqual": true,
+          "resultEqual": true,
+          "unitEqual": true,
+          "referencesEqual": false,
+          "proposedReferenceCount": 0,
+          "sourceReferenceCount": 1,
+          "proposedReferenceLengths": [],
+          "sourceReferenceLengths": [
+            11
+          ],
+          "contextPresent": false,
+          "baselineContextPresent": false,
+          "contextSpansEqual": true
+        },
+        {
+          "analyte": "UREA",
+          "baselineFound": true,
+          "analyteEqual": true,
+          "resultEqual": true,
+          "unitEqual": true,
+          "referencesEqual": false,
+          "proposedReferenceCount": 0,
+          "sourceReferenceCount": 1,
+          "proposedReferenceLengths": [],
+          "sourceReferenceLengths": [
+            11
+          ],
+          "contextPresent": false,
+          "baselineContextPresent": false,
+          "contextSpansEqual": true
+        },
+        {
+          "analyte": "CREATININE",
+          "baselineFound": true,
+          "analyteEqual": true,
+          "resultEqual": true,
+          "unitEqual": true,
+          "referencesEqual": false,
+          "proposedReferenceCount": 0,
+          "sourceReferenceCount": 1,
+          "proposedReferenceLengths": [],
+          "sourceReferenceLengths": [
+            11
+          ],
+          "contextPresent": false,
+          "baselineContextPresent": false,
+          "contextSpansEqual": true
+        },
+        {
+          "analyte": "SODIUM",
+          "baselineFound": true,
+          "analyteEqual": true,
+          "resultEqual": true,
+          "unitEqual": true,
+          "referencesEqual": false,
+          "proposedReferenceCount": 0,
+          "sourceReferenceCount": 1,
+          "proposedReferenceLengths": [],
+          "sourceReferenceLengths": [
+            12
+          ],
+          "contextPresent": false,
+          "baselineContextPresent": false,
+          "contextSpansEqual": true
+        },
+        {
+          "analyte": "POTASSIUM",
+          "baselineFound": true,
+          "analyteEqual": true,
+          "resultEqual": true,
+          "unitEqual": true,
+          "referencesEqual": false,
+          "proposedReferenceCount": 0,
+          "sourceReferenceCount": 1,
+          "proposedReferenceLengths": [],
+          "sourceReferenceLengths": [
+            12
+          ],
+          "contextPresent": false,
+          "baselineContextPresent": false,
+          "contextSpansEqual": true
+        }
+      ]
+    },
+    {
+      "format": "PDF_TEXT",
+      "inputUtf8Bytes": 1907,
+      "layoutId": "simple-v1",
+      "partition": "DEVELOPMENT",
+      "fragments": 49,
+      "baselineRows": 5,
+      "characters": 1035,
+      "loadMillis": 12002,
+      "generationMillis": 8017,
+      "accepted": true,
+      "issues": [],
+      "rows": [
+        {
+          "analyte": "GLUCOSE",
+          "baselineFound": true,
+          "analyteEqual": true,
+          "resultEqual": true,
+          "unitEqual": true,
+          "referencesEqual": true,
+          "proposedReferenceCount": 1,
+          "sourceReferenceCount": 1,
+          "proposedReferenceLengths": [
+            11
+          ],
+          "sourceReferenceLengths": [
+            11
+          ],
+          "contextPresent": false,
+          "baselineContextPresent": false,
+          "contextSpansEqual": true
+        },
+        {
+          "analyte": "UREA",
+          "baselineFound": true,
+          "analyteEqual": true,
+          "resultEqual": true,
+          "unitEqual": true,
+          "referencesEqual": true,
+          "proposedReferenceCount": 1,
+          "sourceReferenceCount": 1,
+          "proposedReferenceLengths": [
+            11
+          ],
+          "sourceReferenceLengths": [
+            11
+          ],
+          "contextPresent": false,
+          "baselineContextPresent": false,
+          "contextSpansEqual": true
+        },
+        {
+          "analyte": "CREATININE",
+          "baselineFound": true,
+          "analyteEqual": true,
+          "resultEqual": true,
+          "unitEqual": true,
+          "referencesEqual": true,
+          "proposedReferenceCount": 1,
+          "sourceReferenceCount": 1,
+          "proposedReferenceLengths": [
+            11
+          ],
+          "sourceReferenceLengths": [
+            11
+          ],
+          "contextPresent": false,
+          "baselineContextPresent": false,
+          "contextSpansEqual": true
+        },
+        {
+          "analyte": "SODIUM",
+          "baselineFound": true,
+          "analyteEqual": true,
+          "resultEqual": true,
+          "unitEqual": true,
+          "referencesEqual": true,
+          "proposedReferenceCount": 1,
+          "sourceReferenceCount": 1,
+          "proposedReferenceLengths": [
+            12
+          ],
+          "sourceReferenceLengths": [
+            12
+          ],
+          "contextPresent": false,
+          "baselineContextPresent": false,
+          "contextSpansEqual": true
+        },
+        {
+          "analyte": "POTASSIUM",
+          "baselineFound": true,
+          "analyteEqual": true,
+          "resultEqual": true,
+          "unitEqual": true,
+          "referencesEqual": true,
+          "proposedReferenceCount": 1,
+          "sourceReferenceCount": 1,
+          "proposedReferenceLengths": [
+            12
+          ],
+          "sourceReferenceLengths": [
+            12
+          ],
+          "contextPresent": false,
+          "baselineContextPresent": false,
+          "contextSpansEqual": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-27",
+  "tasks": [
+    "5.4",
+    "5.5"
+  ],
+  "jvm": {
+    "distinctTests": 181,
+    "failures": 0
+  },
+  "instrumented": {
+    "device": "emulator-5554",
+    "api": 36,
+    "distinctTests": 51,
+    "passed": 50,
+    "skipped": 1,
+    "failures": 0,
+    "newAuditAndKeyTests": 4,
+    "xmlSha256": "23ea8e9a608a936d4a8cafd21892649134b6bc8745bbd86a563dd8798940e568"
+  },
+  "build": {
+    "assembleDebug": true,
+    "assembleAppAndroidTest": true
+  },
+  "sourceSha256": {
+    "data-local/src/main/kotlin/br/com/exames/datalocal/EncryptedArtifactStore.kt": "7853cd922d1bc262b6a309abdb8bbbbe12a75c350eb16a5a3d7eda2c7be858a0",
+    "data-local/src/main/kotlin/br/com/exames/datalocal/ArtifactDocumentLocks.kt": "b4942910e02c3217c1d4ff1ccdcbc6cd78b5d20871b6c2deb69b9e48eaabf6d8",
+    "data-local/src/main/kotlin/br/com/exames/datalocal/ProtectedDeletionCleanup.kt": "c0675f2c33fc6ab5733bde71776a4e4daf9a9dc8baf69e02be602752a328e536",
+    "data-local/src/main/kotlin/br/com/exames/datalocal/ProtectedValidationRepository.kt": "94a39780c3f526cdfc8521102aac10015924a1f7e4fb622faf3f4a3094ab73ba",
+    "inference-local/src/main/java/br/com/exames/inferencelocal/FreshGemmaEngine.java": "c4c36932a818f910ec6e3340b92d9fc25c0b4f37c141a4a4e7540ab4091399ac",
+    "data-local/src/main/kotlin/br/com/exames/datalocal/GeneralPreferences.kt": "4f45b52bfca4109ec5a93ba5ef33fe7279c6e435950cd27b82b1aa8a51edbc76"
+  },
+  "recoveryReport": "worker-process-recovery-keyguard-emulator-2026-10-27.json",
+  "recoveryPids": [
+    15596,
+    15646
+  ],
+  "controls": [
+    "all owned files and structured derivatives removed, including encrypted partials and trace fixtures",
+    "eight late-writer categories rejected after acknowledgement",
+    "other document and synthetic static-model sentinel preserved",
+    "dynamic canary absent from observed persistent/cache roots before and after deletion",
+    "lost payload key preserves database, encrypted source and pending cleanup",
+    "lost artifact key is not recreated by reading or by writing while ciphertext exists",
+    "first concurrent artifact writers on separate instances share one key",
+    "explicit force-stop/restart across distinct processes preserves page IDs and completes without duplicates"
+  ],
+  "limits": [
+    "Synthetic fixtures and baseline recovery; no new S25 or real-model test.",
+    "Preview/OCR are currently memory-only; persisted derivative categories exercised through the protected store.",
+    "Trace fixture cleanup does not constitute acceptance of the pending real inference tracing pipeline or GPU-driver cache audit.",
+    "No physical flash erasure or immediate JNI/OCR interruption guarantee.",
+    "UI and bounded inference runtime remain pending."
+  ]
+}

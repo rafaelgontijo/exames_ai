@@ -1,0 +1,14 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application android:allowBackup="false">
+        <provider android:name="br.com.exames.app.AuthorizedExampleProvider"
+            android:authorities="${applicationId}.authorized-example" android:exported="false"
+            android:grantUriPermissions="true" />
+        <provider android:name="br.com.exames.app.AuthorizedExamDocumentsProvider"
+            android:authorities="${applicationId}.authorized-documents"
+            android:exported="true" android:grantUriPermissions="true" android:permission="android.permission.MANAGE_DOCUMENTS">
+            <intent-filter><action android:name="android.content.action.DOCUMENTS_PROVIDER" /></intent-filter>
+        </provider>
+        <provider android:name="br.com.exames.app.ExamContractProvider"
+            android:authorities="${applicationId}.exam-contract" android:exported="true" />
+    </application>
+</manifest>

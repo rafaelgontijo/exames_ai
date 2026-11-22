@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-27",
+  "task": "4.11",
+  "jvm": {
+    "distinctTests": 166,
+    "newPageProcessingTests": 9,
+    "newEvidenceSourceBindingTests": 2,
+    "failures": 0
+  },
+  "build": {
+    "assembleDebug": true,
+    "assembleAppAndroidTest": true
+  },
+  "instrumented": {
+    "device": "emulator-5554",
+    "api": 36,
+    "tests": 2,
+    "failures": 0,
+    "xmlSha256": "e1ce370e3966ce61d3606e3e6a050ac1fc238c1f96e6b6a7555d322eb0f383bb"
+  },
+  "controls": [
+    "baseline does not invoke inference",
+    "same deterministic evaluator after schema/evidence validation",
+    "invented references, unknown spans, wrong row, unsupported analyte and context rejected",
+    "existing ambiguity preserved",
+    "span identity binds raw text/geometry/method/extractor version/confidence",
+    "truncated/unexpected schema and mixed thinking rejected without repair",
+    "cancellation and late final cannot produce assessments",
+    "actual PDF extraction with simulated unsupported model proposal produces five NEEDS_REVIEW outputs"
+  ],
+  "s25Policy": "User requested real S25 tests at final implementation stage; no S25 test attempted in this step.",
+  "limitations": [
+    "Model outputs in new boundary tests are controlled fakes, not real Gemma extraction.",
+    "Real extraction protocol acceptance (4.10), bounded runtime/process isolation (4.12) and workbench activation (4.8) remain pending.",
+    "No corpus-wide OCR/LLM or clinical validation."
+  ]
+}

@@ -6,13 +6,12 @@ import br.com.exames.domain.model.ReasonCode.*
 import java.time.Clock
 import java.time.Instant
 
-/** Rule REF_NUMERIC v1.0.0. No clinical interpretation or implicit unit conversions. */
+/** Rule REF_NUMERIC v2.0.0. Automatic assessment; clinical ambiguity still requires review. */
 class DeterministicRangeEvaluator(private val clock: Clock = Clock.systemUTC()) {
     fun evaluate(o: Observation, r: ReferenceRange?): Assessment {
         fun answer(status: AssessmentStatus, reason: ReasonCode) =
             Assessment(o.id, status, reason, Instant.now(clock), RULE_VERSION)
         if (o.ambiguities.isNotEmpty()) return answer(NEEDS_REVIEW, AMBIGUOUS_INPUT)
-        if (!o.confirmed) return answer(NEEDS_REVIEW, UNCONFIRMED)
         if (r == null) return answer(NOT_CLASSIFIABLE, NO_REFERENCE)
         if (r.observationId != o.id) return answer(NEEDS_REVIEW, REFERENCE_MISMATCH)
         if (r.applicability != Applicability.APPLICABLE) return answer(NEEDS_REVIEW, CONTEXT_UNRESOLVED)
@@ -43,5 +42,5 @@ class DeterministicRangeEvaluator(private val clock: Clock = Clock.systemUTC()) 
             return answer(ABOVE_RANGE, ABOVE_UPPER_BOUND)
         return answer(WITHIN_RANGE, INSIDE_REFERENCE)
     }
-    companion object { const val RULE_VERSION = "REF_NUMERIC/1.0.0" }
+    companion object { const val RULE_VERSION = "REF_NUMERIC/2.0.0" }
 }

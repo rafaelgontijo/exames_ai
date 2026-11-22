@@ -1,0 +1,14 @@
+{
+  "caseId": "development-multipage-v1",
+  "scope": "standalone-development",
+  "forbiddenSummaryMarker": "PESSOA-TESTE-ZETA",
+  "pages": [
+    {"page": 1, "block": 1, "analyte": "GLUCOSE", "value": "18,5", "unit": "mg/dL", "reference": "10 a 21 mg/dL", "status": "WITHIN_RANGE"},
+    {"page": 2, "block": 1, "unsupported": "Glicemia média estimada", "expectedObservations": 0},
+    {"page": 3, "block": 1, "analyte": "UREA", "value": "13,5", "unit": "mg/dL", "reference": "Grupo A: 7 a 11 mg/dL; Grupo B: 12 a 17 mg/dL", "status": "NEEDS_REVIEW"},
+    {"page": 4, "block": 1, "analyte": "CREATININE", "value": "2,4", "unit": "mg/dL", "reference": null, "status": "NOT_CLASSIFIABLE"},
+    {"page": 5, "block": 1, "unsupported": "Marcador experimental", "expectedObservations": 0},
+    {"page": 6, "block": 1, "analyte": "POTASSIUM", "value": "5,5", "unit": "mmol/L", "reference": "< 4 mmol/L", "status": "ABOVE_RANGE"},
+    {"page": 6, "block": 2, "analyte": "SODIUM", "value": "11", "unit": "mmol/L", "reference": "10 a 20 mmol/L", "status": "WITHIN_RANGE"}
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-26",
+  "device": {
+    "model": "SM-S931B",
+    "android": "17",
+    "api": "37",
+    "abi": "arm64-v8a",
+    "pageSizeBytes": "4096",
+    "memTotal": "MemTotal:       11379964 kB"
+  },
+  "runtime": "0.18.1",
+  "backend": "CPU",
+  "threads": 4,
+  "modelRevision": "f8b5b3a3eea2e3859e821ad9d9222c64d649eff7",
+  "modelSha256": "da3c0ad154b78f33537b117fbe747cc1d4fd3507479002b159998f4023f32a84",
+  "contextTokens": 4096,
+  "maxOutputTokens": 2048,
+  "requestedThoughtBudget": 300,
+  "promptVersion": "lfm-device-spike/1",
+  "schema": "five-strings/1",
+  "sampling": {
+    "topK": 1,
+    "topP": 1.0,
+    "temperature": 0.0,
+    "seed": 0
+  },
+  "phaseTimeoutSeconds": 120,
+  "timedOut": true,
+  "instrumentationCode": null,
+  "processCrashed": false,
+  "testFailureType": null,
+  "freshEnginePerRequest": true,
+  "elapsedSeconds": 137.628,
+  "memoryMethod": "Debug.getPss every 100 ms; sampled maximum, not guaranteed peak",
+  "thoughtPersisted": false,
+  "thoughtTokens": null,
+  "finalTokens": null,
+  "passed": false,
+  "events": [
+    {
+      "case": 0,
+      "phase": "load"
+    },
+    {
+      "loadMs": 15458,
+      "case": 0,
+      "phase": "generate"
+    }
+  ],
+  "limits": "Plans two synthetic single-row inputs, stops at first failure; no OCR, A/B, safe reset or clinical validation. Manual test model provisioning; not offline APK acceptance."
+}

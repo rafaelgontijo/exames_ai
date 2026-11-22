@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "passed": false,
+  "clinicalValidation": false,
+  "cleanOfflineInstall": false,
+  "reusedDisposableFixtureFrom": "validation/results/native-production-s25-2026-11-03-protocol2.json",
+  "promptVersion": "biochemistry-evidence/2",
+  "events": [
+    {
+      "phase": "generating-0"
+    },
+    {
+      "characters": 238,
+      "loadMillis": 8100,
+      "generationMillis": 1807,
+      "measurements": {
+        "elapsedMillis": 11520,
+        "sampledMaxPssKiB": 2995841,
+        "availableBytesBefore": 5918240768,
+        "availableBytesAfter": 5860704256,
+        "totalRamBytes": 11653074944,
+        "prefillTokens": null,
+        "decodedTokens": null,
+        "contextTokensAfter": null,
+        "thoughtTokens": null,
+        "finalTokens": null,
+        "tokenChannelsUnavailable": "SDK_NO_CHANNEL_TOKEN_COUNTS",
+        "memoryMethod": "ANDROID_DEBUG_PSS_100MS_SAMPLED_MAX_NOT_PEAK_GPU_ACCOUNTING_INCOMPLETE",
+        "freshEngine": true,
+        "processId": 21043
+      },
+      "startsObject": true,
+      "endsObject": true,
+      "markdown": false,
+      "jsonParseable": false,
+      "punctuationOnly": "{\"x\":\"x\",\"x\":[{\"x\":{\"x\":\"x\",\"x\":[\"x\"]},\"x\":{\"x\":\"x\",\"x\":[\"x\"]},\"x\":{\"x\":\"x\",\"x\":[\"x\"]},\"x\":[{\"x\":\"x\",\"x\":[\"x\"]}],\"x\":xxxx}",
+      "phase": "invalid-final-shape-0"
+    }
+  ],
+  "failure": "REAL_PROTOCOL_SCHEMA_INVALID",
+  "sourceOrFinalTextExported": false,
+  "thoughtPersisted": false,
+  "interpretation": "Incomplete array/root JSON rejected unchanged; SDK aggregate token counts unavailable in this control, no cause inferred from null counts."
+}

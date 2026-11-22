@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-03T23:38:07.578961+00:00",
+  "clinicalValidation": false,
+  "applicationId": "br.com.exames.offline",
+  "appApkSha256": "5f83115fbc3df39020e410b71d7998c4da4bb0b77135301f0496eea19d15350c",
+  "appTestApkSha256": "eff23c7bca552ca4c2da0bb8e328163a9c36fd9cd32aa589f6049dd4659bcace",
+  "jvmDistinct": 265,
+  "jvmPassed": 265,
+  "jvmFailed": 0,
+  "corpusPythonTests": 22,
+  "liteRtHostTests": 15,
+  "selectedRuntimeInstrumented": 16,
+  "dataLocalInstrumented": {
+    "tests": 62,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1
+  },
+  "build": "assembleDebug test :app:assembleDebugAndroidTest",
+  "buildPassed": true,
+  "audit": {
+    "bundledModelHashesAndLicenses": true,
+    "uncompressedModelAssets": true,
+    "noInternetPermission": true,
+    "backupDisabled": true,
+    "cleartextDisabled": true,
+    "noNetworkOrTelemetryClientsInEffectiveRuntimeGraph": true,
+    "minSdk": 24,
+    "zipAlignment16KiB": true,
+    "strictOpenSpec": true
+  },
+  "ocrLockSha256": "7761bb077b4b4e2bbc544dc879f901614e79c5f8fd9f29e196f5511715bb82ed",
+  "corpusAccessibilityEvidence": "validation/results/corpus-report-a11y-verified-emulator-2026-11-03.json",
+  "realNativeAcceptanceExecutedThisStage": false,
+  "productionProtocolAccepted": false,
+  "pending": [
+    "Real production protocol and native cancellation on S25",
+    "Clean offline four-format/two-mode paired runs on S25",
+    "4 GB device and 16 KiB kernel hardware",
+    "Separate thought/final token counts unavailable in SDK",
+    "Complete GPU memory accounting unavailable"
+  ],
+  "openSpecProgress": {
+    "total": 51,
+    "complete": 42,
+    "remaining": 9
+  }
+}

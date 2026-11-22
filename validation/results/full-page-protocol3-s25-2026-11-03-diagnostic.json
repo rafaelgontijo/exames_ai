@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "clinicalValidation": false,
+  "promptVersion": "biochemistry-evidence/3",
+  "sourceOrFinalTextExported": false,
+  "thoughtPersisted": false,
+  "diagnosticOnly": true,
+  "events": [
+    {
+      "format": "PDF_TEXT",
+      "inputUtf8Bytes": 2109,
+      "fragments": 74,
+      "baselineRows": 5,
+      "characters": 823,
+      "loadMillis": 8818,
+      "generationMillis": 5849,
+      "accepted": false,
+      "issues": [
+        "DIVERGENCE"
+      ],
+      "rows": [
+        {
+          "analyte": "GLUCOSE",
+          "baselineFound": true,
+          "analyteEqual": true,
+          "resultEqual": true,
+          "unitEqual": true,
+          "referencesEqual": false,
+          "proposedReferenceCount": 0,
+          "sourceReferenceCount": 1,
+          "proposedReferenceLengths": [],
+          "sourceReferenceLengths": [
+            11
+          ],
+          "contextPresent": false,
+          "baselineContextPresent": false,
+          "contextSpansEqual": true
+        },
+        {
+          "analyte": "UREA",
+          "baselineFound": true,
+          "analyteEqual": true,
+          "resultEqual": true,
+          "unitEqual": true,
+          "referencesEqual": false,
+          "proposedReferenceCount": 0,
+          "sourceReferenceCount": 1,
+          "proposedReferenceLengths": [],
+          "sourceReferenceLengths": [
+            11
+          ],
+          "contextPresent": false,
+          "baselineContextPresent": false,
+          "contextSpansEqual": true
+        },
+        {
+          "analyte": "CREATININE",
+          "baselineFound": true,
+          "analyteEqual": true,
+          "resultEqual": true,
+          "unitEqual": true,
+          "referencesEqual": false,
+          "proposedReferenceCount": 0,
+          "sourceReferenceCount": 1,
+          "proposedReferenceLengths": [],
+          "sourceReferenceLengths": [
+            11
+          ],
+          "contextPresent": false,
+          "baselineContextPresent": false,
+          "contextSpansEqual": true
+        },
+        {
+          "analyte": "SODIUM",
+          "baselineFound": true,
+          "analyteEqual": true,
+          "resultEqual": true,
+          "unitEqual": true,
+          "referencesEqual": false,
+          "proposedReferenceCount": 0,
+          "sourceReferenceCount": 1,
+          "proposedReferenceLengths": [],
+          "sourceReferenceLengths": [
+            12
+          ],
+          "contextPresent": false,
+          "baselineContextPresent": false,
+          "contextSpansEqual": true
+        },
+        {
+          "analyte": "POTASSIUM",
+          "baselineFound": true,
+          "analyteEqual": true,
+          "resultEqual": true,
+          "unitEqual": true,
+          "referencesEqual": false,
+          "proposedReferenceCount": 0,
+          "sourceReferenceCount": 1,
+          "proposedReferenceLengths": [],
+          "sourceReferenceLengths": [
+            12
+          ],
+          "contextPresent": false,
+          "baselineContextPresent": false,
+          "contextSpansEqual": true
+        }
+      ]
+    },
+    {
+      "format": "PDF_SCANNED",
+      "inputUtf8Bytes": 1979,
+      "fragments": 69,
+      "baselineRows": 5,
+      "characters": 1191,
+      "loadMillis": 13256,
+      "generationMillis": 13182,
+      "schemaValid": false,
+      "punctuationOnly": "```xxxx\n{\n\"x\": \"x\",\n\"x\": [\n{\n\"x\": {\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n},\n\"x\": {\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n},\n\"x\": {\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n},\n\"x\": [\n{\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n}\n],\n\"x\": xxxx\n},\n{\n\"x\": {\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n},\n\"x\": {\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n},\n\"x\": {\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n},\n\"x\": [\n{\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n}\n],\n\"x\": xxxx\n},\n{\n\"x\": {\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n},\n\"x\": {\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n},\n\"x\": {\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n},\n\"x\": [\n{\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n}\n],\n\"x\": xxxx\n},\n{\n\"x\": {\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n},\n\"x\": {\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n},\n\"x\": {\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n},\n\"x\": [\n{\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n}\n],\n\"x\": xxxx\n},\n{\n\"x\": {\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n},\n\"x\": {\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n},\n\"x\": {\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n},\n\"x\": [\n{\n\"x\": \"x\",\n\"x\": [\n\"x\"\n]\n}\n],\n\"x\": xxxx\n}\n]\n}\n```"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "date": "2026-11-21",
+  "applicationId": "br.com.exames.offline",
+  "apkBytes": 2133502487,
+  "apkSha256": "202c4c5578106e56c28fabaf7297dc721a6b784f21fe2d99b4843488192bf475",
+  "buildPassed": true,
+  "jvmDistinctPassed": 352,
+  "androidApi24": {
+    "data-local": {
+      "tests": 73,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "data-documents": {
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "feature-results": {
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "core-ui": {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "ui-checks": {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "audit": {
+    "minSdk": 24,
+    "backupDisabled": true,
+    "internetPermissionAbsent": true,
+    "zipAlignment16KiB": true,
+    "signatureVerified": true,
+    "bundledModelOcrAndFontsVerified": true,
+    "privateShareProvider": true,
+    "productionFixtureExcluded": true
+  },
+  "clinicalValidation": false
+}

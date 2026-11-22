@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -9,7 +11,7 @@ android {
     compileSdk = 36
     buildToolsVersion = "36.0.0"
     defaultConfig {
-        minSdk = 23
+        minSdk = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
@@ -18,13 +20,21 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures { compose = true }
+    // The instrumentation APK otherwise inherits minSdk as targetSdk; Android 17 shows an "older Android" dialog over tests.
+    testOptions { targetSdk = 36 }
 }
 kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) } }
+kapt { correctErrorTypes = true }
 
 dependencies {
     coreLibraryDesugaring(libs.desugar.jdk)
     implementation(project(":domain"))
+    implementation(project(":core-ui"))
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    kapt(libs.kotlin.metadata)
     implementation(libs.coroutines.android)
+    implementation(libs.androidx.camera.view)
     implementation(project(":data-documents"))
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.compose.bom))
@@ -42,4 +52,5 @@ dependencies {
     testImplementation(libs.coroutines.test)
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.espresso.core)
 }

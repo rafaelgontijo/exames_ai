@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-21",
+  "api": 24,
+  "beforeCommit": "a626b5e",
+  "before": {
+    "phase": "upgrade-fingerprint",
+    "pid": 7385,
+    "observations": 5,
+    "statuses": {
+      "WITHIN_RANGE": 5
+    },
+    "fingerprint": "7be93a99039f4817662cf15a998a425bbd4211c4be9ffeeecf7b6fdb6ea2161d"
+  },
+  "after": {
+    "phase": "upgrade-fingerprint",
+    "pid": 7457,
+    "observations": 5,
+    "statuses": {
+      "WITHIN_RANGE": 5
+    },
+    "fingerprint": "7be93a99039f4817662cf15a998a425bbd4211c4be9ffeeecf7b6fdb6ea2161d"
+  },
+  "dataPreserved": true,
+  "reopenedReviewedAndDeleted": true
+}

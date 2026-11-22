@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "bundled-model-acceptance/1",
+  "passed": true,
+  "package": "br.com.exames.offline.validation",
+  "cleanInstall": true,
+  "airplaneMode": true,
+  "wifiPersistedState": "3",
+  "appApkSha256": "6c2e0cb7b653ba9e697135d22acf7b4c214c8f564a8c171f93f2297bbcd18ce6",
+  "testApkSha256": "d639e16792dd5cb3cf119aeb6fc28446a0bbd14f89fc34d8cf81c01fbcc62e03",
+  "bundledModelVerified": true,
+  "events": [
+    {
+      "phase": "prepare-and-infer"
+    },
+    {
+      "passed": true,
+      "loadMs": 8386,
+      "generationMs": 1302,
+      "modelBytes": 2008432640,
+      "modelSha256": "a53a59001894c58e6bdb5b9b227709f91a2e3e556baa7d85acf9c55402ba5cf5",
+      "offline": true,
+      "thoughtPersisted": false,
+      "phase": "result"
+    }
+  ],
+  "clinicalValidation": false,
+  "thoughtPersisted": false,
+  "device": {
+    "model": "SM-S931B",
+    "android": "17",
+    "api": "37"
+  },
+  "cleanupSucceeded": true
+}

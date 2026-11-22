@@ -1,0 +1,484 @@
+{
+  "manifest_schema": "0.1.3",
+  "repo": "litert-community/LFM2.5-1.2B-Thinking",
+  "generated": "2026-10-14",
+  "generator": "make_manifest.py",
+  "model": {
+    "display_name": "LFM2.5-1.2B-Thinking",
+    "base_model": "LiquidAI/LFM2.5-1.2B-Thinking",
+    "architecture": "Liquid AI hybrid conv-attention decoder (LFM2 ShortConv + attention); reasoning variant that works problems inside <think>...</think>, thought channel declared in bundle metadata",
+    "parameters_b": 1.2,
+    "license": "other (lfm-open-license-v1.0, LFM Open License v1.0)",
+    "session_defaults": {
+      "max_output_tokens_min": 2048,
+      "notes": "Card: give it a generous token budget (>=2048) - a reasoning model truncated mid-thought produces no final answer; Gallery guidance is to set max tokens high (2048-4096), and size --max-num-tokens so thinking turns complete."
+    },
+    "context_length": 4096,
+    "capabilities": {
+      "vision": false,
+      "audio": false,
+      "thinking": {
+        "declared": true,
+        "channel": {
+          "start": "<think>",
+          "end": "</think>"
+        },
+        "control": "model"
+      },
+      "channels": [
+        {
+          "name": "thought",
+          "start": "<think>",
+          "end": "</think>"
+        }
+      ]
+    }
+  },
+  "variants": [
+    {
+      "file": "LFM2.5-1.2B-Thinking_int4.litertlm",
+      "sha256": "da3c0ad154b78f33537b117fbe747cc1d4fd3507479002b159998f4023f32a84",
+      "size_bytes": 736015744,
+      "sections": [
+        {
+          "type": "LlmMetadataProto",
+          "size_bytes": 4466
+        },
+        {
+          "type": "ExecutorMetadataProto",
+          "size_bytes": 1421
+        },
+        {
+          "type": "HF_Tokenizer_Zlib",
+          "size_bytes": 906962
+        },
+        {
+          "type": "TFLiteModel",
+          "size_bytes": 735049088,
+          "model_type": "tf_lite_prefill_decode"
+        }
+      ],
+      "quantization": "int4 blockwise-32 + OCTAV linears, int8 embedding, convs float",
+      "backends": [
+        "cpu"
+      ],
+      "default_backend": "cpu",
+      "recommended": [
+        {
+          "platform": "android",
+          "device_class": "midrange",
+          "backend": "cpu",
+          "reason": "~1.7x faster than int8 on a Pixel 8a CPU and 41% smaller"
+        }
+      ],
+      "requirements": {
+        "platform_notes": [
+          "Requires litert-lm >= 0.15 / a recent AI Edge Gallery (the 2026-10-13 re-pack uses the lfm2 model type, which 0.14 does not have); files were updated in place 2026-08-04 to add the ExecutorMetadata section litert-lm >= 0.15 requires (weights and graph byte-identical)",
+          "In the Gallery select the CPU backend and set max tokens high (2048-4096)",
+          "First device load compiles the graph and can take about a minute; later loads are instant"
+        ]
+      },
+      "measured": [
+        {
+          "device": "Apple M4 Max",
+          "backend": "cpu",
+          "runtime": "litert-lm benchmark (litert-lm 0.15.0)",
+          "prompt_tokens": 256,
+          "decode_tokens": 256,
+          "prefill_tps": 386,
+          "decode_tps": 118.9,
+          "ttft_s": 0.67,
+          "max_num_tokens": 1024,
+          "runs": 3,
+          "date": "2026-08-24",
+          "source": "model card Performance table (cardbench harness)"
+        },
+        {
+          "device": "Apple M4 Max",
+          "backend": "cpu",
+          "runtime": "litert-lm benchmark (litert-lm 0.15.0)",
+          "prompt_tokens": 256,
+          "decode_tokens": 256,
+          "prefill_tps": 342,
+          "decode_tps": 77.4,
+          "ttft_s": 0.76,
+          "max_num_tokens": 4096,
+          "runs": 3,
+          "date": "2026-08-24",
+          "source": "model card Performance table (cardbench harness)"
+        }
+      ],
+      "known_issues": [
+        "Cannot create a GPU engine: pre-0.9.2 ShortConv export carries INT64 ADD/CAST, GATHER_ND and a const-input GREATER_EQUAL; the GPU delegate takes 536 of 579 ops and the runtime refuses the partial split - use the CPU backend (the _int4_gpu file is the GPU re-export)",
+        "Multi-turn (3-turn probe on the int8 file, litert-lm 0.17.0, 2026-09-15; not re-run on this file): the runtime removes past turns' reasoning from the history before each turn (the 0.15.0 form is gone) and the int8 file answers the previous question at turn 3 with the default setting; the bf16 model passes with LiquidAI's template, which keeps only the most recent turn's reasoning (runs: LiteRT-LM #3184). Start a fresh conversation per task, on a new Engine (LiteRT-LM #3165)",
+        "Create a new Engine for each conversation — on litert-lm 0.18.0 the runtime starts a new Conversation on an Engine that already ran another conversation from the earlier conversation's short-convolution state, reusing the prompt tokens the two conversations share and not resetting the state (LiteRT-LM #3165); a probe asking three questions first in a pirate-persona conversation and then in a conversation told to answer in one word (CPU backend, also for the _gpu files; litert-lm 0.18.0 on a Mac) could not measure any of the four files, because it caps each answer at 200 tokens and this model answers after its reasoning.",
+        "Thinking cannot be switched off on litert-lm 0.18.0: ThinkingConfig(enable_thinking=False) has no effect on this file (the model still reasons in the thought channel, fills a 400-token cap with it and gives no answer text; measured 2026-10-12); set thinking_token_budget (300 answered 17 × 23 under a 700-token cap) and a cap above it.",
+        "Re-packed 2026-10-13, metadata only (llm_model_type lfm2, and the chat template now renders tool calls and tool results; weights, tokenizer and graph byte-identical): on litert-lm 0.18.0 the LFM2 tool call is parsed (tool_calls, automatic_tool_calling) and the tool result reaches the model (measured 2026-10-13). The lfm2 model type needs litert-lm >= 0.15.0 (0.14 has no lfm2 type); on 0.15-0.17 the call still arrives as text. The floor is read from the LiteRT-LM source, not run."
+      ],
+      "min_runtime_version": "0.15.0"
+    },
+    {
+      "file": "LFM2.5-1.2B-Thinking_int4_gpu.litertlm",
+      "sha256": "51130e6e57a940bbfbb66f67698c47fd10c7051a70e7247fc8b084ccce4d54ae",
+      "size_bytes": 736220768,
+      "sections": [
+        {
+          "type": "LlmMetadataProto",
+          "size_bytes": 4466
+        },
+        {
+          "type": "ExecutorMetadataProto",
+          "size_bytes": 1421
+        },
+        {
+          "type": "HF_Tokenizer_Zlib",
+          "size_bytes": 906962
+        },
+        {
+          "type": "TFLiteModel",
+          "size_bytes": 735254112,
+          "model_type": "tf_lite_prefill_decode"
+        }
+      ],
+      "quantization": "same int4 recipe and weights as the int4 file (int4 blockwise-32 + OCTAV linears, int8 embedding, convs float), re-exported with litert-torch 0.9.3 + litert-converter 0.3.1 so it runs on the GPU",
+      "backends": [
+        "cpu",
+        "gpu"
+      ],
+      "default_backend": "gpu",
+      "requirements": {
+        "platform_notes": [
+          "GPU needs litert-lm >= 0.16.0 (verified by generation on Android OpenCL and macOS, not just by a benchmark table); the Gallery bundles its own runtime which may lag that version - if its GPU toggle fails there, use CPU",
+          "On iOS Metal set maxNumTokens to 1024; for a thinking model budget the context so the thinking phase completes",
+          "Delegates fully on Android OpenCL - 501/501 and 519/519 nodes, zero rejected ops",
+          "Includes the ExecutorMetadata section litert-lm >= 0.15 needs"
+        ],
+        "peak_ram_mb": 618
+      },
+      "measured": [
+        {
+          "device": "Pixel 8a (Tensor G3)",
+          "backend": "gpu",
+          "runtime": "litert_lm_main built from the litert-lm v0.16.0 release tag",
+          "prompt_tokens": 263,
+          "decode_tokens": 256,
+          "prefill_tps": "189-192",
+          "decode_tps": "21.8-22.4",
+          "ttft_s": "1.41-1.44",
+          "runs": 3,
+          "date": "2026-08-24",
+          "source": "model card Performance table (cardbench harness)"
+        },
+        {
+          "device": "Pixel 8a (Tensor G3)",
+          "backend": "cpu",
+          "runtime": "litert_lm_main built from the litert-lm v0.16.0 release tag",
+          "prompt_tokens": 263,
+          "decode_tokens": 256,
+          "prefill_tps": "31.3-31.7",
+          "decode_tps": "16.3-16.7",
+          "ttft_s": "8.4-8.5",
+          "runs": 3,
+          "date": "2026-08-24",
+          "source": "model card Performance table (cardbench harness)"
+        },
+        {
+          "device": "Apple M4 Max",
+          "backend": "gpu",
+          "runtime": "litert-lm benchmark (litert-lm 0.16.0)",
+          "prompt_tokens": 256,
+          "decode_tokens": 256,
+          "prefill_tps": 3734,
+          "decode_tps": 317.9,
+          "ttft_s": 0.07,
+          "cache": "no",
+          "runs": 3,
+          "date": "2026-08-24",
+          "source": "model card Performance table (cardbench harness)"
+        },
+        {
+          "device": "Apple M4 Max",
+          "backend": "cpu",
+          "runtime": "litert-lm benchmark (litert-lm 0.16.0)",
+          "prompt_tokens": 256,
+          "decode_tokens": 256,
+          "prefill_tps": 334.4,
+          "decode_tps": 79.2,
+          "ttft_s": 0.78,
+          "cache": "no",
+          "runs": 3,
+          "date": "2026-08-24",
+          "source": "model card Performance table (cardbench harness)"
+        },
+        {
+          "device": "iPhone 17 Pro",
+          "backend": "gpu",
+          "runtime": "litert-lm v0.16.0 xcframework",
+          "decode_tps": 69.7,
+          "max_num_tokens": 1024,
+          "runs": 1,
+          "date": "2026-08-24",
+          "source": "model card iPhone section; single run, device charging, TTFT 6.5 s including the thinking phase"
+        },
+        {
+          "device": "Galaxy S26 (SM-S942Q, SM8850, Adreno)",
+          "backend": "gpu",
+          "runtime": "litert_lm_advanced_main, litert-lm v0.16.0 release kit",
+          "prompt_tokens": 205,
+          "prefill_tps": 1020.4,
+          "decode_tps": 48.14,
+          "max_num_tokens": 4096,
+          "cache": "no",
+          "runs": 2,
+          "date": "2026-08-24",
+          "source": "GPU gate sweep of the shipped catalog on this device"
+        },
+        {
+          "device": "Galaxy S26 (SM-S942Q, Qualcomm SM8850, Adreno)",
+          "backend": "cpu",
+          "runtime": "litert_lm_advanced_main v0.16.0 (XNNPACK CPU)",
+          "prompt_tokens": 205,
+          "decode_tokens": 1620,
+          "prefill_tps": "78.0-131.1",
+          "decode_tps": "38.23-41.71",
+          "ttft_s": "1.59-2.65",
+          "load_s": 4.7,
+          "peak_memory_mb": 1341,
+          "cache": "no",
+          "runs": 2,
+          "date": "2026-09-05",
+          "source": "S7 Android backfill: same-device CPU control - identical binary, prompt file and flags, only --backend differs; 205-token prompt with --benchmark, 2 cold runs (compile/weight caches deleted between runs, device cooled below 42 C before each run); same-device control for an existing GPU row on this handset"
+        }
+      ],
+      "known_issues": [
+        "iOS Metal needs maxNumTokens set to 1024: the Metal delegate compiles kernels against the KV cache maxNumTokens pre-allocates, and a mismatched value fails engine creation with a shader-compile error (this is what LiteRT-LM#3129 turned out to be - integration-side sizing, not a runtime bug)",
+        "Multi-turn (3-turn probe on the int8 file, litert-lm 0.17.0, 2026-09-15; not re-run on this file): the runtime removes past turns' reasoning from the history before each turn (the 0.15.0 form is gone) and the int8 file answers the previous question at turn 3 with the default setting; the bf16 model passes with LiquidAI's template, which keeps only the most recent turn's reasoning (runs: LiteRT-LM #3184). Start a fresh conversation per task, on a new Engine (LiteRT-LM #3165)",
+        "Create a new Engine for each conversation — on litert-lm 0.18.0 the runtime starts a new Conversation on an Engine that already ran another conversation from the earlier conversation's short-convolution state, reusing the prompt tokens the two conversations share and not resetting the state (LiteRT-LM #3165); a probe asking three questions first in a pirate-persona conversation and then in a conversation told to answer in one word (CPU backend, also for the _gpu files; litert-lm 0.18.0 on a Mac) could not measure any of the four files, because it caps each answer at 200 tokens and this model answers after its reasoning.",
+        "Thinking cannot be switched off on litert-lm 0.18.0: ThinkingConfig(enable_thinking=False) has no effect on this file (the model still reasons in the thought channel, fills a 400-token cap with it and gives no answer text; measured 2026-10-12); set thinking_token_budget (300 answered 17 × 23 under a 700-token cap) and a cap above it.",
+        "Re-packed 2026-10-13, metadata only (llm_model_type lfm2, and the chat template now renders tool calls and tool results; weights, tokenizer and graph byte-identical): on litert-lm 0.18.0 the LFM2 tool call is parsed (tool_calls, automatic_tool_calling) and the tool result reaches the model (measured 2026-10-13). The lfm2 model type needs litert-lm >= 0.15.0 (0.14 has no lfm2 type); on 0.15-0.17 the call still arrives as text. The floor is read from the LiteRT-LM source, not run.",
+        "The 2026-10-13 re-pack changes the model type, and with it the runtime's GPU executor defaults (every non-generic LiteRT-LM model type shares them: allow_src_quantized_fc_conv_ops on, OpenCL hint_waiting_for_completion off, kernel batch size unset); the phone GPU rows on this card were measured with the previous file and have not been re-run — on 0.18.0 the Mac GPU digit check ends in cap_hit for this file, as it did with the previous file."
+      ],
+      "min_runtime_version": "0.16.0",
+      "recommended": [
+        {
+          "platform": "ios",
+          "backend": "gpu",
+          "reason": "verified by generation on an iPhone 17 Pro at maxNumTokens 1024 - decode 69.7 tok/s, peak ~680 MB"
+        }
+      ]
+    },
+    {
+      "file": "LFM2.5-1.2B-Thinking_int8.litertlm",
+      "sha256": "6c9fb75c38a5d3c3702d9e49aa01baf2fcc2a80ee4b7be957a2014b4fc573722",
+      "size_bytes": 1244594224,
+      "sections": [
+        {
+          "type": "LlmMetadataProto",
+          "size_bytes": 4466
+        },
+        {
+          "type": "ExecutorMetadataProto",
+          "size_bytes": 1421
+        },
+        {
+          "type": "HF_Tokenizer_Zlib",
+          "size_bytes": 906962
+        },
+        {
+          "type": "TFLiteModel",
+          "size_bytes": 1243627568,
+          "model_type": "tf_lite_prefill_decode"
+        }
+      ],
+      "quantization": "int8 dynamic (linears + embedding; convs float)",
+      "backends": [
+        "cpu"
+      ],
+      "default_backend": "cpu",
+      "requirements": {
+        "platform_notes": [
+          "Requires litert-lm >= 0.15 / a recent AI Edge Gallery (the 2026-10-13 re-pack uses the lfm2 model type, which 0.14 does not have); files were updated in place 2026-08-04 to add the ExecutorMetadata section litert-lm >= 0.15 requires (weights and graph byte-identical)",
+          "In the Gallery select the CPU backend and set max tokens high (2048-4096)",
+          "First device load compiles the graph and can take about a minute; later loads are instant"
+        ]
+      },
+      "measured": [
+        {
+          "device": "Apple M4 Max",
+          "backend": "cpu",
+          "runtime": "litert-lm benchmark (litert-lm 0.15.0)",
+          "prompt_tokens": 256,
+          "decode_tokens": 256,
+          "prefill_tps": 1536,
+          "decode_tps": 98.8,
+          "ttft_s": 0.18,
+          "max_num_tokens": 1024,
+          "runs": 3,
+          "date": "2026-08-24",
+          "source": "model card Performance table (cardbench harness)"
+        },
+        {
+          "device": "Apple M4 Max",
+          "backend": "cpu",
+          "runtime": "litert-lm benchmark (litert-lm 0.15.0)",
+          "prompt_tokens": 256,
+          "decode_tokens": 256,
+          "prefill_tps": 1121,
+          "decode_tps": 83.2,
+          "ttft_s": 0.24,
+          "max_num_tokens": 4096,
+          "runs": 3,
+          "date": "2026-08-24",
+          "source": "model card Performance table (cardbench harness)"
+        },
+        {
+          "device": "Galaxy S26 (SM-S942Q, Qualcomm SM8850, Adreno)",
+          "backend": "cpu",
+          "runtime": "litert_lm_advanced_main v0.16.0 (XNNPACK CPU)",
+          "prompt_tokens": 205,
+          "decode_tokens": 2059,
+          "prefill_tps": "357.1-498.4",
+          "decode_tps": "31.76-35.55",
+          "ttft_s": "0.44-0.6",
+          "load_s": 2.9,
+          "peak_memory_mb": 1790,
+          "cache": "no",
+          "runs": 2,
+          "date": "2026-09-05",
+          "source": "S7 Android backfill: same-device CPU control - identical binary, prompt file and flags, only --backend differs; 205-token prompt with --benchmark, 2 cold runs (compile/weight caches deleted between runs, device cooled below 42 C before each run); the GPU path does not run for this file on this handset, so this row has no GPU counterpart"
+        }
+      ],
+      "known_issues": [
+        "Cannot create a GPU engine: pre-0.9.2 ShortConv export carries INT64 ADD/CAST, GATHER_ND and a const-input GREATER_EQUAL; the GPU delegate takes 536 of 579 ops and the runtime refuses the partial split - use the CPU backend, or the _int8_gpu file for the same weights on GPU",
+        "Multi-turn (3-turn probe, greedy, CPU, litert-lm 0.17.0, 2026-09-15): the runtime removes past turns' reasoning from the history before each turn (the 0.15.0 form, raw <think> text kept in the context, is gone); with the default setting this file answers the previous question at turn 3, and with filter_channel_content_from_kv_cache=false (every past turn's reasoning kept) it drifts at turns 2 and 3. The bf16 model passes the probe with LiquidAI's template, which keeps only the most recent turn's reasoning; the runtime setting is all or nothing (runs: LiteRT-LM #3184). Start a fresh conversation per task, on a new Engine (LiteRT-LM #3165)",
+        "Create a new Engine for each conversation — on litert-lm 0.18.0 the runtime starts a new Conversation on an Engine that already ran another conversation from the earlier conversation's short-convolution state, reusing the prompt tokens the two conversations share and not resetting the state (LiteRT-LM #3165); a probe asking three questions first in a pirate-persona conversation and then in a conversation told to answer in one word (CPU backend, also for the _gpu files; litert-lm 0.18.0 on a Mac) could not measure any of the four files, because it caps each answer at 200 tokens and this model answers after its reasoning.",
+        "Thinking cannot be switched off on litert-lm 0.18.0: ThinkingConfig(enable_thinking=False) has no effect on this file (the model still reasons in the thought channel; it finished inside a 400-token cap and answered; measured 2026-10-12); set thinking_token_budget (300 answered 17 × 23 under a 700-token cap) and a cap above it.",
+        "Re-packed 2026-10-13, metadata only (llm_model_type lfm2, and the chat template now renders tool calls and tool results; weights, tokenizer and graph byte-identical): on litert-lm 0.18.0 the LFM2 tool call is parsed (tool_calls, automatic_tool_calling) and the tool result reaches the model (measured 2026-10-13). The lfm2 model type needs litert-lm >= 0.15.0 (0.14 has no lfm2 type); on 0.15-0.17 the call still arrives as text. The floor is read from the LiteRT-LM source, not run."
+      ],
+      "min_runtime_version": "0.15.0"
+    },
+    {
+      "file": "LFM2.5-1.2B-Thinking_int8_gpu.litertlm",
+      "sha256": "73122d7c8e72009d1a4ea4ee2518c6e69ffc7971dcf732c51cf8ac24c91b5027",
+      "size_bytes": 1244763648,
+      "sections": [
+        {
+          "type": "LlmMetadataProto",
+          "size_bytes": 4466
+        },
+        {
+          "type": "ExecutorMetadataProto",
+          "size_bytes": 1421
+        },
+        {
+          "type": "HF_Tokenizer_Zlib",
+          "size_bytes": 906962
+        },
+        {
+          "type": "TFLiteModel",
+          "size_bytes": 1243796992,
+          "model_type": "tf_lite_prefill_decode"
+        }
+      ],
+      "quantization": "same int8 recipe and weights as the int8 file (post-hoc int8 on FULLY_CONNECTED + channelwise EMBEDDING_LOOKUP; convs left float), re-exported with litert-torch 0.9.3 + litert-converter 0.3.1 so it runs on the GPU",
+      "backends": [
+        "cpu",
+        "gpu"
+      ],
+      "default_backend": "gpu",
+      "recommended": [
+        {
+          "platform": "android",
+          "device_class": "flagship",
+          "backend": "gpu",
+          "reason": "delegates fully on Adreno OpenCL and is 5 GSM8K points more accurate than the int4_gpu file; choose int4_gpu instead when decode speed or the 41% smaller download matters more"
+        },
+        {
+          "platform": "macos",
+          "backend": "gpu",
+          "reason": "~10x the prefill and ~3.4x the decode of the same file on CPU"
+        }
+      ],
+      "requirements": {
+        "peak_ram_mb": 530,
+        "platform_notes": [
+          "GPU needs litert-lm >= 0.16.0, verified by generation (not merely by a benchmark table) on Adreno OpenCL and macOS Metal; the Gallery bundles its own runtime which may lag that version - if its GPU toggle fails there, use CPU",
+          "Delegates fully on Adreno OpenCL - 542/542 nodes on each of the ten multi-token prefill signatures, 501/501 prefill_1 and 519/519 decode, zero rejected ops",
+          "Includes the ExecutorMetadata section litert-lm >= 0.15 needs",
+          "Give it a generous output budget (>=2048): a reasoning model truncated mid-thought produces no final answer",
+          "Not gated on iOS Metal; the sibling _int4_gpu file of the same export lineage is iPhone-verified at maxNumTokens 1024, but that measurement does not transfer to this file"
+        ]
+      },
+      "measured": [
+        {
+          "device": "Galaxy S26 (SM-S942Q, SM8850, Adreno)",
+          "backend": "gpu",
+          "runtime": "litert_lm_advanced_main, litert-lm v0.16.0 release kit",
+          "prompt_tokens": 205,
+          "decode_tokens": 3058,
+          "prefill_tps": "860.3-951.7",
+          "decode_tps": "28.8-40.8",
+          "ttft_s": "0.24-0.27",
+          "max_num_tokens": 4096,
+          "cache": "no",
+          "runs": 2,
+          "date": "2026-08-25",
+          "source": "205-token prompt file with --benchmark and no token-count flags; run 2 is thermally degraded at 3058 decode tokens, quote run 1"
+        },
+        {
+          "device": "Apple M4 Max",
+          "backend": "gpu",
+          "runtime": "litert-lm benchmark (litert-lm 0.16.0)",
+          "prompt_tokens": 256,
+          "decode_tokens": 256,
+          "prefill_tps": 5102.1,
+          "decode_tps": 269.8,
+          "ttft_s": 0.054,
+          "max_num_tokens": 1024,
+          "cache": "no",
+          "runs": 3,
+          "date": "2026-08-25",
+          "source": "cardbench harness, machine rested 300 s before the reading"
+        },
+        {
+          "device": "Apple M4 Max",
+          "backend": "gpu",
+          "runtime": "litert-lm benchmark (litert-lm 0.16.0)",
+          "prompt_tokens": 256,
+          "decode_tokens": 256,
+          "prefill_tps": 3673.2,
+          "decode_tps": 251.5,
+          "ttft_s": 0.074,
+          "max_num_tokens": 4096,
+          "cache": "no",
+          "runs": 3,
+          "date": "2026-08-25",
+          "source": "cardbench harness, machine rested 300 s before the reading"
+        },
+        {
+          "device": "Apple M4 Max",
+          "backend": "cpu",
+          "runtime": "litert-lm benchmark (litert-lm 0.15.0)",
+          "prompt_tokens": 256,
+          "decode_tokens": 256,
+          "prefill_tps": 413.7,
+          "decode_tps": 86.8,
+          "ttft_s": 0.649,
+          "max_num_tokens": 1024,
+          "cache": "no",
+          "runs": 3,
+          "date": "2026-08-25",
+          "source": "measured back to back against the published int8 file (412.9 / 86.8)"
+        }
+      ],
+      "min_runtime_version": "0.16.0",
+      "known_issues": [
+        "Multi-turn (3-turn probe on the int8 file, litert-lm 0.17.0, 2026-09-15; not re-run on this file): the runtime removes past turns' reasoning from the history before each turn (the 0.15.0 form is gone) and the int8 file answers the previous question at turn 3 with the default setting; the bf16 model passes with LiquidAI's template, which keeps only the most recent turn's reasoning (runs: LiteRT-LM #3184). Start a fresh conversation per task, on a new Engine (LiteRT-LM #3165)",
+        "Create a new Engine for each conversation — on litert-lm 0.18.0 the runtime starts a new Conversation on an Engine that already ran another conversation from the earlier conversation's short-convolution state, reusing the prompt tokens the two conversations share and not resetting the state (LiteRT-LM #3165); a probe asking three questions first in a pirate-persona conversation and then in a conversation told to answer in one word (CPU backend, also for the _gpu files; litert-lm 0.18.0 on a Mac) could not measure any of the four files, because it caps each answer at 200 tokens and this model answers after its reasoning.",
+        "Thinking cannot be switched off on litert-lm 0.18.0: ThinkingConfig(enable_thinking=False) has no effect on this file (the model still reasons in the thought channel; it finished inside a 400-token cap and answered; measured 2026-10-12); set thinking_token_budget (300 answered 17 × 23 under a 700-token cap) and a cap above it.",
+        "Re-packed 2026-10-13, metadata only (llm_model_type lfm2, and the chat template now renders tool calls and tool results; weights, tokenizer and graph byte-identical): on litert-lm 0.18.0 the LFM2 tool call is parsed (tool_calls, automatic_tool_calling) and the tool result reaches the model (measured 2026-10-13). The lfm2 model type needs litert-lm >= 0.15.0 (0.14 has no lfm2 type); on 0.15-0.17 the call still arrives as text. The floor is read from the LiteRT-LM source, not run.",
+        "The 2026-10-13 re-pack changes the model type, and with it the runtime's GPU executor defaults (every non-generic LiteRT-LM model type shares them: allow_src_quantized_fc_conv_ops on, OpenCL hint_waiting_for_completion off, kernel batch size unset); the phone GPU rows on this card were measured with the previous file and have not been re-run — the Mac GPU digit check passed on 0.18.0."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "proposal-protocol-preflight/1",
+  "modelExecutionStarted": false,
+  "result": "DEVICE_UNAVAILABLE_BEFORE_INSTALL",
+  "serial": "RQGL902VZBE",
+  "adbListedPhysicalDevice": false,
+  "macosListedSamsungUsbDevice": false,
+  "promptVersion": "biochemistry-evidence/1",
+  "schema": "biochemistry-fields/1",
+  "clinicalValidation": false
+}

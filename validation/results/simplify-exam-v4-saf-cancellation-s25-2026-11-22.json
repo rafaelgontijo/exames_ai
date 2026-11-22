@@ -1,0 +1,35 @@
+{
+  "date": "2026-11-22T22:55:25.903027+00:00",
+  "device": "SM-S931B",
+  "protocol": "exam",
+  "mode": "ASSISTED",
+  "page": null,
+  "viaSaf": true,
+  "airplane": true,
+  "wifi": false,
+  "events": [
+    {
+      "phase": "authorized-stream-ready"
+    },
+    {
+      "entry": true,
+      "finished": false,
+      "cancelNotice": true,
+      "processActive": false,
+      "phase": "authorized-cancellation-state"
+    },
+    {
+      "stoppedDuringInference": true,
+      "privateProcessRetired": true,
+      "sourceDiscarded": true,
+      "phase": "authorized-cancellation-measured"
+    }
+  ],
+  "clinicalValidation": false,
+  "runnerPassed": true,
+  "streamDelivered": true,
+  "cancellationMeasured": true,
+  "completed": true,
+  "promptVersion": "exam-extraction/4",
+  "schemaVersion": "exam/2"
+}

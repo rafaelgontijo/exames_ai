@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-21T13:42:24.789865+00:00",
+  "device": {
+    "model": "SM-S931B",
+    "api": 37,
+    "airplane": "1",
+    "wifi": "0"
+  },
+  "applicationId": "br.com.exames.offline.validation.workbench",
+  "beforeApkSha256": "1f3f43a82ad4ade4da4f0cceeaec13e3e0b4c93c479e0b0a9075ccd437fe1623",
+  "afterApkSha256": "e038eae5343302a067ff56085f7e5cb1638b83184aaec7f6a17d27280270609b",
+  "events": [],
+  "passed": false,
+  "failureStage": "seed",
+  "failureType": "CalledProcessError"
+}

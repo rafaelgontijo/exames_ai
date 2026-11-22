@@ -1,0 +1,318 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-26",
+  "device": {
+    "model": "SM-S931B",
+    "android": "17",
+    "api": "37",
+    "abi": "arm64-v8a",
+    "pageSizeBytes": "4096",
+    "memTotal": "MemTotal:       11379964 kB"
+  },
+  "runtime": "0.18.1",
+  "backend": "CPU",
+  "threads": 4,
+  "modelRevision": "f8b5b3a3eea2e3859e821ad9d9222c64d649eff7",
+  "modelSha256": "da3c0ad154b78f33537b117fbe747cc1d4fd3507479002b159998f4023f32a84",
+  "contextTokens": 4096,
+  "maxOutputTokens": 2048,
+  "requestedThoughtBudget": 300,
+  "promptVersion": "lfm-device-spike/1",
+  "schema": "five-strings/1",
+  "harnessVersion": 2,
+  "api": "async-callback",
+  "thinkingConfigAtSend": true,
+  "sampling": {
+    "topK": 1,
+    "topP": 1.0,
+    "temperature": 0.0,
+    "seed": 0
+  },
+  "phaseTimeoutSeconds": 120,
+  "timedOut": true,
+  "instrumentationCode": null,
+  "processCrashed": false,
+  "testFailureType": null,
+  "freshEnginePerRequest": true,
+  "elapsedSeconds": 134.215,
+  "memoryMethod": "Debug.getPss every 100 ms; sampled maximum, not guaranteed peak",
+  "thoughtPersisted": false,
+  "thoughtTokens": null,
+  "finalTokens": null,
+  "passed": false,
+  "events": [
+    {
+      "case": 0,
+      "phase": "load"
+    },
+    {
+      "loadMs": 12708,
+      "case": 0,
+      "phase": "conversation"
+    },
+    {
+      "loadMs": 12708,
+      "conversationMs": 104,
+      "case": 0,
+      "phase": "generate"
+    },
+    {
+      "case": 0,
+      "phase": "submitted"
+    },
+    {
+      "generationElapsedMs": 5038,
+      "cpuMs": 8045,
+      "callbacks": 0,
+      "finalChars": 0,
+      "sampledMaxPssKiB": 7424041,
+      "firstCallbackMs": -1,
+      "firstFinalMs": -1,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 10040,
+      "cpuMs": 14374,
+      "callbacks": 0,
+      "finalChars": 0,
+      "sampledMaxPssKiB": 7460877,
+      "firstCallbackMs": -1,
+      "firstFinalMs": -1,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 15043,
+      "cpuMs": 20588,
+      "callbacks": 0,
+      "finalChars": 0,
+      "sampledMaxPssKiB": 7520932,
+      "firstCallbackMs": -1,
+      "firstFinalMs": -1,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 20047,
+      "cpuMs": 33721,
+      "callbacks": 84,
+      "finalChars": 0,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": -1,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 25061,
+      "cpuMs": 50162,
+      "callbacks": 226,
+      "finalChars": 0,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": -1,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 30073,
+      "cpuMs": 57938,
+      "callbacks": 277,
+      "finalChars": 0,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": -1,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 35095,
+      "cpuMs": 66967,
+      "callbacks": 332,
+      "finalChars": 123,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": 32863,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 40119,
+      "cpuMs": 75287,
+      "callbacks": 381,
+      "finalChars": 308,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": 32863,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 45133,
+      "cpuMs": 85561,
+      "callbacks": 443,
+      "finalChars": 561,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": 32863,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 50150,
+      "cpuMs": 94710,
+      "callbacks": 491,
+      "finalChars": 764,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": 32863,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 55175,
+      "cpuMs": 103701,
+      "callbacks": 539,
+      "finalChars": 958,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": 32863,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 60218,
+      "cpuMs": 115618,
+      "callbacks": 610,
+      "finalChars": 1175,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": 32863,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 65233,
+      "cpuMs": 125226,
+      "callbacks": 664,
+      "finalChars": 1378,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": 32863,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 70256,
+      "cpuMs": 138133,
+      "callbacks": 747,
+      "finalChars": 1668,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": 32863,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 75268,
+      "cpuMs": 151276,
+      "callbacks": 829,
+      "finalChars": 1978,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": 32863,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 80316,
+      "cpuMs": 160680,
+      "callbacks": 875,
+      "finalChars": 2168,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": 32863,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 85333,
+      "cpuMs": 169256,
+      "callbacks": 912,
+      "finalChars": 2325,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": 32863,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 90344,
+      "cpuMs": 185182,
+      "callbacks": 998,
+      "finalChars": 2627,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": 32863,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 95380,
+      "cpuMs": 195290,
+      "callbacks": 1044,
+      "finalChars": 2801,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": 32863,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 100400,
+      "cpuMs": 207232,
+      "callbacks": 1100,
+      "finalChars": 3014,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": 32863,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 105435,
+      "cpuMs": 222237,
+      "callbacks": 1181,
+      "finalChars": 3316,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": 32863,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 110466,
+      "cpuMs": 230774,
+      "callbacks": 1218,
+      "finalChars": 3468,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": 32863,
+      "case": 0,
+      "phase": "progress"
+    },
+    {
+      "generationElapsedMs": 115495,
+      "cpuMs": 238574,
+      "callbacks": 1250,
+      "finalChars": 3589,
+      "sampledMaxPssKiB": 7636889,
+      "firstCallbackMs": 17476,
+      "firstFinalMs": 32863,
+      "case": 0,
+      "phase": "progress"
+    }
+  ],
+  "limits": "Plans two synthetic single-row inputs, stops at first failure; no OCR, A/B, safe reset or clinical validation. Manual test model provisioning; not offline APK acceptance."
+}

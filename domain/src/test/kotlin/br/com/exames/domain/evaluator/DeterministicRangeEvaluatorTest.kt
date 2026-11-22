@@ -31,7 +31,7 @@ class DeterministicRangeEvaluatorTest {
         val result = evaluator.evaluate(observation(value), reference())
         assertEquals(status, result.status)
         assertEquals(now, result.evaluatedAt)
-        assertEquals("REF_NUMERIC/1.0.0", result.ruleVersion)
+        assertEquals("REF_NUMERIC/2.0.0", result.ruleVersion)
     }
     @ParameterizedTest
     @CsvSource("10,false,true,BELOW_RANGE", "20,true,false,ABOVE_RANGE", "10,true,false,WITHIN_RANGE", "20,false,true,WITHIN_RANGE")
@@ -65,8 +65,23 @@ class DeterministicRangeEvaluatorTest {
     @Test fun absenceOfReferenceNeverInventsOne() {
         assertEquals(NOT_CLASSIFIABLE, evaluator.evaluate(observation(), null).status)
     }
-    @Test fun unconfirmedDataRequiresReview() {
-        assertEquals(NEEDS_REVIEW, evaluator.evaluate(observation().copy(confirmed = false), reference()).status)
+    @Test fun unconfirmedDataIsEvaluatedWithoutFabricatingReview() {
+        val original = observation().copy(confirmed = false)
+        val result = evaluator.evaluate(original, reference())
+        assertEquals(WITHIN_RANGE, result.status)
+        assertEquals(ReasonCode.INSIDE_REFERENCE, result.reasonCode)
+        assertFalse(original.confirmed)
+    }
+    @Test fun confirmationCannotResolveAnyClinicalAmbiguity() {
+        for (confirmed in listOf(false, true)) {
+            for (ambiguity in Ambiguity.entries) {
+                val original = observation().copy(confirmed = confirmed, ambiguities = setOf(ambiguity))
+                assertEquals(NEEDS_REVIEW, evaluator.evaluate(original, reference()).status)
+                assertEquals(confirmed, original.confirmed)
+            }
+            assertEquals(NEEDS_REVIEW, evaluator.evaluate(observation().copy(confirmed = confirmed),
+                reference().copy(applicability = Applicability.UNKNOWN)).status)
+        }
     }
     @Test fun referenceMustBelongToObservation() {
         assertEquals(NEEDS_REVIEW, evaluator.evaluate(observation(), reference().copy(observationId = "other")).status)

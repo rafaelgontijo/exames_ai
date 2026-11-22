@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "ground-truth-v2-validation/1",
+  "documentsIdenticalToRegeneratedV1": 216,
+  "totalDocuments": 216,
+  "preservedV1Sources": {
+    "validation/corpus/cases.json": "68911e0edfea84dd390f3a11db0543bec2c363b706c8cfddd1893cd709afdf4e",
+    "validation/corpus/schema/ground-truth.schema.json": "82673dd928ca23af6cf9d10be4bd61f7f36c655bb6e57b6a4f8488f252b77a70",
+    "validation/corpus/schema/manifest.schema.json": "38fbbb8dabc4eab69214545bee781b7cecc6db85bbeb34fd013493e4e50a4db6",
+    "tools/corpus/generate.py": "654d06fe3aaec533a64fc22a484b928d28ff2ae8af99f91f0fe029d38ff61cfd",
+    "tools/corpus/toolchain.lock.json": "fba32bc55e69d213c0947bee27c6a4254497a2bfba790be09d85d24191c96fc8",
+    "domain/src/test/resources/validation/truth.json": "ea59792c112bb0f847eb6de7436f4c9b6039255f4e9b10e4b2d87f6da59ca823"
+  },
+  "v1ArchiveSha256": "e36aa40133a844c0e4f63d6a4a5e39e17356811f9d29faa644d02c4cd4f815ff",
+  "v2ArchiveSha256": "61a83b8b7c6df8b4c9c56d5003805777d6a8b5f598ceec37dfc6632209c5ca95",
+  "v2SourceSha256": "437cda8446c672a2dbc36fc9be573e9137270b86530a3f9bf3d8de7e7e0eda81",
+  "distinctJvmTests": 147,
+  "jvmFailures": 0,
+  "corpusPythonTests": 22,
+  "instrumented": [
+    {
+      "report": "data-local/build/outputs/androidTest-results/connected/debug/TEST-SM-S931B - 17-_data-local-.xml",
+      "tests": 32,
+      "failures": 0,
+      "errors": 0,
+      "sha256": "35581684f2878af55d0f33faeeaeabe538161d9dfbf4aefd73467312e3e2e41f"
+    }
+  ],
+  "canonicalFixtureScenarios": 18,
+  "canonicalFixtureObservations": 90,
+  "device": {
+    "model": "SM-S931B",
+    "android": "17",
+    "api": 37
+  },
+  "clinicalValidation": false,
+  "limitations": [
+    "Synthetic fixtures only. Original historical Linux ZIP is unavailable; byte equality was verified against v1 regenerated with unchanged pinned renderer on this host.",
+    "No corpus-wide real OCR/LLM benchmark; one independent private PDF extraction control plus 90 canonical observations tested."
+  ]
+}

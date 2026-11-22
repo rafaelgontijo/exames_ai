@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-21",
+  "device": "SM-S931B",
+  "api": 37,
+  "airplane": true,
+  "wifi": false,
+  "package": "br.com.exames.offline.validation.prototype",
+  "engine": "com.google.android.tts",
+  "voiceLocale": "pt-BR",
+  "voiceRequiresNetwork": false,
+  "audibleConfirmedByUser": true,
+  "stopConfirmedByUser": true,
+  "instrumentation": [
+    {
+      "phase": "speech-ready"
+    },
+    {
+      "phase": "speech-started"
+    },
+    {
+      "phase": "speech-returned-to-idle"
+    }
+  ]
+}

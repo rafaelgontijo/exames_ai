@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-30",
+  "status": "protected-inference-trace-controls-passed",
+  "commands": [
+    "./gradlew test assembleDebug :app:assembleDebugAndroidTest :data-local:connectedDebugAndroidTest --no-daemon --console=plain",
+    "./gradlew :inference-local:test --no-daemon --console=plain"
+  ],
+  "build": "passed",
+  "jvm": {
+    "distinctTests": 197,
+    "passed": 197,
+    "domainDistinctTests": 177,
+    "newTests": 9
+  },
+  "instrumented": {
+    "module": ":data-local",
+    "device": "emulator-5554",
+    "avd": "cc_api36",
+    "android": "16",
+    "api": 36,
+    "distinctTests": 58,
+    "passed": 57,
+    "failed": 0,
+    "skipped": 1,
+    "skippedReason": "Existing two-invocation process-death control requires explicit recoveryPhase; not invoked in this suite.",
+    "newInferenceTraceControls": 7,
+    "xmlSha256": "2d2032e25c995bc5f531e6d354deebdf937c38a1385998e2d72789d0558ba3d4"
+  },
+  "verified": [
+    "Adapter identity matches model selection/lock and coordinate/SHA-256 of the Gradle-resolved LiteRT-LM AAR.",
+    "Changed model/runtime/protocol/backend/policy cannot resume under an old attested configuration.",
+    "Durable encrypted intent precedes adapter invocation; journal errors prevent invocation.",
+    "Completed result and available timings commit atomically with page outputs; mismatched identity/outcome/intent is rejected.",
+    "Unfinished intent survives database reopen and is preserved as interrupted on the next submission.",
+    "Cancellation, including after final return and before page commit, preserves intent and prevents late publication.",
+    "History limit fails closed without discarding prior intents; uncertain initial writes and complete-page commits are idempotent.",
+    "Legacy checkpoints do not acquire fabricated attempt metadata.",
+    "Dynamic synthetic response/configuration canaries are absent from plaintext owned database/artifact/cache roots.",
+    "Document deletion removes protected trace/history and rejects late writers, preserving unrelated documents and synthetic shared-weight sentinel."
+  ],
+  "storage": {
+    "location": "AES-GCM page_checkpoints payload with existing checkpoint identity AAD",
+    "roomStructuralVersion": 3,
+    "maxIntentsPerPage": 128,
+    "promptOrFinalOrThoughtStored": false,
+    "exceptionBodyStored": false
+  },
+  "limitations": [
+    "New instrumented inference controls use a simulated adapter with real private PDF/Room/Keystore; they do not execute Gemma.",
+    "Interrupted-intent recovery uses database close/reopen; no new force-stop or JNI cancellation claim.",
+    "STARTED records durable submission intent, not proof that native generation began; unavailable interrupted durations/results remain unknown.",
+    "Real-model process acceptance, input segmentation/context/truncation, UI activation, A/B and S25 acceptance remain pending.",
+    "No clinical validation, 4 GB device support or complete GPU memory accounting is established."
+  ]
+}

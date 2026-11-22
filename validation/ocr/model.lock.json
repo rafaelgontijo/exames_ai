@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "runtimeCoordinate": "cz.adaptech.tesseract4android:tesseract4android:4.9.0",
+  "aarSha256": "bce5d6413a1a5ae3d7240033fbbc851ba3217d0a08d9769400e17a077f42cb2a",
+  "sourceRevision": "15c534717b1cb58261b58d4e4c1200c7f81f668c",
+  "minSdk": 21,
+  "tesseractVersion": "5.5.1",
+  "leptonicaVersion": "1.85.0",
+  "language": "por",
+  "modelTag": "4.1.0",
+  "modelRevision": "65727574dfcd264acbb0c3e07860e4e9e9b22185",
+  "modelUrl": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/65727574dfcd264acbb0c3e07860e4e9e9b22185/por.traineddata",
+  "modelBytes": 1982756,
+  "modelSha256": "c4932b937207a9514b7514d518b931a99938c02a28a5a5a553f8599ed58b7deb",
+  "licenses": [
+    {
+      "file": "licenses/WRAPPER-APACHE-2.0.txt",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "source": "https://raw.githubusercontent.com/adaptech-cz/Tesseract4Android/15c534717b1cb58261b58d4e4c1200c7f81f668c/LICENSE"
+    },
+    {
+      "file": "licenses/TESSERACT-APACHE-2.0.txt",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "source": "https://raw.githubusercontent.com/adaptech-cz/Tesseract4Android/15c534717b1cb58261b58d4e4c1200c7f81f668c/tesseract4android/src/main/cpp/tesseract/src/LICENSE"
+    },
+    {
+      "file": "licenses/LEPTONICA-BSD.txt",
+      "sha256": "87829abb5bbb00b55a107365da89e9a33f86c4250169e5a1e5588505be7d5806",
+      "source": "https://raw.githubusercontent.com/adaptech-cz/Tesseract4Android/15c534717b1cb58261b58d4e4c1200c7f81f668c/tesseract4android/src/main/cpp/leptonica/src/leptonica-license.txt"
+    },
+    {
+      "file": "licenses/LIBPNG.txt",
+      "sha256": "16d9daaafbf63a31a5bdc91d4600972548fef5aaa1244202393288dbd079c49a",
+      "source": "https://raw.githubusercontent.com/adaptech-cz/Tesseract4Android/15c534717b1cb58261b58d4e4c1200c7f81f668c/tesseract4android/src/main/cpp/libpng/src/LICENSE"
+    },
+    {
+      "file": "licenses/LIBJPEG-README.txt",
+      "sha256": "7c25493a9f64fed34d01445467341bda77bc1cdbeccbe33558659ef173fb9ff2",
+      "source": "https://raw.githubusercontent.com/adaptech-cz/Tesseract4Android/15c534717b1cb58261b58d4e4c1200c7f81f668c/tesseract4android/src/main/cpp/libjpeg/src/README"
+    },
+    {
+      "file": "licenses/MODEL-APACHE-2.0.txt",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "source": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/65727574dfcd264acbb0c3e07860e4e9e9b22185/LICENSE"
+    }
+  ],
+  "alignment64Bit": "ELF LOAD p_align 16384 verified in all arm64-v8a/x86_64 libraries",
+  "sourceContainsClinicalContent": false
+}
