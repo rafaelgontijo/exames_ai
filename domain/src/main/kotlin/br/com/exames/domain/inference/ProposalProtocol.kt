@@ -123,6 +123,8 @@ object ProposalProtocol {
         return ProposedField(raw.content, ids)
     }
 
+    internal fun readStrictJson(text: String): JsonElement = StrictReader(text).read()
+
     /** Restricted JSON grammar: objects/arrays/strings/null only, duplicate decoded keys rejected. */
     private class StrictReader(private val text: String) {
         private var at = 0

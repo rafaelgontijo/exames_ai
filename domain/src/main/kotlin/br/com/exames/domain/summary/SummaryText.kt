@@ -16,14 +16,15 @@ sealed interface SummaryTextResult {
  * the private source. No headers, URIs, patient identity, model reasoning or clinical wording is produced.
  */
 object SummaryText {
-    const val VERSION = "SUMMARY_TEXT/1.0.0"
+    const val VERSION = "SUMMARY_TEXT/1.1.0"
     const val LIMIT_BYTES = 64 * 1024
     const val OMISSION_MARKER = "[conferir na fonte privada]"
 
     private val units = setOf("mg/dL", "g/dL", "mmol/L", "mEq/L", "µmol/L", "μmol/L", "umol/L", "mg/L", "U/L", "%")
     private val number = "\\d{1,7}(?:[.,]\\d{1,6})?"
     private val resultShape = Regex("(?:[<>≤≥=]|<=|>=)?\\s?$number")
-    private val referenceShape = Regex("$number\\s?(?:-|–|a|até)\\s?$number|(?:[<>≤≥]|<=|>=)\\s?$number")
+    private val unitPattern = units.joinToString("|") { Regex.escape(it) }
+    private val referenceShape = Regex("(?:$number\\s?(?:-|–|a|até)\\s?$number|(?:<=|>=|[<>≤≥])\\s?$number)(?: +(?:$unitPattern))?")
 
     fun render(summary: ReferenceSummary, limitBytes: Int = LIMIT_BYTES): SummaryTextResult {
         var omitted = 0
@@ -34,11 +35,14 @@ object SummaryText {
             omitted++
             return OMISSION_MARKER
         }
-        val identity = "${basisLabel(summary.basis)}, modo ${modeLabel(summary.mode)}, execução ${summary.runId.take(8)}"
+        val runLabel = summary.runId.takeIf(ProcessingRunIds::isOpaque)?.take(8) ?: OMISSION_MARKER
+        val ruleLabel = field(summary.ruleVersion) { Regex("""REF_NUMERIC/\d{1,3}\.\d{1,3}\.\d{1,3}""").matches(it) }
+        val identity = "${basisLabel(summary.basis)}, modo ${modeLabel(summary.mode)}, execução $runLabel"
         val sb = StringBuilder()
         sb.append("Resumo referencial (").append(identity).append(").\n")
         sb.append("Estado da execução: ").append(completenessLabel(summary)).append(".\n")
-        sb.append("Regra ").append(summary.ruleVersion).append(", resumo ").append(VERSION).append(".\n")
+        if (summary.mode == ExtractionMode.ASSISTED) sb.append(summary.participation?.label ?: "Participação da IA sem registro.").append('\n')
+        sb.append("Regra ").append(ruleLabel).append(", resumo ").append(VERSION).append(".\n")
         val c = summary.counts
         sb.append("Contagens: abaixo da referência informada ").append(c.below)
             .append(", dentro da referência informada ").append(c.within)
@@ -55,13 +59,19 @@ object SummaryText {
                 .append(result ?: "ausente").append(", unidade ").append(unit ?: "ausente")
                 .append(", referência do documento ").append(reference ?: "ausente")
                 .append(". Situação: ").append(statusLabel(l.status))
-            l.reason?.let { sb.append(" (motivo ").append(it.name).append(")") }
+            l.reason?.let { sb.append(". ").append(assessmentReason(it).trimEnd('.')) }
             if (l.ambiguities.isNotEmpty())
-                sb.append("; ambiguidades ").append(l.ambiguities.map { it.name }.sorted().joinToString(", "))
+                sb.append("; ambiguidades ").append(l.ambiguities.sortedBy { it.name }.map { when (it) {
+                    Ambiguity.VALUE -> "valor"
+                    Ambiguity.UNIT -> "unidade"
+                    Ambiguity.CONTEXT -> "contexto"
+                    Ambiguity.COMPARATOR -> "comparador"
+                    Ambiguity.REFERENCE_ASSOCIATION -> "associação da referência"
+                } }.joinToString(", "))
             sb.append(".\n")
         }
         if (summary.warnings.isNotEmpty())
-            sb.append("Limitações: ").append(summary.warnings.map { it.name }.sorted().joinToString(", ")).append(".\n")
+            sb.append("Limitações: ").append(summary.warnings.sortedBy { it.name }.map(::summaryWarning).joinToString(", ")).append(".\n")
         if (omitted > 0)
             sb.append(omitted).append(" campo(s) omitido(s) por texto livre ou não suportado; conferir na fonte privada.\n")
         sb.append("Comparação com referências informadas no documento; não é diagnóstico nem orientação clínica.")

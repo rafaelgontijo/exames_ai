@@ -1,0 +1,106 @@
+{
+  "date": "2026-11-22T15:41:32.009706+00:00",
+  "device": "SM-S931B",
+  "protocol": "exam",
+  "mode": "ASSISTED",
+  "page": 1,
+  "viaSaf": false,
+  "airplane": true,
+  "wifi": false,
+  "events": [
+    {
+      "phase": "authorized-stream-ready"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 0,
+      "blocks": 0,
+      "phase": "processing"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 1,
+      "blocks": 5,
+      "phase": "processing"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 2,
+      "blocks": 5,
+      "phase": "processing"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 3,
+      "blocks": 5,
+      "phase": "processing"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 4,
+      "blocks": 5,
+      "phase": "processing"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 5,
+      "blocks": 5,
+      "phase": "processing"
+    },
+    {
+      "phase": "authorized-checklist-ready"
+    },
+    {
+      "pages": [
+        {
+          "expected": 21,
+          "exact": 0,
+          "extras": 0,
+          "measurementDifferences": 0,
+          "referenceDifferences": 0,
+          "expectedAmbiguities": 0,
+          "preservedAmbiguities": 0,
+          "omissions": 21,
+          "page": 1
+        }
+      ],
+      "phase": "authorized-comparison-measured"
+    },
+    {
+      "availableForDeviceReview": false,
+      "partial": true,
+      "pages": [
+        {
+          "page": 1,
+          "observations": 0,
+          "references": 0,
+          "referenceNeedsReview": 0,
+          "issues": [
+            "INSUFFICIENT_POSITIONED_TEXT",
+            "INVALID_RESPONSE"
+          ],
+          "inferenceFailures": []
+        }
+      ],
+      "phase": "authorized-extraction-measured"
+    }
+  ],
+  "clinicalValidation": false,
+  "runnerPassed": true,
+  "streamDelivered": true,
+  "completed": true,
+  "publishedWithEvidence": 0,
+  "checklistCompared": true,
+  "visualComparisonPending": true,
+  "promptVersion": "exam-extraction/2",
+  "schemaVersion": "exam/1",
+  "cleanOfflineInstall": true,
+  "verifiedModelAsset": true,
+  "acceptancePassed": false
+}

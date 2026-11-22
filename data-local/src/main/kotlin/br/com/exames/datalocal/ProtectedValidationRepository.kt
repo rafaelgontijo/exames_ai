@@ -19,6 +19,7 @@ class ProtectedValidationRepository(
     private val factory: ProtectedDatabaseFactory,
     private val requestCleanup: () -> Unit = {},
     private val cancelWork: suspend (List<String>) -> Unit = {},
+    private val deletionBarrier: suspend (String, suspend () -> Unit) -> Unit = { _, commit -> commit() },
 ) : ValidationRepository {
     private val json = ValidationJson.format
     private val codec get() = factory.codec
@@ -77,7 +78,7 @@ class ProtectedValidationRepository(
 
     override suspend fun deleteCompletely(id: String) = withContext(Dispatchers.IO) {
         val dao = factory.open().records()
-        dao.deleteCompletely(id)
+        deletionBarrier(id) { dao.deleteCompletely(id) }
         withContext(NonCancellable) {
             // Intent is already durable. Outbox retries cancellation if WorkManager is unavailable here.
             runCatching { cancelWork(dao.deletionRunIds(id)) }

@@ -38,8 +38,7 @@ class ExtractionLimitsTest {
         try { renderer(oversized).open("synthetic-too-large"); fail("Accepted byte overflow") }
         catch (e: IOException) { assertEquals("PDF_SIZE_LIMIT", e.message) }
         assertTrue(oversized.all { it == 0.toByte() })
-        val imageOverflow = ByteArray(DocumentLimits.MAX_BYTES + 1)
-        try { BoundedImageDecoder().decodeOwned(imageOverflow); fail("Accepted image byte overflow") }
+        try { BoundedImageDecoder().decodeOwned(oversized); fail("Accepted image byte overflow") }
         catch (e: IOException) { assertEquals("IMAGE_SIZE_LIMIT", e.message) }
         renderer(SyntheticPdf.pages(1, 1000000, 1000000)).open("synthetic-huge-page").use { pdf ->
             pdf.readPage(1).use { page ->

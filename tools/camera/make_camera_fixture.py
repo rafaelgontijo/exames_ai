@@ -40,9 +40,31 @@ def render(path: Path) -> None:
     image.save(path, "PNG")
 
 
+def render_closeup(path: Path) -> None:
+    """Single large row for checking the real camera when a full page yields too little OCR text."""
+    image = Image.new("RGB", (WIDTH * SCALE, HEIGHT * SCALE), "white")
+    draw = ImageDraw.Draw(image)
+    bold_path = FONT.with_name("Arial Bold.ttf")
+    for x, y, value, size, font_path in (
+        (65, 220, "LAUDO SINTÉTICO", 108, bold_path),
+        (65, 388, "Somente para teste técnico", 54, FONT),
+        (65, 2120, "Valores fictícios", 52, FONT),
+    ):
+        draw.text((x, y), value, font=ImageFont.truetype(str(font_path), size), fill="black")
+    positions = (65, 515, 815, 1100)
+    for y, size, row in (
+        (800, 72, ("Analito", "Resultado", "Unidade", "Referência")),
+        (1000, 76, ("Glicose", "18", "mg/dL", "10-21 mg/dL")),
+    ):
+        for x, value in zip(positions, row, strict=True):
+            draw.text((x, y), value, font=ImageFont.truetype(str(bold_path), size), fill="black")
+    image.save(path, "PNG")
+
+
 if __name__ == "__main__":
     out = Path(sys.argv[1]); out.mkdir(parents=True, exist_ok=True)
     render(out / "camera-fixture.png")
+    render_closeup(out / "camera-fixture-closeup.png")
     (out / "camera-fixture.expected.json").write_text(json.dumps(
         [dict(analyteRaw=l, resultRaw=r, unitRaw=u, referenceRaw=ref, expectedStatus=s) for l, r, u, ref, s in ROWS], ensure_ascii=False, indent=2) + "\n")
     print(out / "camera-fixture.png")

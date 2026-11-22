@@ -1,6 +1,6 @@
 # Governança
 
-App Android nativo offline-first para análise referencial determinística de exames laboratoriais.
+App Android nativo para extrair resultados de PDFs digitais de exames com IA local e mostrar a evidência no laudo.
 
 ## Limites éticos e legais
 - O app não fornece diagnósticos nem recomendações clínicas ou urgência.
@@ -14,8 +14,8 @@ App Android nativo offline-first para análise referencial determinística de ex
 - Proibido registrar conteúdo de exames, nomes, valores clínicos ou URIs em logs de produção, analytics ou crash reports.
 - Manter backups desabilitados; arquivos clínicos persistidos são privados e criptografados com chaves no Android Keystore.
 - DataStore armazena apenas preferências gerais sem PII. Não salvar conteúdo clínico no SavedStateHandle.
-- A bancada inclui inferência textual local LiteRT-LM como entrega P0, ativa em aparelho compatível, e modo sem IA para comparação/fallback. Stub ou fallback exclusivo não conclui essa entrega.
-- O modelo propõe campos sustentados por evidência do documento; validar schema, spans, associação e contexto antes do mesmo avaliador determinístico. Divergências e ambiguidades preservam NEEDS_REVIEW.
+- A distribuição padrão extrai resultados com LiteRT-LM e Gemma 4 E2B no aparelho. A bancada e seus modos de comparação ficam no build técnico opcional.
+- O modelo propõe campos sustentados por evidência do documento. Validar schema, trechos, posição e associação antes de exibir os resultados. Preservar as incertezas por campo e por página.
 - Usar Engine nova por solicitação até comprovar reset seguro. Validar somente o canal final; não persistir/exibir raciocínio interno. Pesos fixados por revisão/hash ficam fora do Git e são distribuídos para primeira execução offline.
 - Ao integrar ou distribuir inferência, consultar `validation/models/selection.json` e `docs/LITERT_COMPATIBILITY.md` para a configuração selecionada e os limites comprovados.
 
@@ -25,4 +25,6 @@ App Android nativo offline-first para análise referencial determinística de ex
 - JDK 17 ou 21, Android SDK 36; `local.properties` não versionado.
 - Build: `./gradlew assembleDebug`. Testes: `./gradlew test`.
 - Testes de domínio: `./gradlew :domain:test`; instrumentados: `./gradlew connectedDebugAndroidTest` em dispositivo disponível.
-- Usar somente fixtures sintéticas/desidentificadas. Não declarar validação clínica a partir de testes técnicos.
+- Para a change simplify-ai-exam-extraction, usar o laudo real autorizado como única fonte de cobertura e aceite fim a fim. Testes locais de contratos podem usar dados mínimos de tipos e limites, sem laudos artificiais. Ensaios da bancada histórica permanecem separados.
+- Um titular pode autorizar explicitamente um ensaio técnico local com o próprio exame. Usar um pacote de teste separado, aparelho offline e o importador privado. Transferir em memória e manter a cópia persistida apenas cifrada. Registrar somente contagens, estados e códigos operacionais. Manter o original e os derivados identificáveis fora do Git, APKs, CI, capturas, logs e relatórios. A autorização de importação não abrange áudio, compartilhamento ou uso como fixture.
+- Não declarar validação clínica a partir de testes técnicos.

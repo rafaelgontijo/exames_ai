@@ -47,6 +47,7 @@ data class ReferenceSummary(
     val lines: List<SummaryLine>,
     val warnings: Set<SummaryWarning>,
     val parseWarningCodes: Set<String>,
+    val participation: InferenceParticipation? = null,
 )
 
 /**
@@ -104,7 +105,7 @@ object ProjectReferenceSummary {
             runState = run.state, completeness = completeness, pagesComplete = complete.size, pagesExpected = expectedPages,
             counts = SummaryCounts(count(AssessmentStatus.BELOW_RANGE), count(AssessmentStatus.WITHIN_RANGE),
                 count(AssessmentStatus.ABOVE_RANGE), count(AssessmentStatus.NEEDS_REVIEW), count(AssessmentStatus.NOT_CLASSIFIABLE)),
-            lines = lines, warnings = warnings, parseWarningCodes = parseCodes,
+            lines = lines, warnings = warnings, parseWarningCodes = parseCodes, participation = InferenceParticipation.from(run, runCheckpoints),
         )
     }
 }

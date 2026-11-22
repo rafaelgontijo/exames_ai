@@ -27,12 +27,12 @@ completa, é `PARTIAL`; sem página completa, `UNAVAILABLE`. Qualquer completude
 Contagens separadas: abaixo, dentro e acima da referência informada, requer revisão e não classificável. A soma é o
 número de observações.
 
-## Texto (`SummaryText`, `SUMMARY_TEXT/1.0.0`)
+## Texto (`SummaryText`, `SUMMARY_TEXT/1.1.0`)
 
 - Identifica saída automática/corrigida/reavaliada, modo (sem IA ou com IA local), prefixo da execução, estado, regra,
   contagens, campos, motivos, ambiguidades e limitações.
 - Copia somente campos estruturados que casam formatos conservadores: analito normalizado entre os cinco suportados;
-  resultado numérico com comparador opcional; unidade de uma lista fixa; referência numérica (faixa ou limite), todos
+  resultado numérico com comparador opcional; unidade de uma lista fixa; referência numérica (faixa ou limite com unidade opcional da lista), todos
   com até 40 caracteres. Qualquer outro texto vira `[conferir na fonte privada]` e é contado em "campo(s) omitido(s)".
 - Não inclui cabeçalhos, nomes, identificadores de paciente, caminhos, URIs, IDs de documento, raciocínio ou termos
   clínicos. Linguagem: "dentro da referência informada", nunca "tudo normal".
@@ -48,11 +48,11 @@ simula texto livre com marcador de identidade, omitido do resultado).
 ```text
 Resumo referencial (saída automática, modo sem IA, execução 01234567).
 Estado da execução: parcial, 1 página(s) completa(s).
-Regra REF_NUMERIC/2.0.0, resumo SUMMARY_TEXT/1.0.0.
+Regra REF_NUMERIC/2.0.0, resumo SUMMARY_TEXT/1.1.0.
 Contagens: abaixo da referência informada 0, dentro da referência informada 1, acima da referência informada 0, requer revisão 1, não classificável 0.
-1. Glicose (página 1): resultado 90, unidade mg/dL, referência do documento 70-99. Situação: dentro da referência informada (motivo INSIDE_REFERENCE).
-2. Ureia (página 1): resultado [conferir na fonte privada], unidade mg/dL, referência do documento 15-45. Situação: requer revisão (motivo AMBIGUOUS_INPUT); ambiguidades VALUE.
-Limitações: AMBIGUITIES_PRESENT, PAGES_INCOMPLETE, RUN_NOT_COMPLETE.
+1. Glicose (página 1): resultado 90, unidade mg/dL, referência do documento 70-99. Situação: dentro da referência informada. O valor está nos limites da referência associada no documento.
+2. Ureia (página 1): resultado [conferir na fonte privada], unidade mg/dL, referência do documento 15-45. Situação: requer revisão. Há ambiguidade nos dados extraídos ou na associação da referência; ambiguidades valor.
+Limitações: há ambiguidades a conferir na fonte, páginas incompletas, execução não concluída.
 1 campo(s) omitido(s) por texto livre ou não suportado; conferir na fonte privada.
 Comparação com referências informadas no documento; não é diagnóstico nem orientação clínica.
 ```

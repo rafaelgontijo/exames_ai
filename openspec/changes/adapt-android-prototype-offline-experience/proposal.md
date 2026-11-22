@@ -13,6 +13,7 @@ A bancada Android já importa, processa e revisa exames offline, mas sua interfa
 - Compartilhar, após prévia e confirmação específica, um resumo textual da execução selecionada por URI temporária somente leitura, com persistência interna criptografada, expiração e revogação.
 - Preservar cinco analitos, referências do próprio documento, estados NEEDS_REVIEW/NOT_CLASSIFIABLE, privacidade e modo sem IA padrão. Não reproduzir diagnósticos, riscos de doenças, urgência, indicação de especialidades, localização de UBS, exemplos clínicos fixos ou promessa “Tudo normal”.
 - Validar navegação e fidelidade visual, TalkBack, fonte 200%, modos claro/escuro, primeira utilização offline e privacidade no S25 e emulador API 24.
+- Usar o PDF pessoal em `examples/` como referência local de estrutura para criar um laudo inteiramente sintético de seis páginas. Usá-lo no aceite de importação, revisão por página, leitura e compartilhamento, com atenção à diferença entre uma medida direta e uma estimativa citada no laudo.
 
 ## Capabilities
 

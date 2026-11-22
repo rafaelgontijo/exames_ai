@@ -32,21 +32,28 @@
 
 ## 5. Leitura em voz alta offline
 
-- [ ] 5.1 Implementar adaptador TTS com seleção explícita de voz pt-BR instalada sem rede e visibilidade de serviço mínima; testar voz ausente, somente voz de rede, falha de inicialização e recusa de qualquer download/fallback em rede.
-- [ ] 5.2 Conectar Ouvir/Parar ao snapshot, com segmentação pelos limites da API e estado acessível; testar ordem/conteúdo completos, falha antes de reprodução parcial indevida e identificação de ambiguidades, base e modo sem narrativas clínicas.
-- [ ] 5.3 Implementar interrupção por navegação, ON_STOP, foco de áudio, mudança/exclusão da execução e cancelamento; testar callbacks atrasados e ausência de fila/texto em estado restaurável, logs ou arquivos de áudio.
-- [ ] 5.4 Executar reprodução audível real pt-BR e ação Parar no S25 em modo avião/Wi-Fi desligado; documentar engine/voz, indisponibilidade e limites em docs/OFFLINE_AUDIO.md, sem concluir com stub ou indisponibilidade exclusiva.
+- [x] 5.1 Implementar adaptador TTS com seleção explícita de voz pt-BR instalada sem rede e visibilidade de serviço mínima; testar voz ausente, somente voz de rede, falha de inicialização e recusa de qualquer download/fallback em rede.
+- [x] 5.2 Conectar Ouvir/Parar ao snapshot, com segmentação pelos limites da API e estado acessível; testar ordem/conteúdo completos, falha antes de reprodução parcial indevida e identificação de ambiguidades, base e modo sem narrativas clínicas.
+- [x] 5.3 Implementar interrupção por navegação, ON_STOP, foco de áudio, mudança/exclusão da execução e cancelamento; testar callbacks atrasados e ausência de fila/texto em estado restaurável, logs ou arquivos de áudio.
+- [x] 5.4 Executar reprodução audível real pt-BR e ação Parar no S25 em modo avião/Wi-Fi desligado; documentar engine/voz, indisponibilidade e limites em docs/OFFLINE_AUDIO.md, sem concluir com stub ou indisponibilidade exclusiva.
 
 ## 6. Compartilhamento controlado
 
-- [ ] 6.1 Implementar prévia versionada e confirmação específica de compartilhar TXT; testar seleção automática/corrigida/reavaliada, casos parciais, cancelamento e aviso de controle externo sem conceder acesso antes da confirmação.
-- [ ] 6.2 Implementar snapshots e índice cifrados por documento, tokens aleatórios e validade monotônica máxima de dez minutos; testar posse, tamanho UTF-8, erro de chave/espaço e invalidação por expiração ou nova sessão de processo.
-- [ ] 6.3 Implementar provider privado com concessão por URI somente leitura e entrega por pipe/ACTION_SEND; testar com destinatário sintético leitura real, URI sem permissão, tentativas de escrita/path traversal e ausência de conteúdo clínico nos extras/caches em claro.
-- [ ] 6.4 Integrar revogação, fechamento de escritores e limpeza à exclusão/tombstone/outbox; testar corrida de leitura, callback tardio, falha de limpeza, reinício e preservação dos pesos estáticos, sem prometer apagar bytes já entregues externamente.
-- [ ] 6.5 Validar compartilhamento com destinatário local no S25 sem rede e documentar limites/expiração em docs/CONTROLLED_SHARING.md; verificar que nenhum envio ou app destinatário é escolhido automaticamente.
+- [x] 6.1 Implementar prévia versionada e confirmação específica de compartilhar TXT; testar seleção automática/corrigida/reavaliada, casos parciais, cancelamento e aviso de controle externo sem conceder acesso antes da confirmação.
+- [x] 6.2 Implementar snapshots e índice cifrados por documento, tokens aleatórios e validade monotônica máxima de dez minutos; testar posse, tamanho UTF-8, erro de chave/espaço e invalidação por expiração ou nova sessão de processo.
+- [x] 6.3 Implementar provider privado com concessão por URI somente leitura e entrega por pipe/ACTION_SEND; testar com destinatário sintético leitura real, URI sem permissão, tentativas de escrita/path traversal e ausência de conteúdo clínico nos extras/caches em claro.
+- [x] 6.4 Integrar revogação, fechamento de escritores e limpeza à exclusão/tombstone/outbox; testar corrida de leitura, callback tardio, falha de limpeza, reinício e preservação dos pesos estáticos, sem prometer apagar bytes já entregues externamente.
+- [x] 6.5 Validar compartilhamento com destinatário local no S25 sem rede e documentar limites/expiração em docs/CONTROLLED_SHARING.md; verificar que nenhum envio ou app destinatário é escolhido automaticamente.
 
 ## 7. Aceite integrado e atualização preservada
 
-- [ ] 7.1 Executar `./gradlew assembleDebug test :app:assembleDebugAndroidTest`, instrumentados relevantes API 24 e auditoria do APK/dependências/fontes/manifest/backup/alinhamento; registrar tamanho e não elevar minSdk, remover modelo offline ou adicionar Internet para fazer o build passar.
+Preparar o caso da seção 8 antes do ensaio 7.2. Executar 8.2 na mesma sessão offline do S25.
+
+- [x] 7.1 Executar `./gradlew assembleDebug test :app:assembleDebugAndroidTest`, instrumentados relevantes API 24 e auditoria do APK/dependências/fontes/manifest/backup/alinhamento; registrar tamanho e não elevar minSdk, remover modelo offline ou adicionar Internet para fazer o build passar.
 - [ ] 7.2 Executar pacote separado no S25 em instalação limpa offline e atualização sobre base sintética: câmera real, SAF/PDFs/imagens, ambos os modos, voz audível, destinatário local, revisão, force-stop/reabertura, exclusão durante fala/compartilhamento e pesos íntegros; adaptar controles existentes sem afrouxar critérios e registrar evidências reproduzíveis.
-- [ ] 7.3 Consolidar README/docs/VALIDACAO e fidelidade visual com capturas sintéticas, comparar saídas/contagens/abstenções antes/depois e preservar famílias/partições; verificar HTML intacto/não rastreado, ausência de perda de dados e distinção entre aceite técnico, indisponibilidades e validação clínica.
+- [x] 7.3 Consolidar README/docs/VALIDACAO e fidelidade visual com capturas sintéticas, comparar saídas/contagens/abstenções antes/depois e preservar famílias/partições; verificar HTML intacto/não rastreado, ausência de perda de dados e distinção entre aceite técnico, indisponibilidades e validação clínica.
+
+## 8. Regressão de desenvolvimento inspirada no PDF pessoal
+
+- [x] 8.1 Ignorar `/examples/` no Git e verificar a exclusão com `git check-ignore` e a ausência de arquivos rastreados nessa pasta. Gerar o PDF sintético de seis páginas e o gabarito por página/bloco descritos no design. Conferir paginação, camada de texto, criptografia e abertura sem senha. Reproduzir a geração sem acesso ao original e manter o caso separado das partições e métricas existentes.
+- [x] 8.2 Importar o sintético por SAF no S25 offline nos modos sem IA e assistido. Conferir abertura das seis páginas pelo PDFium e comparar os cartões e destaques com o gabarito. Verificar a medida direta, a exclusão da estimativa como medida direta, revisão de contexto ambíguo e ausência de associação entre páginas. Registrar separadamente omissões, fallback e falhas de abertura. Conferir a leitura audível e o TXT recebido localmente com o resumo da mesma execução, incluindo ausência do identificador fictício do paciente. Registrar o resultado técnico em `docs/VALIDACAO.md`.

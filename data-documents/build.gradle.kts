@@ -41,6 +41,7 @@ dependencies {
     coreLibraryDesugaring(libs.desugar.jdk)
     implementation(project(":domain"))
     implementation(project(":pdf-local"))
+    api(project(":data-private-pdf"))
     implementation(libs.coroutines.android)
     implementation(libs.androidx.camera.core)
     implementation(libs.androidx.camera.camera2)

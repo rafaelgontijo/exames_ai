@@ -34,16 +34,23 @@ abstract class OneShotInferenceService : Service() {
             val request = InferenceProcessProtocol.decodeRequest(message.data)
             if (!InferencePayloadLimits.accepts(request)) {
                 reply(InferenceProcessProtocol.FINAL, InferenceProcessProtocol.result(GenerationResult.Failed(InferenceFailure.INPUT_LIMIT), id))
-            } else Thread({
-                val result = try {
-                    generate(request) { deadline(InferenceProcessProtocol.GENERATION_MS); reply(InferenceProcessProtocol.GENERATING) }
-                } catch (_: Throwable) { GenerationResult.Failed(InferenceFailure.RUNTIME_FAILURE) }
-                reply(InferenceProcessProtocol.FINAL, InferenceProcessProtocol.result(result, id))
-            }, "local-inference").start()
+            } else {
+                deadline(InferenceProcessProtocol.LOAD_MS)
+                Thread({
+                    val result = try {
+                        generate(request) { deadline(InferenceProcessProtocol.GENERATION_MS); reply(InferenceProcessProtocol.GENERATING) }
+                    } catch (_: Throwable) { GenerationResult.Failed(InferenceFailure.RUNTIME_FAILURE) }
+                    reply(InferenceProcessProtocol.FINAL, InferenceProcessProtocol.result(result, id))
+                }, "local-inference").start()
+            }
         }
         true
     })
-    override fun onCreate() { super.onCreate(); if (childProcess()) deadline(InferenceProcessProtocol.LOAD_MS) }
+    override fun onCreate() {
+        super.onCreate()
+        // A client that unbinds during startup may never reach HELLO or RUN.
+        if (childProcess()) deadline(InferenceProcessProtocol.REAP_MS)
+    }
     override fun onBind(intent: Intent?): IBinder? = if (childProcess()) messenger.binder else null
     override fun onUnbind(intent: Intent?): Boolean { terminate(); return false }
 

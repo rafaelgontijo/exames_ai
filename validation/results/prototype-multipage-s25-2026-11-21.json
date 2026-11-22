@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-21T13:14:46.072461+00:00",
+  "device": {
+    "model": "SM-S931B",
+    "api": 37,
+    "airplane": "1",
+    "wifi": "0"
+  },
+  "applicationId": "br.com.exames.offline.validation.prototype",
+  "cleanInstall": true,
+  "appApkSha256": "61cf0fabddf3331827ee68bcc5bc3f9b2780f648bcfa3efcb1dd20d4b2e491b8",
+  "testApkSha256": "e07d8edf8fce92dd4915811bd0a134901589639518f2c72c610f604855382a6b",
+  "runs": [
+    {
+      "test": "multipageBaselineAndLocalRecipient",
+      "runnerPassed": false,
+      "failureType": "java.lang.AssertionError",
+      "firstTestFrame": "at br.com.exames.app.PrototypeAcceptanceTest.selectSyntheticPdf(PrototypeAcceptanceTest.kt:191)"
+    }
+  ],
+  "events": [],
+  "passed": false,
+  "controllerFailure": "RuntimeError"
+}

@@ -79,6 +79,18 @@ Validade máxima dez minutos por relógio monotônico da sessão; a nova geraç�
 
 URI temporária não apaga bytes já entregues ao sistema/destinatário. Informar esse limite na prévia; o app externo escolhido pode copiar ou transmitir o resumo por sua conta. Não abrir destino automaticamente, prometer destinatário específico ou esconder permissão ampla atrás do checkbox de importação do HTML. Alternativas rejeitadas: compartilhamento automático, EXTRA_TEXT com conteúdo clínico, exportação em Downloads e PDF em claro.
 
+### 7. Usar o formato do exame pessoal no aceite
+
+A inspeção local de `examples/` encontrou um PDF A4 de seis páginas, dentro do limite de importação, com texto extraível em todas elas. O PDF usa criptografia RC4 e permite leitura e cópia sem informar senha. A leitura no computador não comprova que o adaptador `PrivatePdf` do Android abre esse perfil. O texto contém blocos de material e método, colunas, vírgula decimal e referências com condições. A proximidade entre o nome de uma medida e o de uma estimativa cria um caso concreto para verificar a associação à fonte.
+
+Gerar do zero um PDF de desenvolvimento com esse perfil de paginação, texto e permissões. Usar identificadores fictícios, valores e intervalos inventados para o teste, com gabarito por página e bloco. Incluir controles pareados de glicose medida e glicemia média estimada, referências condicionais e uma página apenas com conteúdo fora do escopo. Assim é possível detectar tanto a perda de um resultado válido quanto a inclusão indevida de uma medida derivada. Manter o caso identificado como regressão de desenvolvimento, fora das métricas do corpus de referência e de HELD_OUT.
+
+O original foi usado como referência de estrutura da fixture. A geração, os testes reproduzíveis, o APK, o CI e o aceite sintético no S25 funcionam sem `/examples/`, pasta ignorada pelo Git. Produzir fotos, capturas de tela, áudio e TXT de teste exclusivamente a partir do sintético. Registrar evidências por identificador fictício, página e estado esperado, sem copiar texto, imagens, metadados, nome de arquivo ou valores do original.
+
+### 8. Ensaio local com exame do titular
+
+A autorização explícita do titular em 21/11/2026 permite um ensaio suplementar com o PDF original no S25 offline. O pacote descartável recebe um stream USB por um FIFO privado de teste e usa a mesma importação cifrada. O relatório retém somente contagens de páginas e observações, estados e códigos operacionais. A fixture sintética continua sendo o gabarito da regressão e dos testes de áudio e exportação.
+
 ## Risks / Trade-offs
 
 - [Fidelidade versus governança] → Registrar tabela de adaptação; preservar composição visual, substituindo linguagem clínica por revisão e comparações referenciais.

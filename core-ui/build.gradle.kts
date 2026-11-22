@@ -5,6 +5,7 @@ plugins {
 }
 
 android {
+    sourceSets.getByName("main").assets.srcDir(layout.buildDirectory.dir("generated/font-licenses"))
     namespace = "br.com.exames.coreui"
     compileSdk = 36
     buildToolsVersion = "36.0.0"
@@ -35,3 +36,11 @@ dependencies {
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.core)
 }
+
+
+val stageFontLicense by tasks.registering(Copy::class) {
+    from("third_party/figtree/OFL.txt")
+    into(layout.buildDirectory.dir("generated/font-licenses/licenses"))
+    rename("OFL.txt", "figtree-OFL.txt")
+}
+tasks.named("preBuild").configure { dependsOn(stageFontLicense) }

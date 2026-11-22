@@ -1,5 +1,6 @@
 package br.com.exames.inferencelocal
 
+import android.app.ActivityManager
 import android.content.*
 import android.os.*
 import br.com.exames.domain.inference.*
@@ -53,6 +54,15 @@ internal class ProcessInferenceClient(context: Context,
         }
         return if (retired) result else GenerationResult.Failed(InferenceFailure.PROCESS_UNAVAILABLE)
     }
+    private fun ownChildPid(): Int? {
+        if (component.packageName != context.packageName) return null
+        val service = context.packageManager.getServiceInfo(component, 0)
+        if (service.exported || !service.processName.startsWith(context.packageName + ":")) return null
+        return context.getSystemService(ActivityManager::class.java).runningAppProcesses.orEmpty().firstOrNull {
+            it.uid == Process.myUid() && it.pid != Process.myPid() && it.processName == service.processName
+        }?.pid
+    }
+
     private data class LoadResult(val terminal: GenerationResult?)
     private inner class Call(private val request: GenerationRequest) : ServiceConnection {
         val ready = CompletableDeferred<Unit>()
@@ -109,12 +119,25 @@ internal class ProcessInferenceClient(context: Context,
             })
         }
         suspend fun retire(): Boolean {
-            withContext(Dispatchers.Main.immediate) {
-                disposed = true; handler.removeCallbacksAndMessages(null)
-                if (!dead.isCompleted && binder?.isBinderAlive == true) pid?.let { Process.killProcess(it) }
-                if (bound) try { context.unbindService(this@Call) } catch (_: IllegalArgumentException) { }
+            val earlyChild = withContext(Dispatchers.Main.immediate) {
+                disposed = true
+                handler.removeCallbacksAndMessages(null)
+                try {
+                    val startupPid = if (bound && pid == null) ownChildPid() else null
+                    if (!dead.isCompleted) (pid ?: startupPid)?.let(Process::killProcess)
+                    startupPid
+                } finally {
+                    if (bound) try { context.unbindService(this@Call) } catch (_: IllegalArgumentException) { }
+                }
             }
-            val retired = binder == null || !binder!!.isBinderAlive || withTimeoutOrNull(InferenceProcessProtocol.REAP_MS) { dead.await(); true } == true
+            val retired = withTimeoutOrNull(InferenceProcessProtocol.REAP_MS) {
+                if (earlyChild != null && binder == null) {
+                    while (ownChildPid() == earlyChild) delay(25)
+                } else if (binder?.isBinderAlive == true) {
+                    dead.await()
+                }
+                true
+            } == true
             binder?.let { try { it.unlinkToDeath(death, 0) } catch (_: Exception) { } }
             return retired
         }

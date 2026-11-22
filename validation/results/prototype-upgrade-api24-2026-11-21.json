@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-21T13:21:46.617975+00:00",
+  "device": {
+    "model": "Android SDK built for arm64",
+    "api": 24,
+    "airplane": "0",
+    "wifi": "1"
+  },
+  "applicationId": "br.com.exames.offline.validation.workbench",
+  "beforeApkSha256": "1f3f43a82ad4ade4da4f0cceeaec13e3e0b4c93c479e0b0a9075ccd437fe1623",
+  "afterApkSha256": "e038eae5343302a067ff56085f7e5cb1638b83184aaec7f6a17d27280270609b",
+  "events": [],
+  "passed": false,
+  "failureStage": "before",
+  "failureType": "java.lang.NoSuchMethodError",
+  "firstTestFrame": "at br.com.exames.app.PrototypeUpgradeTest$fingerprintSyntheticReviewHistory$1.invokeSuspend(PrototypeUpgradeTest.kt:31)"
+}

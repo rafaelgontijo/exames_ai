@@ -26,3 +26,4 @@ include(":domain", ":data-documents", ":data-local", ":feature-import", ":featur
 include(":pdf-spike")
 include(":pdf-local")
 include(":validation-fixtures")
+include(":data-private-pdf")

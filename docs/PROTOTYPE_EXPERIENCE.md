@@ -84,3 +84,7 @@ raiz do app usando `surface` em vez de `background`, que deixava telas sem fundo
 - Nos módulos de biblioteca o APK de teste herdava `targetSdk` 24 e o S25 (Android 17) exibia o aviso de app antigo sobre os testes; `testOptions.targetSdk = 36` corrige isso.
 - `EvidenceUiTest.overlayPaintsTheCited…` usa `captureToImage`, que não existe em API 24 (`PixelCopy`); falha só ali, desde a
   change anterior, e não indica defeito do app.
+
+## Prévia do compartilhamento
+
+A captura de 21/11/2026 mostra a prévia com tema escuro no S25 e a fixture sintética de seis páginas. A rolagem mantém todo o resumo consultável antes da seleção de um aplicativo. [Captura da prévia](prototype-screens/compartilhar-s25-escuro.png)

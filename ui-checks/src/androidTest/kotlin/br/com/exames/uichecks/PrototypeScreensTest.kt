@@ -97,7 +97,8 @@ class PrototypeScreensTest {
 
     private fun capture(name: String, dark: Boolean, fontScale: Float) {
         render(name, dark, fontScale)
-        val image = compose.onRoot().captureToImage().asAndroidBitmap()
+        val image = if (android.os.Build.VERSION.SDK_INT >= 26) compose.onRoot().captureToImage().asAndroidBitmap()
+            else requireNotNull(InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot())
         val file = File(outDir, "$name-${if (dark) "escuro" else "claro"}-${(fontScale * 100).toInt()}.png")
         file.outputStream().use { image.compress(Bitmap.CompressFormat.PNG, 100, it) }
     }

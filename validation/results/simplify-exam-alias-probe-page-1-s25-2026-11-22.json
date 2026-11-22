@@ -1,0 +1,197 @@
+{
+  "date": "2026-11-22T15:50:24.799388+00:00",
+  "device": "SM-S931B",
+  "protocol": "exam",
+  "mode": "ASSISTED",
+  "page": 1,
+  "viaSaf": false,
+  "structuredTrial": false,
+  "shortAliasTrial": true,
+  "airplane": true,
+  "wifi": false,
+  "events": [
+    {
+      "phase": "authorized-stream-ready"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 0,
+      "blocks": 0,
+      "phase": "processing"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 1,
+      "blocks": 5,
+      "phase": "processing"
+    },
+    {
+      "inputRows": 5,
+      "characters": 345,
+      "fenced": false,
+      "startsObject": true,
+      "endsObject": true,
+      "objectJson": true,
+      "arrayJson": false,
+      "rootKeysMatch": true,
+      "versionMatches": true,
+      "rows": 5,
+      "rowsWithExpectedKeys": 5,
+      "rowsWithExpectedIds": 5,
+      "rowsWithLiteralResult": 5,
+      "loadMs": 8656,
+      "generationMs": 3504,
+      "phase": "authorized-response-structure"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 2,
+      "blocks": 5,
+      "phase": "processing"
+    },
+    {
+      "inputRows": 5,
+      "characters": 351,
+      "fenced": false,
+      "startsObject": true,
+      "endsObject": true,
+      "objectJson": true,
+      "arrayJson": false,
+      "rootKeysMatch": true,
+      "versionMatches": true,
+      "rows": 5,
+      "rowsWithExpectedKeys": 5,
+      "rowsWithExpectedIds": 5,
+      "rowsWithLiteralResult": 5,
+      "loadMs": 10392,
+      "generationMs": 3075,
+      "phase": "authorized-response-structure"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 3,
+      "blocks": 5,
+      "phase": "processing"
+    },
+    {
+      "inputRows": 5,
+      "characters": 363,
+      "fenced": false,
+      "startsObject": true,
+      "endsObject": true,
+      "objectJson": true,
+      "arrayJson": false,
+      "rootKeysMatch": true,
+      "versionMatches": true,
+      "rows": 5,
+      "rowsWithExpectedKeys": 5,
+      "rowsWithExpectedIds": 5,
+      "rowsWithLiteralResult": 5,
+      "loadMs": 12812,
+      "generationMs": 3069,
+      "phase": "authorized-response-structure"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 4,
+      "blocks": 5,
+      "phase": "processing"
+    },
+    {
+      "inputRows": 5,
+      "characters": 363,
+      "fenced": false,
+      "startsObject": true,
+      "endsObject": true,
+      "objectJson": true,
+      "arrayJson": false,
+      "rootKeysMatch": true,
+      "versionMatches": true,
+      "rows": 5,
+      "rowsWithExpectedKeys": 5,
+      "rowsWithExpectedIds": 5,
+      "rowsWithLiteralResult": 5,
+      "loadMs": 12965,
+      "generationMs": 3181,
+      "phase": "authorized-response-structure"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 5,
+      "blocks": 5,
+      "phase": "processing"
+    },
+    {
+      "inputRows": 1,
+      "characters": 89,
+      "fenced": false,
+      "startsObject": true,
+      "endsObject": true,
+      "objectJson": true,
+      "arrayJson": false,
+      "rootKeysMatch": true,
+      "versionMatches": true,
+      "rows": 1,
+      "rowsWithExpectedKeys": 1,
+      "rowsWithExpectedIds": 1,
+      "rowsWithLiteralResult": 1,
+      "loadMs": 12874,
+      "generationMs": 968,
+      "phase": "authorized-response-structure"
+    },
+    {
+      "phase": "authorized-checklist-ready"
+    },
+    {
+      "pages": [
+        {
+          "expected": 21,
+          "exact": 16,
+          "extras": 0,
+          "measurementDifferences": 0,
+          "referenceDifferences": 0,
+          "expectedAmbiguities": 0,
+          "preservedAmbiguities": 0,
+          "omissions": 5,
+          "page": 1
+        }
+      ],
+      "phase": "authorized-comparison-measured"
+    },
+    {
+      "availableForDeviceReview": false,
+      "partial": true,
+      "pages": [
+        {
+          "page": 1,
+          "observations": 16,
+          "references": 16,
+          "referenceNeedsReview": 0,
+          "issues": [
+            "INSUFFICIENT_POSITIONED_TEXT",
+            "EVIDENCE_NEEDS_REVIEW"
+          ],
+          "inferenceFailures": []
+        }
+      ],
+      "phase": "authorized-extraction-measured"
+    }
+  ],
+  "clinicalValidation": false,
+  "runnerPassed": true,
+  "streamDelivered": true,
+  "completed": true,
+  "publishedWithEvidence": 16,
+  "checklistCompared": true,
+  "visualComparisonPending": true,
+  "promptVersion": "exam-extraction/structured-trial",
+  "schemaVersion": "exam/1",
+  "firstPageEvidenceProved": true,
+  "acceptancePassed": false
+}

@@ -1,0 +1,485 @@
+{
+  "date": "2026-11-22T22:39:06.417115+00:00",
+  "device": "SM-S931B",
+  "protocol": "exam",
+  "mode": "ASSISTED",
+  "page": null,
+  "viaSaf": false,
+  "airplane": true,
+  "wifi": false,
+  "events": [
+    {
+      "phase": "authorized-stream-ready"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 0,
+      "blocks": 0,
+      "phase": "processing"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 1,
+      "blocks": 5,
+      "phase": "processing"
+    },
+    {
+      "inputRows": 5,
+      "characters": 280,
+      "fenced": false,
+      "startsObject": true,
+      "endsObject": true,
+      "objectJson": true,
+      "arrayJson": false,
+      "rootKeysMatch": true,
+      "versionMatches": true,
+      "rows": 5,
+      "rowsWithExpectedKeys": 5,
+      "rowsWithExpectedIds": 5,
+      "rowsWithLiteralResult": 5,
+      "loadMs": 9658,
+      "generationMs": 3546,
+      "phase": "authorized-response-structure"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 2,
+      "blocks": 5,
+      "phase": "processing"
+    },
+    {
+      "inputRows": 5,
+      "characters": 273,
+      "fenced": false,
+      "startsObject": true,
+      "endsObject": true,
+      "objectJson": true,
+      "arrayJson": false,
+      "rootKeysMatch": true,
+      "versionMatches": true,
+      "rows": 5,
+      "rowsWithExpectedKeys": 5,
+      "rowsWithExpectedIds": 5,
+      "rowsWithLiteralResult": 5,
+      "loadMs": 10981,
+      "generationMs": 3172,
+      "phase": "authorized-response-structure"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 3,
+      "blocks": 5,
+      "phase": "processing"
+    },
+    {
+      "inputRows": 5,
+      "characters": 270,
+      "fenced": false,
+      "startsObject": true,
+      "endsObject": true,
+      "objectJson": true,
+      "arrayJson": false,
+      "rootKeysMatch": true,
+      "versionMatches": true,
+      "rows": 5,
+      "rowsWithExpectedKeys": 5,
+      "rowsWithExpectedIds": 5,
+      "rowsWithLiteralResult": 5,
+      "loadMs": 13246,
+      "generationMs": 3104,
+      "phase": "authorized-response-structure"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 4,
+      "blocks": 5,
+      "phase": "processing"
+    },
+    {
+      "inputRows": 5,
+      "characters": 276,
+      "fenced": false,
+      "startsObject": true,
+      "endsObject": true,
+      "objectJson": true,
+      "arrayJson": false,
+      "rootKeysMatch": true,
+      "versionMatches": true,
+      "rows": 5,
+      "rowsWithExpectedKeys": 5,
+      "rowsWithExpectedIds": 5,
+      "rowsWithLiteralResult": 5,
+      "loadMs": 12584,
+      "generationMs": 3221,
+      "phase": "authorized-response-structure"
+    },
+    {
+      "page": 1,
+      "pages": 6,
+      "block": 5,
+      "blocks": 5,
+      "phase": "processing"
+    },
+    {
+      "inputRows": 1,
+      "characters": 77,
+      "fenced": false,
+      "startsObject": true,
+      "endsObject": true,
+      "objectJson": true,
+      "arrayJson": false,
+      "rootKeysMatch": true,
+      "versionMatches": true,
+      "rows": 1,
+      "rowsWithExpectedKeys": 1,
+      "rowsWithExpectedIds": 1,
+      "rowsWithLiteralResult": 1,
+      "loadMs": 12883,
+      "generationMs": 990,
+      "phase": "authorized-response-structure"
+    },
+    {
+      "page": 2,
+      "pages": 6,
+      "block": 0,
+      "blocks": 0,
+      "phase": "processing"
+    },
+    {
+      "page": 2,
+      "pages": 6,
+      "block": 1,
+      "blocks": 1,
+      "phase": "processing"
+    },
+    {
+      "inputRows": 3,
+      "characters": 183,
+      "fenced": false,
+      "startsObject": true,
+      "endsObject": true,
+      "objectJson": true,
+      "arrayJson": false,
+      "rootKeysMatch": true,
+      "versionMatches": true,
+      "rows": 3,
+      "rowsWithExpectedKeys": 3,
+      "rowsWithExpectedIds": 3,
+      "rowsWithLiteralResult": 3,
+      "loadMs": 12607,
+      "generationMs": 2139,
+      "phase": "authorized-response-structure"
+    },
+    {
+      "page": 3,
+      "pages": 6,
+      "block": 0,
+      "blocks": 0,
+      "phase": "processing"
+    },
+    {
+      "page": 3,
+      "pages": 6,
+      "block": 1,
+      "blocks": 1,
+      "phase": "processing"
+    },
+    {
+      "inputRows": 2,
+      "characters": 126,
+      "fenced": false,
+      "startsObject": true,
+      "endsObject": true,
+      "objectJson": true,
+      "arrayJson": false,
+      "rootKeysMatch": true,
+      "versionMatches": true,
+      "rows": 2,
+      "rowsWithExpectedKeys": 2,
+      "rowsWithExpectedIds": 2,
+      "rowsWithLiteralResult": 2,
+      "loadMs": 12401,
+      "generationMs": 1468,
+      "phase": "authorized-response-structure"
+    },
+    {
+      "page": 4,
+      "pages": 6,
+      "block": 0,
+      "blocks": 0,
+      "phase": "processing"
+    },
+    {
+      "page": 4,
+      "pages": 6,
+      "block": 1,
+      "blocks": 2,
+      "phase": "processing"
+    },
+    {
+      "inputRows": 5,
+      "characters": 282,
+      "fenced": false,
+      "startsObject": true,
+      "endsObject": true,
+      "objectJson": true,
+      "arrayJson": false,
+      "rootKeysMatch": true,
+      "versionMatches": true,
+      "rows": 5,
+      "rowsWithExpectedKeys": 5,
+      "rowsWithExpectedIds": 5,
+      "rowsWithLiteralResult": 5,
+      "loadMs": 12721,
+      "generationMs": 3179,
+      "phase": "authorized-response-structure"
+    },
+    {
+      "page": 4,
+      "pages": 6,
+      "block": 2,
+      "blocks": 2,
+      "phase": "processing"
+    },
+    {
+      "inputRows": 1,
+      "characters": 78,
+      "fenced": false,
+      "startsObject": true,
+      "endsObject": true,
+      "objectJson": true,
+      "arrayJson": false,
+      "rootKeysMatch": true,
+      "versionMatches": true,
+      "rows": 1,
+      "rowsWithExpectedKeys": 1,
+      "rowsWithExpectedIds": 1,
+      "rowsWithLiteralResult": 1,
+      "loadMs": 12621,
+      "generationMs": 912,
+      "phase": "authorized-response-structure"
+    },
+    {
+      "page": 5,
+      "pages": 6,
+      "block": 0,
+      "blocks": 0,
+      "phase": "processing"
+    },
+    {
+      "page": 5,
+      "pages": 6,
+      "block": 1,
+      "blocks": 1,
+      "phase": "processing"
+    },
+    {
+      "inputRows": 2,
+      "characters": 124,
+      "fenced": false,
+      "startsObject": true,
+      "endsObject": true,
+      "objectJson": true,
+      "arrayJson": false,
+      "rootKeysMatch": true,
+      "versionMatches": true,
+      "rows": 2,
+      "rowsWithExpectedKeys": 2,
+      "rowsWithExpectedIds": 2,
+      "rowsWithLiteralResult": 2,
+      "loadMs": 12138,
+      "generationMs": 1450,
+      "phase": "authorized-response-structure"
+    },
+    {
+      "page": 6,
+      "pages": 6,
+      "block": 0,
+      "blocks": 0,
+      "phase": "processing"
+    },
+    {
+      "page": 6,
+      "pages": 6,
+      "block": 1,
+      "blocks": 1,
+      "phase": "processing"
+    },
+    {
+      "inputRows": 2,
+      "characters": 133,
+      "fenced": false,
+      "startsObject": true,
+      "endsObject": true,
+      "objectJson": true,
+      "arrayJson": false,
+      "rootKeysMatch": true,
+      "versionMatches": true,
+      "rows": 2,
+      "rowsWithExpectedKeys": 2,
+      "rowsWithExpectedIds": 2,
+      "rowsWithLiteralResult": 2,
+      "loadMs": 12682,
+      "generationMs": 1578,
+      "phase": "authorized-response-structure"
+    },
+    {
+      "phase": "authorized-checklist-ready"
+    },
+    {
+      "pages": [
+        {
+          "expected": 21,
+          "exact": 21,
+          "extras": 0,
+          "measurementDifferences": 0,
+          "referenceDifferences": 0,
+          "expectedAmbiguities": 0,
+          "preservedAmbiguities": 0,
+          "omissions": 0,
+          "page": 1
+        },
+        {
+          "expected": 3,
+          "exact": 3,
+          "extras": 0,
+          "measurementDifferences": 0,
+          "referenceDifferences": 0,
+          "expectedAmbiguities": 0,
+          "preservedAmbiguities": 0,
+          "omissions": 0,
+          "page": 2
+        },
+        {
+          "expected": 2,
+          "exact": 2,
+          "extras": 0,
+          "measurementDifferences": 0,
+          "referenceDifferences": 0,
+          "expectedAmbiguities": 0,
+          "preservedAmbiguities": 0,
+          "omissions": 0,
+          "page": 3
+        },
+        {
+          "expected": 6,
+          "exact": 6,
+          "extras": 0,
+          "measurementDifferences": 0,
+          "referenceDifferences": 0,
+          "expectedAmbiguities": 1,
+          "preservedAmbiguities": 1,
+          "omissions": 0,
+          "page": 4
+        },
+        {
+          "expected": 2,
+          "exact": 2,
+          "extras": 0,
+          "measurementDifferences": 0,
+          "referenceDifferences": 0,
+          "expectedAmbiguities": 0,
+          "preservedAmbiguities": 0,
+          "omissions": 0,
+          "page": 5
+        },
+        {
+          "expected": 2,
+          "exact": 2,
+          "extras": 0,
+          "measurementDifferences": 0,
+          "referenceDifferences": 0,
+          "expectedAmbiguities": 0,
+          "preservedAmbiguities": 0,
+          "omissions": 0,
+          "page": 6
+        }
+      ],
+      "phase": "authorized-comparison-measured"
+    },
+    {
+      "availableForDeviceReview": false,
+      "partial": true,
+      "pages": [
+        {
+          "page": 1,
+          "observations": 21,
+          "references": 21,
+          "referenceNeedsReview": 0,
+          "issues": [
+            "INSUFFICIENT_POSITIONED_TEXT"
+          ],
+          "inferenceFailures": []
+        },
+        {
+          "page": 2,
+          "observations": 3,
+          "references": 3,
+          "referenceNeedsReview": 0,
+          "issues": [
+            "INSUFFICIENT_POSITIONED_TEXT"
+          ],
+          "inferenceFailures": []
+        },
+        {
+          "page": 3,
+          "observations": 2,
+          "references": 1,
+          "referenceNeedsReview": 0,
+          "issues": [
+            "INSUFFICIENT_POSITIONED_TEXT"
+          ],
+          "inferenceFailures": []
+        },
+        {
+          "page": 4,
+          "observations": 6,
+          "references": 5,
+          "referenceNeedsReview": 1,
+          "issues": [
+            "INSUFFICIENT_POSITIONED_TEXT",
+            "EVIDENCE_NEEDS_REVIEW"
+          ],
+          "inferenceFailures": []
+        },
+        {
+          "page": 5,
+          "observations": 2,
+          "references": 2,
+          "referenceNeedsReview": 0,
+          "issues": [
+            "INSUFFICIENT_POSITIONED_TEXT"
+          ],
+          "inferenceFailures": []
+        },
+        {
+          "page": 6,
+          "observations": 2,
+          "references": 2,
+          "referenceNeedsReview": 0,
+          "issues": [
+            "INSUFFICIENT_POSITIONED_TEXT"
+          ],
+          "inferenceFailures": []
+        }
+      ],
+      "phase": "authorized-extraction-measured"
+    }
+  ],
+  "clinicalValidation": false,
+  "runnerPassed": true,
+  "streamDelivered": true,
+  "completed": true,
+  "publishedWithEvidence": 36,
+  "checklistCompared": true,
+  "visualComparisonPending": true,
+  "promptVersion": "exam-extraction/4",
+  "schemaVersion": "exam/2",
+  "technicalComparisonPassed": true,
+  "pickerAcceptancePassed": false
+}

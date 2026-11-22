@@ -20,6 +20,8 @@ class DeletionWorker(context: Context, params: WorkerParameters) : CoroutineWork
                 SafDocumentReader(applicationContext.contentResolver), store,
                 ProtectedValidationRepository(factory)).reconcile()
             ProtectedDeletionCleanup(factory, store, AndroidRunWorkScheduler(applicationContext)).run()
+            dagger.hilt.android.EntryPointAccessors.fromApplication(applicationContext,
+                ResultShareDependencies::class.java).resultShareStore().reconcile()
             Result.success()
         } catch (e: kotlinx.coroutines.CancellationException) {
             throw e

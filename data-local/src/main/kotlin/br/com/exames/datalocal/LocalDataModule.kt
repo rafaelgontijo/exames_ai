@@ -40,10 +40,10 @@ object LocalDataModule {
     @Provides fun parser(): BiochemistryParser = BiochemistryParser()
     @Provides @Singleton fun databaseFactory(@ApplicationContext context: Context): ProtectedDatabaseFactory =
         ProtectedDatabaseFactory(context)
-    @Provides @Singleton fun validationRepository(factory: ProtectedDatabaseFactory,
+    @Provides @Singleton fun validationRepository(factory: ProtectedDatabaseFactory, shares: ResultShareStore,
         scheduler: br.com.exames.domain.usecase.RunWorkScheduler, @ApplicationContext context: Context): ValidationRepository =
         ProtectedValidationRepository(factory, requestCleanup = { DeletionWorker.requestCleanup(context) },
-            cancelWork = { ids -> ids.forEach { scheduler.cancel(it) } })
+            cancelWork = { ids -> ids.forEach { scheduler.cancel(it) } }, deletionBarrier = shares::deleting)
     @Provides fun documents(repository: ValidationRepository): DocumentRepository = repository
     @Provides @Singleton fun artifacts(@ApplicationContext context: Context): EncryptedArtifactStore =
         EncryptedArtifactStore(context)

@@ -16,13 +16,25 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.exames.coreui.*
 import br.com.exames.domain.model.*
 import br.com.exames.domain.summary.ProjectReferenceSummary
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import br.com.exames.domain.summary.SummaryText
+import br.com.exames.domain.summary.SummaryTextResult
 import br.com.exames.domain.summary.SummaryCompleteness
 import br.com.exames.domain.validation.*
 
 @Composable
-fun ResultsScreen(runId: String, onBack: () -> Unit, model: ResultsViewModel = viewModel()) {
+fun ResultsScreen(runId: String, onBack: () -> Unit, model: ResultsViewModel = viewModel(), sharing: ResultSharing? = null) {
     LaunchedEffect(runId) { model.open(runId) }
     val state by model.state.collectAsStateWithLifecycle()
+    val summary = remember(state.run, state.rows, state.checkpoints, state.pageCount) {
+        state.run?.let { ProjectReferenceSummary.project(it, state.rows.map { row -> row.observation },
+            state.rows.mapNotNull { row -> row.assessment }, state.checkpoints, state.pageCount) }
+    }
+    val rendered = remember(summary) { summary?.let(SummaryText::render) }
+    val speech = rememberResultSpeech(runId, summary)
     state.draft?.let { ReviewEditor(it, state.reviewBusy, state.message, model::updateDraft, model::dismissDraft, model::saveDraft) }
     state.report?.let { ValidationReportDialog(it, state.pairedReport, state.run, state.checkpoints, model::closeReport) }
     val listState = rememberLazyListState()
@@ -40,12 +52,8 @@ fun ResultsScreen(runId: String, onBack: () -> Unit, model: ResultsViewModel = v
         if (state.loading) item { CircularProgressIndicator() }
         state.message?.let { item { Text(it) } }
         if (state.unavailable) item { ExamesTextButton(onClick = { model.open(runId) }) { Text("Tentar reabrir execução") } }
-        state.run?.let { run ->
+        if (summary != null) state.run?.let { run ->
             item {
-                val summary = remember(run, state.rows, state.checkpoints, state.pageCount) {
-                    ProjectReferenceSummary.project(run, state.rows.map { it.observation }, state.rows.mapNotNull { it.assessment },
-                        state.checkpoints, state.pageCount)
-                }
                 ExamesCard(Modifier.testTag("results-summary")) {
                     StatusChip(completenessLabel(summary.completeness), if (summary.completeness == SummaryCompleteness.COMPLETE) ChipKind.INFO else ChipKind.REVIEW)
                     Text(modeLabel(run.mode))
@@ -63,6 +71,23 @@ fun ResultsScreen(runId: String, onBack: () -> Unit, model: ResultsViewModel = v
                     Text("Precisam de revisão: ${c.needsReview}")
                     Text("Não classificáveis: ${c.notClassifiable}")
                     if (summary.warnings.isNotEmpty()) Text("Limitações: " + summary.warnings.map(::warningLabel).sorted().joinToString("; ") + ".")
+                }
+                when {
+                    rendered is SummaryTextResult.TooLarge -> Text("Resumo excede o limite de 64 KiB.")
+                    rendered is SummaryTextResult.Rendered -> {
+                        if (sharing != null) key(summary.documentId, summary.runId, rendered) {
+                            ShareSummary(summary.documentId, summary.runId, rendered, sharing)
+                        }
+                        when (speech.state) {
+                            SpeechState.CHECKING -> Text("Verificando voz local…")
+                            SpeechState.UNAVAILABLE -> Text("Voz offline em português do Brasil indisponível.")
+                            SpeechState.SPEAKING -> ExamesTextButton(onClick = speech::stop) { Text("Parar leitura") }
+                            SpeechState.READY, SpeechState.ERROR -> {
+                                if (speech.state == SpeechState.ERROR) Text("Não foi possível reproduzir o resumo.")
+                                ExamesTextButton(onClick = { speech.play(rendered.text) }) { Text("Ouvir resumo") }
+                            }
+                        }
+                    }
                 }
                 Text("Páginas concluídas: ${state.checkpoints.count { it.state == PageState.COMPLETE }}. Falhas: ${state.checkpoints.count { it.state == PageState.FAILED }}.")
                 for(page in state.checkpoints.filter { it.state==PageState.FAILED }) Text("Página ${page.page}: " + when(page.errorCode) {
@@ -154,17 +179,20 @@ fun ResultsScreen(runId: String, onBack: () -> Unit, model: ResultsViewModel = v
     }
 }
 
-internal fun reason(code: ReasonCode) = when (code) {
-    ReasonCode.AMBIGUOUS_INPUT -> "Há ambiguidade nos dados extraídos ou na associação da referência."
-    ReasonCode.UNCONFIRMED -> "A regra desta execução exige confirmação registrada."
-    ReasonCode.NO_REFERENCE -> "Não há referência numérica utilizável no documento."
-    ReasonCode.REFERENCE_MISMATCH -> "A referência não está associada de forma segura a este resultado."
-    ReasonCode.CONTEXT_UNRESOLVED -> "O contexto necessário à referência não foi resolvido."
-    ReasonCode.UNIT_UNRESOLVED -> "A unidade está ausente ou é incompatível com a referência."
-    ReasonCode.NON_NUMERIC -> "O resultado não é numérico nesta regra."
-    ReasonCode.CENSORED_RESULT -> "O resultado contém um comparador e requer revisão."
-    ReasonCode.INVALID_REFERENCE -> "A referência não forma um limite numérico válido."
-    ReasonCode.BELOW_LOWER_BOUND -> "O valor não atende ao limite inferior da referência do documento."
-    ReasonCode.ABOVE_UPPER_BOUND -> "O valor não atende ao limite superior da referência do documento."
-    ReasonCode.INSIDE_REFERENCE -> "O valor está nos limites da referência associada no documento."
+@Composable
+internal fun rememberResultSpeech(runId: String, summary: br.com.exames.domain.summary.ReferenceSummary?,
+    create: (android.content.Context) -> OfflineSpeech = ::OfflineSpeech): OfflineSpeech {
+    val context = LocalContext.current.applicationContext
+    val owner = LocalLifecycleOwner.current
+    val speech = remember(owner, runId) { create(context) }
+    DisposableEffect(speech) {
+        speech.initialize()
+        val observer = LifecycleEventObserver { _, event -> if (event == Lifecycle.Event.ON_STOP) speech.stop() }
+        owner.lifecycle.addObserver(observer)
+        onDispose { owner.lifecycle.removeObserver(observer); speech.close() }
+    }
+    DisposableEffect(summary) { onDispose { speech.stop() } }
+    return speech
 }
+
+internal fun reason(code: ReasonCode) = br.com.exames.domain.summary.assessmentReason(code)

@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-21",
+  "model": "SM-S931B",
+  "api": 37,
+  "airplane": true,
+  "wifi": false,
+  "physicalPickerAndCameraEvents": [
+    {
+      "phase": "camera-fixture",
+      "run": "FAILED",
+      "mime": "image/jpeg",
+      "width": 1440,
+      "height": 1920,
+      "pages": 1,
+      "observations": 0,
+      "ocrSpans": 3,
+      "tableHeadersSeen": [],
+      "pageErrors": [
+        "PAGE_UNSUPPORTED_LAYOUT"
+      ],
+      "statuses": {}
+    },
+    {
+      "phase": "picker-format-opened",
+      "mime": "application/pdf",
+      "pages": 3
+    },
+    {
+      "phase": "picker-format-opened",
+      "mime": "image/png",
+      "pages": 1
+    },
+    {
+      "phase": "picker-format-opened",
+      "mime": "image/jpeg",
+      "pages": 1
+    }
+  ],
+  "deletion": {
+    "phase": "delete-during-speech-and-share",
+    "staticWeightsPreserved": true
+  },
+  "cameraRepeat": "not_available",
+  "upgrade": "interrupted_before_seed",
+  "integratedAcceptanceComplete": false
+}

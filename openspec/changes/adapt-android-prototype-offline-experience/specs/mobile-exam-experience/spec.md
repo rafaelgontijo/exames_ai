@@ -29,6 +29,10 @@ Cartões e resumo SHALL distinguir dentro, abaixo e acima da referência informa
 - **WHEN** há ambiguidades, referência ausente, conteúdo não suportado ou página incompleta
 - **THEN** mostra revisão/limitação explicitamente e não exibe “Tudo normal”, “Está bom” ou conclusão equivalente
 
+#### Scenario: Review a multi-page report with direct and estimated measurements
+- **WHEN** o usuário importa um laudo sintético com glicose medida em um bloco, glicemia média estimada em outro e referências distintas por contexto
+- **THEN** cada medida apresentada remete ao bloco e à página que a sustentam. A estimativa não é contada como glicose medida. Uma associação ambígua exige revisão, inclusive quando o valor e a unidade parecem compatíveis. A leitura e a prévia de compartilhamento refletem o mesmo resumo da execução selecionada.
+
 ### Requirement: Reviewer tools remain reachable
 A nova experiência SHALL manter acesso a fonte destacada, correção de extração, revisão de gabarito, versões, reavaliação/reexecução, corpus, relatórios A/B, progresso/cancelamento e exclusão confirmada. A simplificação visual SHALL NOT substituir ou alterar métricas originais.
 

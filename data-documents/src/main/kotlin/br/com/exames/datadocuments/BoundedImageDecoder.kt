@@ -3,15 +3,8 @@ package br.com.exames.datadocuments
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import br.com.exames.pdflocal.ExtractionLimits
 import java.io.Closeable
 import java.io.IOException
-
-object DocumentLimits {
-    val MAX_BYTES: Int = ExtractionLimits.MAX_BYTES
-    val MAX_PAGES: Int = ExtractionLimits.MAX_PAGES
-    val MAX_RASTER_SIDE: Int = ExtractionLimits.MAX_RASTER_SIDE
-}
 
 /** Blocking IO/CPU. Ownership of the authenticated encoded bytes transfers and is wiped on exit. */
 class BoundedImageDecoder {

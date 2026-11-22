@@ -26,16 +26,7 @@ internal fun completenessLabel(c: SummaryCompleteness) = when (c) {
     SummaryCompleteness.IN_PROGRESS -> "Leitura em andamento"
     SummaryCompleteness.UNAVAILABLE -> "Leitura indisponível"
 }
-internal fun warningLabel(w: SummaryWarning) = when (w) {
-    SummaryWarning.NO_OBSERVATIONS -> "nenhum campo suportado encontrado"
-    SummaryWarning.AMBIGUITIES_PRESENT -> "há ambiguidades a conferir na fonte"
-    SummaryWarning.REFERENCE_MISSING -> "há campos sem referência no documento"
-    SummaryWarning.UNSUPPORTED_CONTENT -> "há conteúdo não suportado"
-    SummaryWarning.PAGES_INCOMPLETE -> "páginas incompletas"
-    SummaryWarning.ASSESSMENT_MISSING -> "há campos sem avaliação confiável"
-    SummaryWarning.ORPHAN_ASSESSMENT -> "há avaliações sem campo correspondente"
-    SummaryWarning.RUN_NOT_COMPLETE -> "execução não concluída"
-}
+internal fun warningLabel(w: SummaryWarning) = br.com.exames.domain.summary.summaryWarning(w)
 internal fun basisLabel(b: OutputBasis, corrections: Int) = when (b) {
     OutputBasis.AUTOMATIC -> "Saída automática"
     OutputBasis.CORRECTED -> "Reavaliação após correções — $corrections registros de correção"

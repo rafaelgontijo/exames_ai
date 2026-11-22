@@ -45,6 +45,12 @@ class SummaryTextTest {
         assertTrue(r.text.contains(SummaryText.OMISSION_MARKER))
         assertTrue(r.text.contains("4 campo(s) omitido(s)"))
     }
+    @Test fun unknownOperationalMetadataCannotIntroduceFreeText() {
+        val r = rendered(summary(listOf(line())).copy(runId = "NAME-TEST!", ruleVersion = "NAME-TEST!"))
+        assertFalse(r.text.contains("NAME-TEST"))
+        assertTrue(r.text.contains(SummaryText.OMISSION_MARKER))
+    }
+
     @Test fun unknownUnitAndLongFieldsAreOmitted() {
         val r = rendered(summary(listOf(line(unit = "furlongs/fortnight", result = "9".repeat(41)))))
         assertEquals(2, r.omittedFieldCount)
@@ -67,18 +73,27 @@ class SummaryTextTest {
         val t = r.text.lowercase()
         for (bad in listOf("content://", "file://", "http", "tudo normal", "está bom", "paciente", "nome:", "urgên"))
             assertFalse(t.contains(bad), bad)
-        assertTrue(t.contains("dentro da referência informada") && t.contains("requer revisão") && t.contains("ambiguidades unit"))
+        assertTrue(t.contains("dentro da referência informada") && t.contains("requer revisão") && t.contains("ambiguidades unidade"))
     }
     @Test fun partialAndWarningsArePreserved() {
         val r = rendered(summary(listOf(line()), completeness = SummaryCompleteness.PARTIAL,
             warnings = setOf(SummaryWarning.PAGES_INCOMPLETE, SummaryWarning.REFERENCE_MISSING)))
-        assertTrue(r.text.contains("parcial") && r.text.contains("PAGES_INCOMPLETE") && r.text.contains("REFERENCE_MISSING"))
+        assertTrue(r.text.contains("parcial") && r.text.contains("páginas incompletas") && r.text.contains("há campos sem referência no documento"))
     }
     @Test fun emptySummaryStatesNoFieldsAndIsDeterministic() {
         val s = summary(emptyList())
         assertTrue(rendered(s).text.contains("Nenhum campo suportado"))
         assertEquals(rendered(s), rendered(s))
     }
+    @Test fun preservesReferenceUnitsAndRejectsTrailingFreeText() {
+        val safe = rendered(summary(listOf(line(ref = "10 a 21 mg/dL"), line(2, ref = "< 4 mmol/L"))))
+        assertEquals(0, safe.omittedFieldCount)
+        assertTrue(safe.text.contains("referência do documento 10 a 21 mg/dL"))
+        val unsafe = rendered(summary(listOf(line(ref = "10 a 21 mg/dL TESTE-ZETA"))))
+        assertEquals(1, unsafe.omittedFieldCount)
+        assertFalse(unsafe.text.contains("TESTE-ZETA"))
+    }
+
     @Test fun comparatorResultsAndRangesWithCommaAreAccepted() {
         val r = rendered(summary(listOf(line(result = "< 0,1", ref = "≥ 10"), line(2, result = "1.234,5".replace(".", ""), ref = "0,5 a 1,2"))))
         assertEquals(0, r.omittedFieldCount)

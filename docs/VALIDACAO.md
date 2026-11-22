@@ -962,3 +962,30 @@ Evidência consolidada:
 `validation/results/final-standard-build-audit-s25-2026-11-03.json`.
 As limitações de qualidade e de hardware, medições indisponíveis e ausência de
 validação clínica continuam explícitas em `S25_FINAL_VALIDATION.md`.
+
+## Regressão multipágina do protótipo em 21/11/2026
+
+A fixture `development-multipage-v1` foi gerada com dados inventados e gabarito por página e bloco. Ela reproduz paginação, camada de texto, referências contextuais e abertura sem senha do perfil observado no exame pessoal. A pasta `examples/` é ignorada pelo Git. [Fixture reproduzível](../validation/development/multipage/README.md)
+
+No S25 com Android 17, modo avião e Wi-Fi desligado, os modos sem IA e assistido importaram a fixture pelo seletor real. O PDFium abriu as seis páginas. A glicemia média estimada da página 2 e o marcador experimental da página 5 ficaram fora das observações. Ambas as páginas abriram na cópia privada e foram registradas como sem resultados suportados. As regiões das cinco observações permaneceram na página de origem.
+
+| Modo | Dentro | Acima | Revisão | Não classificável | Ausentes | Extras | Páginas com fallback |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Sem IA | 2 | 1 | 1 | 1 | 0 | 0 | 0 |
+| Assistido | 1 | 1 | 2 | 1 | 0 | 0 | 5 |
+
+A IA acrescentou uma abstenção. Houve sinalizações de evidência inválida e schema inválido na execução assistida. O leitor sintético local recebeu exatamente o texto que estava na prévia em ambos os modos, com o identificador fictício ausente. A fala pt-BR e a interrupção foram confirmadas no aparelho. [Execuções no S25](../validation/results/prototype-multipage-s25-2026-11-21-verified.json) · [Leitura audível](OFFLINE_AUDIO.md)
+
+As métricas e partições do corpus anterior são preservadas. Estes resultados pertencem ao caso de desenvolvimento e ao aceite técnico da interface.
+
+O build padrão do protótipo gerou um APK de 2.133.502.487 bytes, com 352 testes JVM distintos aprovados. No Android 7, as cinco suítes de armazenamento, leitura de documentos, resultados, fontes e telas registraram 104 aprovações e uma condição de teste reservada a duas invocações. A auditoria confirmou alinhamento de 16 KiB do APK, modelos embarcados e ausência de permissão Internet. [Auditoria de build](../validation/results/prototype-standard-build-api24-2026-11-21.json)
+
+A atualização iniciada a partir de `a626b5e` foi exercitada no Android 7 com o mesmo banco sintético e dois PIDs. A impressão digital das cinco observações, status, correção, gabarito, comparação, fonte e marcador de pesos coincidiu antes e depois. A versão atual reabriu a fonte e permitiu revisão e exclusão. [Comparação da atualização](../validation/results/prototype-upgrade-api24-2026-11-21-verified.json)
+
+O HTML original permaneceu fora do Git e seu SHA-256 coincidiu com o registrado no desenho. As capturas da interface são sintéticas. [Correspondência com o protótipo](PROTOTYPE_EXPERIENCE.md)
+
+### Ensaio suplementar autorizado pelo titular
+
+Em 21/11/2026 o titular autorizou um ensaio local com o próprio PDF. O stream USB passou pelo importador do pacote separado no S25 com modo avião e Wi-Fi desligado. O PDFium abriu seis páginas. Nos dois modos, todas terminaram com `PAGE_UNSUPPORTED_LAYOUT` e nenhuma observação foi publicada. O modo assistido registrou seis fallbacks. O arquivo e a saída identificável foram tratados no armazenamento privado cifrado. A regressão acima continua sendo a amostra reproduzível.
+
+No mesmo ensaio offline, o seletor real abriu um PDF misto com três páginas, um PNG e um JPEG. A exclusão durante a fala e com um leitor aberto bloqueou reabertura da exportação. O SHA-256 dos pesos permaneceu idêntico. A foto feita pela câmera do S25 gerou JPEG privado de 1440 × 1920. O OCR retornou três trechos, nenhum cabeçalho reconhecido e `PAGE_UNSUPPORTED_LAYOUT`. O usuário informou que a captura não pode ser repetida agora. A tentativa de atualização sobre a base sintética no S25 foi interrompida pela desconexão USB durante a instalação inicial. [Aceite integrado parcial](../validation/results/prototype-integrated-s25-2026-11-21.json)

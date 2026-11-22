@@ -35,8 +35,22 @@ class SyntheticImportProvider : ContentProvider() {
         if (revoked) throw FileNotFoundException("SYNTHETIC_REVOKED")
         val pipe = ParcelFileDescriptor.createPipe()
         val snapshot = bytes
+        val repeatedCount = oversizedBytes
         Thread {
-            try { ParcelFileDescriptor.AutoCloseOutputStream(pipe[1]).use { it.write(snapshot) } }
+            try {
+                ParcelFileDescriptor.AutoCloseOutputStream(pipe[1]).use { out ->
+                    if (repeatedCount == 0) out.write(snapshot)
+                    else {
+                        val chunk = ByteArray(8192)
+                        var remaining = repeatedCount
+                        while (remaining > 0) {
+                            val count = minOf(chunk.size, remaining)
+                            out.write(chunk, 0, count)
+                            remaining -= count
+                        }
+                    }
+                }
+            }
             catch (_: java.io.IOException) { }
         }.start()
         return pipe[0]
@@ -49,6 +63,7 @@ class SyntheticImportProvider : ContentProvider() {
         var mime: String? = "application/pdf"
         var size: Long? = null
         var revoked = false
+        var oversizedBytes = 0
     }
 }
 
@@ -86,6 +101,7 @@ class ProtectedDocumentImporterTest {
         SyntheticImportProvider.mime = "application/pdf"
         SyntheticImportProvider.size = null
         SyntheticImportProvider.revoked = false
+        SyntheticImportProvider.oversizedBytes = 0
     }
 
     @Test fun actualSourceSurvivesRevocationAndReopeningWithoutPlaintextFiles() = runBlocking {
@@ -118,8 +134,13 @@ class ProtectedDocumentImporterTest {
     }
     @Test fun lyingSizeCannotBypassActualByteLimit() = runBlocking {
         SyntheticImportProvider.size = 1
-        SyntheticImportProvider.bytes = ByteArray(20 * 1024 * 1024 + 1)
-        reject { importer().import(uri) }
+        SyntheticImportProvider.oversizedBytes = br.com.exames.datadocuments.DocumentLimits.MAX_BYTES + 1
+        try {
+            importer().import(uri)
+            fail("Accepted byte overflow")
+        } catch (e: IllegalArgumentException) {
+            assertEquals("DOCUMENT_TOO_LARGE", e.message)
+        }
         assertTrue(repository.rows.isEmpty())
     }
     @Test fun saveFailureRemovesEncryptedSourceAndJournal() = runBlocking {
