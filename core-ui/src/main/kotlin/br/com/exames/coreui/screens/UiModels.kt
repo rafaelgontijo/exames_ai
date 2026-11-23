@@ -38,6 +38,47 @@ data class ProcessingUiState(
         }
 }
 
+enum class ContextSexOption { UNSPECIFIED, FEMALE, MALE }
+
+enum class ContextFastingOption { UNSPECIFIED, FASTING, NON_FASTING }
+
+enum class ContextPregnancyOption { UNSPECIFIED, NOT_PREGNANT, PREGNANT }
+
+/** Ephemeral UI state for session-only clinical context; never saved to disk or SavedStateHandle. */
+data class ClinicalContextUi(
+    val sex: ContextSexOption = ContextSexOption.UNSPECIFIED,
+    val ageInput: String = "",
+    val fasting: ContextFastingOption = ContextFastingOption.UNSPECIFIED,
+    val pregnancy: ContextPregnancyOption = ContextPregnancyOption.UNSPECIFIED,
+) {
+    val isEmpty: Boolean
+        get() = sex == ContextSexOption.UNSPECIFIED &&
+            ageInput.isBlank() &&
+            fasting == ContextFastingOption.UNSPECIFIED &&
+            pregnancy == ContextPregnancyOption.UNSPECIFIED
+
+    fun summaryLabel(): String = buildList {
+        when (sex) {
+            ContextSexOption.FEMALE -> add("Feminino")
+            ContextSexOption.MALE -> add("Masculino")
+            ContextSexOption.UNSPECIFIED -> Unit
+        }
+        ageInput.trim().toIntOrNull()?.let { add("$it anos") }
+        when (fasting) {
+            ContextFastingOption.FASTING -> add("Em jejum")
+            ContextFastingOption.NON_FASTING -> add("Sem jejum")
+            ContextFastingOption.UNSPECIFIED -> Unit
+        }
+        if (sex != ContextSexOption.MALE) {
+            when (pregnancy) {
+                ContextPregnancyOption.PREGNANT -> add("Gestante")
+                ContextPregnancyOption.NOT_PREGNANT -> add("Não gestante")
+                ContextPregnancyOption.UNSPECIFIED -> Unit
+            }
+        }
+    }.joinToString(" · ")
+}
+
 enum class ResultFilterOption { ALL, REVIEW, WITHIN_RANGE, UNCLASSIFIABLE }
 
 data class ResultFilterTabUi(
@@ -76,6 +117,7 @@ data class ResultsUiState(
     val filters: List<ResultFilterTabUi> = emptyList(),
     val pages: List<ResultPageGroupUi> = emptyList(),
     val primaryEvidenceItemId: String? = null,
+    val clinicalContext: ClinicalContextUi = ClinicalContextUi(),
 )
 
 data class EvidenceBoxUi(

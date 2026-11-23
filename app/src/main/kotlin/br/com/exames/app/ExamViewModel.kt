@@ -44,6 +44,7 @@ internal data class ExamAppState(
     val activeExamId: String? = null,
     val processing: ProcessingUiState? = null,
     val openedExam: OpenedExamState? = null,
+    val sessionContext: ClinicalContextUi = ClinicalContextUi(),
     val selectedEvidenceId: String? = null,
     val notice: String? = null,
     val navEvent: AppNavEvent? = null,
@@ -57,6 +58,7 @@ internal data class ExamAppState(
             assessed = current.assessed,
             activeFilter = current.filter,
             notice = notice,
+            clinicalContext = sessionContext,
         )
     }
 
@@ -142,7 +144,8 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
                 val savedEntry = store.save(id, extraction)
                 val history = store.list()
                 ensureActive()
-                val assessed = ExamSummaryProjection.project(extraction)
+                val domainContext = ExamUiMapper.toDomainContext(mutableState.value.sessionContext)
+                val assessed = ExamSummaryProjection.project(extraction, domainContext)
                 mutableState.update {
                     it.copy(
                         history = history,
@@ -205,6 +208,7 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
                     history = history,
                     activeExamId = null,
                     processing = null,
+                    sessionContext = ClinicalContextUi(),
                     notice = "Extração cancelada.",
                     navEvent = AppNavEvent.BackToHome,
                 )
@@ -227,7 +231,8 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
                     }
                 }
                 else -> {
-                    val assessed = ExamSummaryProjection.project(extraction)
+                    val domainContext = ExamUiMapper.toDomainContext(mutableState.value.sessionContext)
+                    val assessed = ExamSummaryProjection.project(extraction, domainContext)
                     mutableState.update {
                         it.copy(
                             openedExam = OpenedExamState(record.entry, extraction, assessed),
@@ -248,6 +253,27 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+    /** Updates ephemeral session-only clinical context strictly in RAM; never saved to storage. */
+    fun updateClinicalContext(contextUi: ClinicalContextUi) {
+        mutableState.update { current ->
+            val opened = current.openedExam
+            val updatedOpened = if (opened != null) {
+                val domainContext = ExamUiMapper.toDomainContext(contextUi)
+                opened.copy(assessed = ExamSummaryProjection.project(opened.extraction, domainContext))
+            } else {
+                null
+            }
+            current.copy(
+                sessionContext = contextUi,
+                openedExam = updatedOpened,
+            )
+        }
+    }
+
+    fun clearClinicalContext() {
+        updateClinicalContext(ClinicalContextUi())
+    }
+
     fun selectEvidence(observationId: String) {
         mutableState.update { it.copy(selectedEvidenceId = observationId) }
     }
@@ -262,6 +288,7 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
                 current.copy(
                     history = history,
                     openedExam = if (wasOpened) null else current.openedExam,
+                    sessionContext = if (wasOpened) ClinicalContextUi() else current.sessionContext,
                     selectedEvidenceId = if (wasOpened) null else current.selectedEvidenceId,
                     notice = if (removed) "Extração descartada." else "Não foi possível descartar. Tente novamente.",
                     navEvent = if (wasOpened) AppNavEvent.BackToHome else null,
@@ -279,6 +306,7 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
                 it.copy(
                     history = history,
                     openedExam = null,
+                    sessionContext = ClinicalContextUi(),
                     selectedEvidenceId = null,
                     notice = if (removed) "Todos os exames foram apagados." else "Não foi possível apagar os exames.",
                     navEvent = AppNavEvent.BackToHome,

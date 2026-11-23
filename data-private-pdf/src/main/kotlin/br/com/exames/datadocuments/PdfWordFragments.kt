@@ -30,8 +30,14 @@ object PdfWordFragments {
                 flush();emit(span.raw,span.spanId,box,whitespace);whitespace=span.raw.last().isWhitespace();continue
             }
             val previous=pending.lastOrNull()?.boundingBox
-            if(previous!=null && (box.left<previous.left || box.left-previous.right>maxOf(2,previous.bottom-previous.top) ||
-                    minOf(box.bottom,previous.bottom)<=maxOf(box.top,previous.top))) flush()
+            if(previous!=null) {
+                val wordTop=pending.minOf { requireNotNull(it.boundingBox).top }
+                val wordBottom=pending.maxOf { requireNotNull(it.boundingBox).bottom }
+                val wordHeight=maxOf(1,wordBottom-wordTop)
+                val verticalPad=maxOf(2,wordHeight/3)
+                val sameLine=minOf(box.bottom,wordBottom+verticalPad)>maxOf(box.top,wordTop-verticalPad)
+                if(box.left<previous.left || box.left-previous.right>maxOf(2,wordHeight) || !sameLine) flush()
+            }
             if(pending.isEmpty()) pendingSpace=whitespace
             pending+=span;whitespace=false
         }

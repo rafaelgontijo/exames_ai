@@ -34,6 +34,9 @@ fun HomeScreen(
     onOpenHelp: () -> Unit,
     onDeleteExam: (String) -> Unit,
     modifier: Modifier = Modifier,
+    clinicalContext: ClinicalContextUi = ClinicalContextUi(),
+    onUpdateContext: (ClinicalContextUi) -> Unit = {},
+    onClearContext: () -> Unit = {},
 ) {
     val p = ExamesTheme.palette
     val fontScale = LocalDensity.current.fontScale
@@ -114,6 +117,16 @@ fun HomeScreen(
                 Text(notice, Modifier.padding(14.dp), style = MaterialTheme.typography.bodyMedium)
             }
         }
+
+        // Ephemeral Pre-Import Clinical Context Card (never persisted)
+        SessionContextCard(
+            context = clinicalContext,
+            onUpdate = onUpdateContext,
+            onClear = onClearContext,
+            initiallyExpanded = false,
+            titleWhenEmpty = "Dados básicos para a leitura (opcional)",
+            subtitleWhenEmpty = "Informe sexo, idade ou jejum antes de selecionar o PDF. Não fica salvo.",
+        )
 
         // Primary Hero Card
         ExamesHeroCard(

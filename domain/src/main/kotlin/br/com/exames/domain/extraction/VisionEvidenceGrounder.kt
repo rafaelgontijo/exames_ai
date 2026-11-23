@@ -17,8 +17,9 @@ data class GroundedVisionPage(
  */
 object VisionEvidenceGrounder {
     private val alphaTok = Regex("[a-z]{3,}")
-    private val numTok = Regex("""\d+(?:[.,]\d+)?""")
+    private val numTok = Regex("""\d+(?:[.,]\d+)*""")
     private val alphanumeric = Regex("[a-z0-9]")
+    private val splitNumPunct = Regex("""(\d)\s*([.,])\s*(\d)""")
 
     private class TextLine(first: SourceFragment) {
         val words = mutableListOf(first)
@@ -107,7 +108,11 @@ object VisionEvidenceGrounder {
             val unitCitation = resolveUnitCitation(proposal.unit, match.lineIndex, lines, page, candidates.size + 1)
             val refResolution = resolveReference(proposal.reference, match.lineIndex, lines, fullFolded, resultRight)
 
-            val refNeedsReview = proposal.needsReview || refResolution.uncertain
+            val refNeedsReview = when {
+                refResolution.uncertain -> true
+                proposal.reference != null -> false
+                else -> proposal.needsReview
+            }
             if (refResolution.uncertain) {
                 issues += ExamIssue.EVIDENCE_NEEDS_REVIEW
             }
@@ -317,12 +322,16 @@ object VisionEvidenceGrounder {
     ): RefResolution {
         if (reference == null) return RefResolution(null, emptyList(), uncertain = false)
         val fRef = fold(reference)
-        val refNums = numTok.findAll(fRef).map { it.value }.toList()
+        val fullNormalized = normalizeSplitNumPunct(fullFolded)
+        val fRefNormalized = normalizeSplitNumPunct(fRef)
+        val refNums = numTok.findAll(fRefNormalized).map { it.value }.toList()
 
         val grounded = when {
-            fRef in fullFolded -> true
+            fRef in fullFolded || fRefNormalized in fullNormalized -> true
             refNums.isNotEmpty() -> refNums.all { n ->
-                containsBoundarySafe(fullFolded, n) || containsBoundarySafe(fullFolded, n.replace('.', ','))
+                containsBoundarySafe(fullNormalized, n) ||
+                    containsBoundarySafe(fullNormalized, n.replace('.', ',')) ||
+                    containsBoundarySafe(fullNormalized, n.replace(',', '.'))
             }
             else -> {
                 val words = alphaTok.findAll(fRef).map { it.value }.toList()
@@ -343,16 +352,43 @@ object VisionEvidenceGrounder {
         val refWords = alphaTok.findAll(fRef).map { it.value }.toSet()
         for (i in lineIndex..endIndex) {
             val line = lines[i]
-            val hits = line.sortedWords.filter { w ->
-                val positionOk = i != lineIndex || resultRight == null || (w.region?.left ?: Double.MAX_VALUE) >= resultRight - 4.0
-                if (!positionOk) return@filter false
-                val wf = fold(w.raw)
-                (refNums.isNotEmpty() && refNums.any { n -> containsBoundarySafe(wf, n) || containsBoundarySafe(wf, n.replace('.', ',')) }) ||
-                    (refNums.isEmpty() && refWords.any { rw -> wf.contains(rw) })
+            val lineWords = line.sortedWords.filter { w ->
+                i != lineIndex || resultRight == null || (w.region?.left ?: Double.MAX_VALUE) >= resultRight - 4.0
             }
-            if (hits.isNotEmpty()) {
-                regions.addAll(hits.mapNotNull { it.region })
-                if (i == lineIndex && refNums.all { n -> containsBoundarySafe(line.folded, n) }) break
+            val hitSet = linkedSetOf<SourceRegion>()
+            for (w in lineWords) {
+                val wf = fold(w.raw)
+                val matches = (refNums.isNotEmpty() && refNums.any { n ->
+                    containsBoundarySafe(wf, n) ||
+                        containsBoundarySafe(wf, n.replace('.', ',')) ||
+                        containsBoundarySafe(wf, n.replace(',', '.'))
+                }) || (refNums.isEmpty() && refWords.any { rw -> wf.contains(rw) })
+                if (matches) w.region?.let(hitSet::add)
+            }
+            // Also check contiguous multi-word spans (up to 3 fragments) when punctuation was split across fragments.
+            if (refNums.isNotEmpty() && hitSet.isEmpty() && lineWords.size >= 2) {
+                for (span in 2..minOf(3, lineWords.size)) {
+                    for (start in 0..(lineWords.size - span)) {
+                        val sub = lineWords.subList(start, start + span)
+                        val joined = normalizeSplitNumPunct(fold(joinWords(sub)))
+                        if (refNums.any { n ->
+                                containsBoundarySafe(joined, n) ||
+                                    containsBoundarySafe(joined, n.replace('.', ',')) ||
+                                    containsBoundarySafe(joined, n.replace(',', '.'))
+                            }) {
+                            sub.mapNotNullTo(hitSet) { it.region }
+                        }
+                    }
+                }
+            }
+            if (hitSet.isNotEmpty()) {
+                regions.addAll(hitSet)
+                val lineNorm = normalizeSplitNumPunct(line.folded)
+                if (i == lineIndex && refNums.all { n ->
+                        containsBoundarySafe(lineNorm, n) ||
+                            containsBoundarySafe(lineNorm, n.replace('.', ',')) ||
+                            containsBoundarySafe(lineNorm, n.replace(',', '.'))
+                    }) break
             }
         }
         return RefResolution(reference, regions, uncertain = false)
@@ -364,20 +400,48 @@ object VisionEvidenceGrounder {
 
         for (candidate in candidates) {
             val sameIdx = merged.indexOfFirst { existing ->
+                val existingUnit = fold(existing.proposal.unit.orEmpty())
+                val candidateUnit = fold(candidate.proposal.unit.orEmpty())
+                val compatibleUnit = existingUnit == candidateUnit || existingUnit.isEmpty() || candidateUnit.isEmpty()
                 fold(existing.proposal.name) == fold(candidate.proposal.name) &&
                     VisionExamProtocol.normResult(existing.proposal.result) == VisionExamProtocol.normResult(candidate.proposal.result) &&
-                    fold(existing.proposal.unit.orEmpty()) == fold(candidate.proposal.unit.orEmpty()) &&
+                    compatibleUnit &&
                     (existing.lineIndex == candidate.lineIndex || kotlin.math.abs(existing.lineIndex - candidate.lineIndex) <= 1)
             }
             if (sameIdx >= 0) {
                 val existing = merged[sameIdx]
+                val bestUnit = existing.proposal.unit ?: candidate.proposal.unit
+                val bestUnitCitation = existing.unitCitation ?: candidate.unitCitation
+                val bestNameRegions = if (existing.nameRegions.isNotEmpty()) existing.nameRegions else candidate.nameRegions
+                val bestResultRegions = if (existing.resultRegions.isNotEmpty()) existing.resultRegions else candidate.resultRegions
                 merged[sameIdx] = when {
                     existing.referenceText == null && candidate.referenceText != null ->
-                        candidate.copy(referenceNeedsReview = existing.referenceNeedsReview && candidate.referenceNeedsReview)
-                    existing.referenceText != null && candidate.referenceText == null -> existing
-                    existing.resultRegions.isEmpty() && candidate.resultRegions.isNotEmpty() -> candidate
+                        candidate.copy(
+                            proposal = candidate.proposal.copy(unit = bestUnit),
+                            nameRegions = bestNameRegions,
+                            resultRegions = bestResultRegions,
+                            unitCitation = bestUnitCitation,
+                            referenceNeedsReview = existing.referenceNeedsReview && candidate.referenceNeedsReview,
+                        )
+                    existing.referenceText != null && candidate.referenceText == null ->
+                        existing.copy(
+                            proposal = existing.proposal.copy(unit = bestUnit),
+                            nameRegions = bestNameRegions,
+                            resultRegions = bestResultRegions,
+                            unitCitation = bestUnitCitation,
+                        )
+                    existing.resultRegions.isEmpty() && candidate.resultRegions.isNotEmpty() ->
+                        candidate.copy(
+                            proposal = candidate.proposal.copy(unit = bestUnit),
+                            nameRegions = bestNameRegions,
+                            unitCitation = bestUnitCitation,
+                        )
                     else -> existing.copy(
-                        referenceNeedsReview = existing.referenceNeedsReview || candidate.referenceNeedsReview
+                        proposal = existing.proposal.copy(unit = bestUnit),
+                        nameRegions = bestNameRegions,
+                        resultRegions = bestResultRegions,
+                        unitCitation = bestUnitCitation,
+                        referenceNeedsReview = existing.referenceNeedsReview || candidate.referenceNeedsReview,
                     )
                 }
                 continue
@@ -406,11 +470,15 @@ object VisionEvidenceGrounder {
         for (word in words.sortedBy { (it.region!!.top + it.region.bottom) / 2.0 }) {
             val region = word.region!!
             val previous = lines.lastOrNull()
-            val tolerance = maxOf(
-                region.bottom - region.top,
-                previous?.let { it.bottom - it.top } ?: 0.0,
-            ) * 0.56
-            if (previous != null && kotlin.math.abs(previous.mid - (region.top + region.bottom) / 2.0) <= tolerance) {
+            val wordHeight = region.bottom - region.top
+            val prevHeight = previous?.let { it.bottom - it.top } ?: 0.0
+            val maxHeight = maxOf(wordHeight, prevHeight)
+            val tolerance = maxHeight * 0.56
+            val nearBaseline = previous != null &&
+                wordHeight < prevHeight * 0.5 &&
+                region.top <= previous.bottom + prevHeight * 0.25 &&
+                region.bottom >= previous.top - prevHeight * 0.25
+            if (previous != null && (kotlin.math.abs(previous.mid - (region.top + region.bottom) / 2.0) <= tolerance || nearBaseline)) {
                 previous.append(word)
             } else {
                 lines += TextLine(word)
@@ -425,7 +493,8 @@ object VisionEvidenceGrounder {
             val before = previous
             if (before != null) {
                 val gap = if (word.region != null && before.region != null) {
-                    word.region.left - before.region.right > (word.region.bottom - word.region.top) * 0.2
+                    val refHeight = maxOf(word.region.bottom - word.region.top, before.region.bottom - before.region.top)
+                    word.region.left - before.region.right > refHeight * 0.25
                 } else {
                     true
                 }
@@ -433,6 +502,15 @@ object VisionEvidenceGrounder {
             }
             append(word.raw.trim())
             previous = word
+        }
+    }
+
+    private fun normalizeSplitNumPunct(text: String): String {
+        var current = text
+        while (true) {
+            val next = splitNumPunct.replace(current, "$1$2$3")
+            if (next == current) return current
+            current = next
         }
     }
 

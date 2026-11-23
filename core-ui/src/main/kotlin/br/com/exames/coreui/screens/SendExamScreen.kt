@@ -29,6 +29,9 @@ fun SendExamScreen(
     onOpenHistory: () -> Unit,
     onOpenHelp: () -> Unit,
     modifier: Modifier = Modifier,
+    clinicalContext: ClinicalContextUi = ClinicalContextUi(),
+    onUpdateContext: (ClinicalContextUi) -> Unit = {},
+    onClearContext: () -> Unit = {},
 ) {
     val p = ExamesTheme.palette
     Column(
@@ -72,6 +75,14 @@ fun SendExamScreen(
                     Text(notice, Modifier.padding(14.dp), style = MaterialTheme.typography.bodyMedium)
                 }
             }
+
+            // Ephemeral Pre-Import Clinical Context Card (expanded before selecting PDF)
+            SessionContextCard(
+                context = clinicalContext,
+                onUpdate = onUpdateContext,
+                onClear = onClearContext,
+                initiallyExpanded = true,
+            )
 
             // Primary Source Card
             ExamesHeroCard(

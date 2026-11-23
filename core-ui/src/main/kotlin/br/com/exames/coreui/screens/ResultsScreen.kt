@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import br.com.exames.coreui.*
 
-/** Screen 3: Resultado — Meu Exame (with status filters and evidence links). */
+/** Screen 3: Resultado — Meu Exame (with status filters, ephemeral context, and evidence links). */
 @Composable
 fun ResultsScreen(
     state: ResultsUiState,
@@ -32,6 +32,8 @@ fun ResultsScreen(
     onSelectAnotherPdf: () -> Unit,
     onDeleteExam: () -> Unit,
     modifier: Modifier = Modifier,
+    onUpdateContext: (ClinicalContextUi) -> Unit = {},
+    onClearContext: () -> Unit = {},
 ) {
     val p = ExamesTheme.palette
     var confirmDelete by remember { mutableStateOf(false) }
@@ -123,6 +125,20 @@ fun ResultsScreen(
                             style = MaterialTheme.typography.bodyMedium,
                         )
                     }
+                }
+            }
+
+            // Ephemeral Session Clinical Context Card (never persisted)
+            if (state.totalCount > 0) {
+                item(key = "session-context") {
+                    SessionContextCard(
+                        context = state.clinicalContext,
+                        onUpdate = onUpdateContext,
+                        onClear = onClearContext,
+                        initiallyExpanded = false,
+                        titleWhenEmpty = "Contexto desta leitura (opcional)",
+                        subtitleWhenEmpty = "Informe sexo, idade ou jejum para aplicar faixas por perfil do laudo. Não é salvo.",
+                    )
                 }
             }
 

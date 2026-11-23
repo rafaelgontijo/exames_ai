@@ -17,6 +17,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -44,6 +47,8 @@ class MainActivity : ComponentActivity() {
                     onSelectPdf = { picker.launch(arrayOf("application/pdf")) },
                     onOpenExam = exam::openExam,
                     onSelectFilter = exam::selectFilter,
+                    onUpdateContext = exam::updateClinicalContext,
+                    onClearContext = exam::clearClinicalContext,
                     onSelectEvidence = exam::selectEvidence,
                     onCancelProcessing = exam::cancelProcessing,
                     onDeleteExam = exam::deleteExam,
@@ -62,6 +67,8 @@ internal fun ExamesAppShell(
     onSelectPdf: () -> Unit,
     onOpenExam: (String) -> Unit,
     onSelectFilter: (ResultFilterOption) -> Unit,
+    onUpdateContext: (ClinicalContextUi) -> Unit,
+    onClearContext: () -> Unit,
     onSelectEvidence: (String) -> Unit,
     onCancelProcessing: () -> Unit,
     onDeleteExam: (String) -> Unit,
@@ -72,6 +79,16 @@ internal fun ExamesAppShell(
     val navController = rememberNavController()
     val backStack by navController.currentBackStackEntryAsState()
     val currentRoute = backStack?.destination?.route
+
+    // Wipe ephemeral session-only clinical context when leaving a finished Results view back to top-level tabs.
+    // Keep it intact while filling context before import (Home/Send -> Processing -> Results -> Evidence -> Results).
+    var previousRoute by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(currentRoute) {
+        if (previousRoute == AppRoutes.RESULTS && currentRoute in AppRoutes.bottomTabRoutes) {
+            onClearContext()
+        }
+        previousRoute = currentRoute
+    }
 
     LaunchedEffect(state.navEvent) {
         val event = state.navEvent ?: return@LaunchedEffect
@@ -143,6 +160,9 @@ internal fun ExamesAppShell(
                             }
                         },
                         onDeleteExam = onDeleteExam,
+                        clinicalContext = state.sessionContext,
+                        onUpdateContext = onUpdateContext,
+                        onClearContext = onClearContext,
                     )
                 }
 
@@ -189,6 +209,9 @@ internal fun ExamesAppShell(
                             }
                         },
                         onOpenHelp = { navController.navigate(AppRoutes.HELP_REVIEW) },
+                        clinicalContext = state.sessionContext,
+                        onUpdateContext = onUpdateContext,
+                        onClearContext = onClearContext,
                     )
                 }
 
@@ -217,8 +240,13 @@ internal fun ExamesAppShell(
                     if (ui != null) {
                         ResultsScreen(
                             state = ui,
-                            onBack = { navController.popBackStack(AppRoutes.HOME, inclusive = false) },
+                            onBack = {
+                                onClearContext()
+                                navController.popBackStack(AppRoutes.HOME, inclusive = false)
+                            },
                             onSelectFilter = onSelectFilter,
+                            onUpdateContext = onUpdateContext,
+                            onClearContext = onClearContext,
                             onOpenEvidence = { obsId ->
                                 onSelectEvidence(obsId)
                                 navController.navigate(AppRoutes.evidence(ui.examId))

@@ -50,12 +50,42 @@ internal object ExamUiMapper {
         )
     }
 
+    fun toDomainContext(ui: ClinicalContextUi): ClinicalContext {
+        val sex = when (ui.sex) {
+            ContextSexOption.UNSPECIFIED -> BiologicalSex.UNSPECIFIED
+            ContextSexOption.FEMALE -> BiologicalSex.FEMALE
+            ContextSexOption.MALE -> BiologicalSex.MALE
+        }
+        val age = ui.ageInput.trim().toIntOrNull()?.takeIf { it in 0..120 }
+        val fasting = when (ui.fasting) {
+            ContextFastingOption.UNSPECIFIED -> FastingState.UNSPECIFIED
+            ContextFastingOption.FASTING -> FastingState.FASTING
+            ContextFastingOption.NON_FASTING -> FastingState.NON_FASTING
+        }
+        val pregnancy = if (sex == BiologicalSex.MALE) {
+            PregnancyState.UNSPECIFIED
+        } else {
+            when (ui.pregnancy) {
+                ContextPregnancyOption.UNSPECIFIED -> PregnancyState.UNSPECIFIED
+                ContextPregnancyOption.NOT_PREGNANT -> PregnancyState.NOT_PREGNANT
+                ContextPregnancyOption.PREGNANT -> PregnancyState.PREGNANT
+            }
+        }
+        return ClinicalContext(
+            sex = sex,
+            ageYears = age,
+            fasting = fasting,
+            pregnancy = pregnancy,
+        )
+    }
+
     fun toResultsUi(
         entry: ExamHistoryEntry,
         assessed: AssessedExam,
         activeFilter: ResultFilterOption,
         notice: String?,
         zone: ZoneId = ZoneId.systemDefault(),
+        clinicalContext: ClinicalContextUi = ClinicalContextUi(),
     ): ResultsUiState {
         val counts = assessed.counts
         val domainFilter = when (activeFilter) {
@@ -93,6 +123,7 @@ internal object ExamUiMapper {
             filters = filters,
             pages = filteredPages,
             primaryEvidenceItemId = assessed.firstReviewObservation()?.observation?.sourceResult?.id,
+            clinicalContext = clinicalContext,
         )
     }
 
@@ -105,7 +136,7 @@ internal object ExamUiMapper {
             rawReference = row.reference?.text,
             statusLabel = statusLabel(assessed.status),
             statusKind = statusChipKind(assessed.status),
-            documentaryNote = reasonNote(assessed.reason),
+            documentaryNote = observationNote(assessed),
             page = page,
             hasReferenceRegions = row.reference?.regions.orEmpty().isNotEmpty(),
         )
@@ -129,10 +160,20 @@ internal object ExamUiMapper {
             statusLabel = statusLabel(assessed.status),
             statusKind = statusChipKind(assessed.status),
             rawReference = row.reference?.text,
-            documentaryNote = reasonNote(assessed.reason),
+            documentaryNote = observationNote(assessed),
             resultBoxes = resultRegions.map(::toBox),
             referenceBoxes = referenceRegions.map(::toBox),
         )
+    }
+
+    private fun observationNote(assessed: AssessedObservation): String {
+        val base = reasonNote(assessed.reason)
+        val parts = buildList {
+            add(base)
+            if (assessed.referenceUnitImplicit) add("mesma unidade do resultado")
+            assessed.appliedReferenceExcerpt?.let { add("Faixa aplicada: $it") }
+        }
+        return parts.joinToString(" · ")
     }
 
     fun statusLabel(status: DocumentaryStatus): String = when (status) {

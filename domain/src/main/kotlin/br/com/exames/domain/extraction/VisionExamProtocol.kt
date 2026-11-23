@@ -59,10 +59,10 @@ object VisionExamProtocol {
         {"schema":"exam-vision-items/1","items":[{"name":"<exact test name 1>","result":"<exact printed value 1>","unit":"<exact unit or null>","reference":"<exact reference or null>","needs_review":false},{"name":"<exact test name 2>","result":"<exact printed value 2>","unit":null,"reference":null,"needs_review":true}]}
         Rules:
         - Copy name, result, unit, and reference verbatim as printed in the image. Never convert units, round numbers, change decimal punctuation, or invent reference ranges.
-        - "result" must be a JSON string with only the printed value (excluding the unit when a unit is present; preserve comparators like <, >, <=, >= or qualitative words).
+        - "result" must be a JSON string with only a single printed current patient measurement (excluding the unit when a unit is present; preserve comparators like <, >, <=, >= or qualitative words; never put a reference range like "X a Y" or a dated historical value in "result").
         - Use null for "unit" or "reference" if absent in this band.
-        - Set "needs_review": true if the reference range is missing, multi-condition or age/sex-stratified, refers to a table below, or if any part of the measurement is cut off or unclear.
-        - Exclude patient identification, dates, collection time, material, method, notes, doctor signatures, and page numbers.
+        - Set "needs_review": true if the reference refers to another table or note not printed in this band, or if any part of the measurement or its reference is cut off or unclear.
+        - Exclude patient identification, dates, collection time, material, method, notes, doctor signatures, page numbers, historical/previous results ("Resultados anteriores"), and reference-table lookup rows (age/sex/Tanner reference tables are not patient results).
         - If no laboratory test results are visible in this image, return {"schema":"exam-vision-items/1","items":[]}.
     """.trimIndent()
 
