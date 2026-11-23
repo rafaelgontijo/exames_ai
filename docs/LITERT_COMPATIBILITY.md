@@ -137,3 +137,34 @@ página aceita pelo modelo; os outros sete casos ficaram em fallback explícito.
 O sinal de aceite está ativo somente no S25 de referência. Isso conclui o fluxo
 técnico, sem aprovar qualidade geral da extração ou validação clínica. Os detalhes,
 regressões e limites estão em [S25_FINAL_VALIDATION.md](S25_FINAL_VALIDATION.md).
+
+## Adoção do Gemma 4 E2B multimodal (visão em faixas) — 23/11/2026
+
+Após triagem comparativa no Mac e no S25 offline (`litert-lm 0.18.1`) entre o artefato
+anterior somente-texto (`gemma-4-E2B-it-gpu.litertlm`, 2,01 GB), o `LFM3-Omni-2B_int8.litertlm`
+(3,23 GB, LFM Open License v1.0 — descartado por baixa precisão e alucinações severas em visão)
+e o artefato multimodal oficial **`gemma-4-E2B-it.litertlm`** (`2.588.147.712` bytes,
+rev `2e12bfd869b2962984f97a1f2a26807316d534cc`, SHA-256 `181938105e0eefd105961417e8da75903eacda102c4fce9ce90f50b97139a63c`,
+Apache-2.0), o app passou a empacotar o artefato multimodal e executar extração visual unificada
+em até 3 faixas horizontais sobrepostas por página (`exam-vision/1`, schema `exam-vision-items/1`),
+com `backend = GPU`, `visionBackend = GPU`, `audioBackend = null`, `contextTokens = 4096`,
+`maxOutputTokens = 1536`, `maxNumImages = 1` e transporte de imagem em memória (`MAX_IMAGE_BYTES = 512 KiB`)
+em processo `:inference` novo por faixa.
+
+Evidência técnica offline no SM-S931B (Android 17 / API 37, modo avião, Wi-Fi desligado,
+pacote isolado `br.com.exames.offline.validation.extraction`) em
+`validation/results/multimodal-vision-s25-2026-11-23-v2.json`:
+- **Estabilidade e memória:** 15 processos `:inference` consecutivos sem falhas de runtime;
+  PSS máximo amostrado entre `3.133.901` e `3.190.445 KiB` (~2,99–3,04 GiB), payloads de faixa
+  entre `7 KiB` e `188 KiB`, carga ~8,9–14,3 s e geração ~1,7–11,7 s por faixa.
+- **Cobertura em layouts conhecidos e novos:** `pdf_1` p1 publicou 16 observações ancoradas no
+  texto digital (`issues=[]`, 6 omissões nos 21 itens densos); `pdf_1` p4 publicou 6/6 observações
+  ancoradas (`0` omissões, `0` extras); `pdf_2` p14 (layout novo denso) publicou 12 observações
+  ancoradas (faixa 2 truncou saída JSON e foi descartada explicitamente com `INVALID_RESPONSE`);
+  `pdf_2` p8 publicou 8 observações ancoradas; `pdf_3` p1 (layout novo de 1 página) publicou 1
+  observação ancorada com 0 alucinações nas faixas vazias (`items=[]`).
+- **Limites preservados:** ensaio técnico restrito ao SM-S931B; não constitui validação clínica;
+  páginas escaneadas sem texto digital permanecem obrigatoriamente em `NEEDS_REVIEW`
+  (`VISUAL_EXTRACTION_WITHOUT_DIGITAL_TEXT`); faixas ultra-densas podem atingir truncamento de saída
+  (sinalizado explicitamente na página); API 24, kernel 16 KiB, aparelhos de 4 GB e outras GPUs
+  continuam fora da evidência executada.

@@ -17,7 +17,14 @@ class InferenceProcessService : OneShotInferenceService() {
                 ModelPreparationFailure.STORAGE_UNAVAILABLE -> InferenceFailure.MODEL_STORAGE
             })
         }
-        val output = FreshGemmaEngine.generate(prepared.absolutePath, request.instruction, request.documentText, Runnable { generating() })
+        val output = FreshGemmaEngine.generate(
+            prepared.absolutePath,
+            request.instruction,
+            request.documentText,
+            request.imageBytes,
+            request.imageMimeType,
+            Runnable { generating() },
+        )
         return GenerationResult.UnvalidatedFinal(output.text, output.loadMillis, output.generationMillis,
             sampler.snapshot(output.prefillTokens, output.decodedTokens, output.contextTokens))
         }

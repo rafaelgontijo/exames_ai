@@ -1,9 +1,11 @@
 package br.com.exames.app
 
+import br.com.exames.datadocuments.PdfPageBandSlicer
 import br.com.exames.datalocal.EncryptedExamHistoryStore
 import br.com.exames.domain.extraction.ExamExtraction
 import br.com.exames.domain.extraction.ExamPageOutcome
 import br.com.exames.domain.extraction.ExtractExam
+import br.com.exames.domain.extraction.VisionPageSource
 import br.com.exames.domain.inference.TextInference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -24,9 +26,16 @@ internal class ExamRunner(
         try {
             val totalPages = pdf.pageCount
             return withContext(Dispatchers.Default) {
-                extractor.extract(
+                extractor.extractVision(
                     pages = pages ?: (1..totalPages),
-                    read = { page -> pdf.readPage(page).use { it.positionedText() } },
+                    read = { page ->
+                        pdf.readPage(page).use { snapshot ->
+                            VisionPageSource(
+                                bands = PdfPageBandSlicer.slice(page, snapshot.bitmap),
+                                fragments = snapshot.positionedText(),
+                            )
+                        }
+                    },
                     onProgress = { page, block, blocks -> onProgress(page, totalPages, block, blocks) },
                     onPageFinished = onPageFinished,
                 )

@@ -28,4 +28,19 @@ class PdfWordFragmentsTest {
         val reversed=chars("12").reversed()
         assertEquals(listOf("2","1"),PdfWordFragments.group(1,reversed,100,100,"1").map { it.raw })
     }
+
+    @Test fun coalescesBaselineCommaAndSuperscriptWithoutSplittingNumbersOrUnits() {
+        val spans=listOf(
+            PdfTextSpan("g0",0,"4",BoundingBox(0,10,6,22)),
+            PdfTextSpan("g1",1,",",BoundingBox(6,22,9,25)),
+            PdfTextSpan("g2",2,"3",BoundingBox(9,10,15,22)),
+            PdfTextSpan("g3",3,"0",BoundingBox(15,10,21,22)),
+            PdfTextSpan("g4",4," ",null),
+            PdfTextSpan("g5",5,"m",BoundingBox(26,12,34,22)),
+            PdfTextSpan("g6",6,"m",BoundingBox(34,12,42,22)),
+            PdfTextSpan("g7",7,"³",BoundingBox(42,8,46,12)),
+        )
+        val words=PdfWordFragments.group(1,spans,100,100,"1")
+        assertEquals(listOf("4,30","mm³"),words.map { it.raw })
+    }
 }

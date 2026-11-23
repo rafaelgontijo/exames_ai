@@ -50,12 +50,42 @@ internal object ExamUiMapper {
         )
     }
 
+    fun toDomainContext(ui: ClinicalContextUi): ClinicalContext {
+        val sex = when (ui.sex) {
+            ContextSexOption.UNSPECIFIED -> BiologicalSex.UNSPECIFIED
+            ContextSexOption.FEMALE -> BiologicalSex.FEMALE
+            ContextSexOption.MALE -> BiologicalSex.MALE
+        }
+        val age = ui.ageInput.trim().toIntOrNull()?.takeIf { it in 0..120 }
+        val fasting = when (ui.fasting) {
+            ContextFastingOption.UNSPECIFIED -> FastingState.UNSPECIFIED
+            ContextFastingOption.FASTING -> FastingState.FASTING
+            ContextFastingOption.NON_FASTING -> FastingState.NON_FASTING
+        }
+        val pregnancy = if (sex == BiologicalSex.MALE) {
+            PregnancyState.UNSPECIFIED
+        } else {
+            when (ui.pregnancy) {
+                ContextPregnancyOption.UNSPECIFIED -> PregnancyState.UNSPECIFIED
+                ContextPregnancyOption.NOT_PREGNANT -> PregnancyState.NOT_PREGNANT
+                ContextPregnancyOption.PREGNANT -> PregnancyState.PREGNANT
+            }
+        }
+        return ClinicalContext(
+            sex = sex,
+            ageYears = age,
+            fasting = fasting,
+            pregnancy = pregnancy,
+        )
+    }
+
     fun toResultsUi(
         entry: ExamHistoryEntry,
         assessed: AssessedExam,
         activeFilter: ResultFilterOption,
         notice: String?,
         zone: ZoneId = ZoneId.systemDefault(),
+        clinicalContext: ClinicalContextUi = ClinicalContextUi(),
     ): ResultsUiState {
         val counts = assessed.counts
         val domainFilter = when (activeFilter) {
@@ -93,6 +123,7 @@ internal object ExamUiMapper {
             filters = filters,
             pages = filteredPages,
             primaryEvidenceItemId = assessed.firstReviewObservation()?.observation?.sourceResult?.id,
+            clinicalContext = clinicalContext,
         )
     }
 
@@ -105,7 +136,7 @@ internal object ExamUiMapper {
             rawReference = row.reference?.text,
             statusLabel = statusLabel(assessed.status),
             statusKind = statusChipKind(assessed.status),
-            documentaryNote = reasonNote(assessed.reason),
+            documentaryNote = observationNote(assessed),
             page = page,
             hasReferenceRegions = row.reference?.regions.orEmpty().isNotEmpty(),
         )
@@ -119,7 +150,7 @@ internal object ExamUiMapper {
         val row = assessed.observation
         val resultRegions = row.name.regions + row.sourceResult.regions + row.unitCitation?.regions.orEmpty()
         val referenceRegions = row.reference?.regions.orEmpty()
-        val page = (resultRegions.firstOrNull() ?: referenceRegions.firstOrNull())?.page ?: 1
+        val page = (resultRegions.firstOrNull() ?: referenceRegions.firstOrNull())?.page ?: row.page ?: 1
         return EvidenceUiState(
             examId = examId,
             page = page,
@@ -129,10 +160,20 @@ internal object ExamUiMapper {
             statusLabel = statusLabel(assessed.status),
             statusKind = statusChipKind(assessed.status),
             rawReference = row.reference?.text,
-            documentaryNote = reasonNote(assessed.reason),
+            documentaryNote = observationNote(assessed),
             resultBoxes = resultRegions.map(::toBox),
             referenceBoxes = referenceRegions.map(::toBox),
         )
+    }
+
+    private fun observationNote(assessed: AssessedObservation): String {
+        val base = reasonNote(assessed.reason)
+        val parts = buildList {
+            add(base)
+            if (assessed.referenceUnitImplicit) add("mesma unidade do resultado")
+            assessed.appliedReferenceExcerpt?.let { add("Faixa aplicada: $it") }
+        }
+        return parts.joinToString(" · ")
     }
 
     fun statusLabel(status: DocumentaryStatus): String = when (status) {
@@ -158,13 +199,14 @@ internal object ExamUiMapper {
         DocumentaryReason.INVALID_REFERENCE_SYNTAX -> "Formato de referência não comparável — confira no laudo"
         DocumentaryReason.NO_REFERENCE -> "Sem faixa de referência informada no documento"
         DocumentaryReason.NON_NUMERIC_RESULT -> "Resultado qualitativo preservado como no laudo"
+        DocumentaryReason.VISUAL_EXTRACTION_WITHOUT_DIGITAL_TEXT -> "Extraído visualmente sem texto digital — confira no laudo"
     }
 
     fun pageNotice(issues: Set<ExamIssue>, failures: Set<InferenceFailure>): String = when {
         InferenceFailure.UNSUPPORTED_DEVICE in failures -> "O aparelho não oferece suporte ao modelo de IA."
         InferenceFailure.MODEL_SPACE in failures -> "Espaço insuficiente para preparar o modelo de IA."
         ExamIssue.PAGE_UNREADABLE in issues -> "Não foi possível ler esta página."
-        ExamIssue.INSUFFICIENT_POSITIONED_TEXT in issues -> "Confira o texto e os resultados desta página no laudo."
+        ExamIssue.INSUFFICIENT_POSITIONED_TEXT in issues -> "Página sem texto digital — confira os valores extraídos visualmente no laudo."
         ExamIssue.INFERENCE_FAILED in issues || ExamIssue.INVALID_RESPONSE in issues -> "A IA não concluiu todos os trechos desta página."
         ExamIssue.INPUT_LIMIT in issues -> "Um trecho desta página excedeu o limite da IA."
         else -> "Confira os campos e possíveis omissões nesta página."

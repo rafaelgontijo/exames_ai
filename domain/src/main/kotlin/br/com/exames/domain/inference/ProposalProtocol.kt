@@ -123,17 +123,18 @@ object ProposalProtocol {
         return ProposedField(raw.content, ids)
     }
 
-    internal fun readStrictJson(text: String): JsonElement = StrictReader(text).read()
+    internal fun readStrictJson(text: String, allowPrimitives: Boolean = false): JsonElement =
+        StrictReader(text, allowPrimitives).read()
 
-    /** Restricted JSON grammar: objects/arrays/strings/null only, duplicate decoded keys rejected. */
-    private class StrictReader(private val text: String) {
+    /** Restricted JSON grammar: rejects duplicate decoded keys; optionally allows booleans/numbers. */
+    private class StrictReader(private val text: String, private val allowPrimitives: Boolean = false) {
         private var at = 0
         fun read(): JsonElement {
             val value = value(0); whitespace(); require(at == text.length); return value
         }
         private fun value(depth: Int): JsonElement {
             require(depth <= 12); whitespace()
-            return when (text.getOrNull(at)) {
+            return when (val ch = text.getOrNull(at)) {
                 '{' -> {
                     at++; whitespace(); val properties = linkedMapOf<String, JsonElement>()
                     if (!take('}')) while (true) {
@@ -156,8 +157,34 @@ object ProposalProtocol {
                 }
                 '"' -> JsonPrimitive(string())
                 'n' -> { require(text.startsWith("null", at)); at += 4; JsonNull }
-                else -> throw IllegalArgumentException("MODEL_JSON_INVALID")
+                't' -> { require(allowPrimitives && text.startsWith("true", at)); at += 4; JsonPrimitive(true) }
+                'f' -> { require(allowPrimitives && text.startsWith("false", at)); at += 5; JsonPrimitive(false) }
+                else -> {
+                    if (allowPrimitives && ch != null && (ch == '-' || ch in '0'..'9')) number()
+                    else throw IllegalArgumentException("MODEL_JSON_INVALID")
+                }
             }
+        }
+        private fun number(): JsonPrimitive {
+            val start = at
+            if (text.getOrNull(at) == '-') at++
+            val digitsStart = at
+            while (text.getOrNull(at)?.let { it in '0'..'9' } == true) at++
+            require(at > digitsStart)
+            if (text.getOrNull(at) == '.') {
+                at++
+                val fracStart = at
+                while (text.getOrNull(at)?.let { it in '0'..'9' } == true) at++
+                require(at > fracStart)
+            }
+            if (text.getOrNull(at) in listOf('e', 'E')) {
+                at++
+                if (text.getOrNull(at) in listOf('+', '-')) at++
+                val expStart = at
+                while (text.getOrNull(at)?.let { it in '0'..'9' } == true) at++
+                require(at > expStart)
+            }
+            return json.parseToJsonElement(text.substring(start, at)).jsonPrimitive
         }
         private fun string(): String {
             val start = at; require(take('"')); var escaped = false

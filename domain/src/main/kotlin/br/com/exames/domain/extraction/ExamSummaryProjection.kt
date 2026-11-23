@@ -55,6 +55,7 @@ data class AssessedExam(
 object ExamSummaryProjection {
     fun project(
         extraction: ExamExtraction,
+        context: ClinicalContext = ClinicalContext(),
         assessor: ConservativeExamAssessor = ConservativeExamAssessor(),
     ): AssessedExam {
         var total = 0
@@ -63,7 +64,7 @@ object ExamSummaryProjection {
         var unclassifiable = 0
         val assessedPages = extraction.pages.map { page ->
             val assessedRows = page.observations.map { row ->
-                val assessed = assessor.assess(row)
+                val assessed = assessor.assess(row, context)
                 total++
                 when (assessed.status) {
                     DocumentaryStatus.NEEDS_REVIEW -> review++

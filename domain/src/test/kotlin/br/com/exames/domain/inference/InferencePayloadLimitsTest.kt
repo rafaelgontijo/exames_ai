@@ -18,4 +18,18 @@ class InferencePayloadLimitsTest {
             request(prompt = "x".repeat(129)), request(schema = "x".repeat(129)))) assertFalse(InferencePayloadLimits.accepts(value))
         assertTrue(InferencePayloadLimits.accepts(request(prompt = "x".repeat(128), schema = "x".repeat(128))))
     }
+
+    @Test fun boundsOptionalImagePayloadAndMimeType() {
+        fun imgReq(bytes: ByteArray?, mime: String?) =
+            GenerationRequest("instr", "doc", "exam-vision/1", "exam-vision-items/1", bytes, mime)
+
+        assertTrue(InferencePayloadLimits.accepts(imgReq(ByteArray(1), "image/png")))
+        assertTrue(InferencePayloadLimits.accepts(imgReq(ByteArray(InferencePayloadLimits.MAX_IMAGE_BYTES), "image/jpeg")))
+        assertFalse(InferencePayloadLimits.accepts(imgReq(ByteArray(InferencePayloadLimits.MAX_IMAGE_BYTES + 1), "image/png")))
+        assertFalse(InferencePayloadLimits.accepts(imgReq(ByteArray(0), "image/png")))
+        assertFalse(InferencePayloadLimits.accepts(imgReq(ByteArray(16), null)))
+        assertFalse(InferencePayloadLimits.accepts(imgReq(null, "image/png")))
+        assertFalse(InferencePayloadLimits.accepts(imgReq(ByteArray(16), "image/webp")))
+        assertFalse(InferencePayloadLimits.accepts(imgReq(ByteArray(16), "application/pdf")))
+    }
 }

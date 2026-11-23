@@ -13,9 +13,19 @@ internal object InferenceProcessProtocol {
     fun request(request: GenerationRequest, nonce: String) = Bundle().apply {
         putString("nonce", nonce); putString("instruction", request.instruction); putString("document", request.documentText)
         putString("prompt", request.promptVersion); putString("schema", request.schemaVersion)
+        if (request.imageBytes != null && request.imageMimeType != null) {
+            putByteArray("imageBytes", request.imageBytes)
+            putString("imageMimeType", request.imageMimeType)
+        }
     }
-    fun decodeRequest(bundle: Bundle) = GenerationRequest(bundle.getString("instruction").orEmpty(),
-        bundle.getString("document").orEmpty(), bundle.getString("prompt").orEmpty(), bundle.getString("schema").orEmpty())
+    fun decodeRequest(bundle: Bundle) = GenerationRequest(
+        bundle.getString("instruction").orEmpty(),
+        bundle.getString("document").orEmpty(),
+        bundle.getString("prompt").orEmpty(),
+        bundle.getString("schema").orEmpty(),
+        bundle.getByteArray("imageBytes"),
+        bundle.getString("imageMimeType"),
+    )
     fun result(result: GenerationResult, nonce: String) = Bundle().apply {
         putString("nonce", nonce)
         when (result) {

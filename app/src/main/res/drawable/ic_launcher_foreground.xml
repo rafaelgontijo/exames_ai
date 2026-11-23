@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.85"
+        android:scaleY="0.85">
+
+    <!-- Soft drop shadow under the lab report sheet -->
+    <path
+        android:pathData="M35,28.5 L59,28.5 L73,42.5 L73,77.5 A5,5 0 0,1 68,82.5 L35,82.5 A5,5 0 0,1 30,77.5 L30,33.5 A5,5 0 0,1 35,28.5 Z"
+        android:fillColor="#082047"
+        android:fillAlpha="0.28" />
+
+    <!-- Main clinical report sheet (Pure Clinical White) -->
+    <path
+        android:pathData="M34,26 L58.5,26 L72,39.5 L72,75 A5,5 0 0,1 67,80 L34,80 A5,5 0 0,1 29,75 L29,31 A5,5 0 0,1 34,26 Z"
+        android:fillColor="#FFFFFF" />
+
+    <!-- Folded corner (Soft Sky Tint) -->
+    <path
+        android:pathData="M58.5,26 L58.5,35.5 A4,4 0 0,0 62.5,39.5 L72,39.5 Z"
+        android:fillColor="#C6DDF9" />
+
+    <!-- Report header bar (Clinical Trust Blue) -->
+    <path
+        android:pathData="M36,34.5 L49,34.5 A1.75,1.75 0 0,1 49,38 L36,38 A1.75,1.75 0 0,1 36,34.5 Z"
+        android:fillColor="#1F5FBF" />
+
+    <!-- Highlighted evidence row band (Soft Sky Tint + accent bar + value pill) -->
+    <path
+        android:pathData="M36.5,44.5 L64.5,44.5 A2.5,2.5 0 0,1 67,47 L67,51.5 A2.5,2.5 0 0,1 64.5,54 L36.5,54 A2.5,2.5 0 0,1 34,51.5 L34,47 A2.5,2.5 0 0,1 36.5,44.5 Z"
+        android:fillColor="#E3EFFD" />
+    <path
+        android:pathData="M35.5,45.8 L36.5,45.8 A1,1 0 0,1 37.5,46.8 L37.5,51.7 A1,1 0 0,1 36.5,52.7 L35.5,52.7 A1,1 0 0,1 34.5,51.7 L34.5,46.8 A1,1 0 0,1 35.5,45.8 Z"
+        android:fillColor="#1F5FBF" />
+    <path
+        android:pathData="M41.5,47.8 L56.5,47.8 A1.45,1.45 0 0,1 56.5,50.7 L41.5,50.7 A1.45,1.45 0 0,1 41.5,47.8 Z"
+        android:fillColor="#13233A" />
+    <path
+        android:pathData="M62.5,47.25 A2,2 0 1,1 62.5,51.25 A2,2 0 1,1 62.5,47.25 Z"
+        android:fillColor="#D9820B" />
+
+    <!-- Secondary document lines -->
+    <path
+        android:pathData="M36,59.5 L51.5,59.5 A1.6,1.6 0 0,1 51.5,62.7 L36,62.7 A1.6,1.6 0 0,1 36,59.5 Z"
+        android:fillColor="#B9D2F2" />
+    <path
+        android:pathData="M36,67.5 L48,67.5 A1.6,1.6 0 0,1 48,70.7 L36,70.7 A1.6,1.6 0 0,1 36,67.5 Z"
+        android:fillColor="#D0E3FA" />
+
+    <!-- Evidence verification loupe (magnifying glass) overlapping bottom-right -->
+    <!-- Crisp navy separation halo behind the lens and handle -->
+    <path
+        android:pathData="M65.5,52 A14,14 0 1,1 65.49,52 Z"
+        android:fillColor="#0F3A7A" />
+    <path
+        android:pathData="M74.5,74.5 L81.2,81.2"
+        android:strokeColor="#0F3A7A"
+        android:strokeWidth="8.2"
+        android:strokeLineCap="round" />
+
+    <!-- Magnifier handle (Pure White) -->
+    <path
+        android:pathData="M74.5,74.5 L81,81"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="4.6"
+        android:strokeLineCap="round" />
+
+    <!-- Lens glass interior (Soft Ice Mist) + Pure White outer ring -->
+    <path
+        android:pathData="M65.5,55.5 A10.5,10.5 0 1,1 65.49,55.5 Z"
+        android:fillColor="#F4F8FD"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.2" />
+
+    <!-- Precision verification checkmark inside the lens (Clinical Trust Blue) -->
+    <path
+        android:pathData="M60.8,66.2 L64.1,69.5 L70.6,62.6"
+        android:fillColor="#00000000"
+        android:strokeColor="#1F5FBF"
+        android:strokeWidth="3.1"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    </group>
+</vector>
