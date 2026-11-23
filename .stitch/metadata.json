@@ -1,0 +1,72 @@
+{
+  "projectId": "2627731492696541504",
+  "projectName": "projects/2627731492696541504",
+  "title": "Meu Exame — MVP",
+  "deviceType": "MOBILE",
+  "visualReference": "App de Exames — MVP.html",
+  "designSystem": {
+    "assetId": "16423656734733007448",
+    "name": "assets/16423656734733007448",
+    "displayName": "Meu Exame — MVP",
+    "colorMode": "LIGHT",
+    "primaryColor": "#1f5fbf",
+    "secondaryColor": "#0f3a7a",
+    "tertiaryColor": "#8a5100",
+    "neutralColor": "#f4f8fd",
+    "sourceFont": "Figtree",
+    "stitchFont": "PLUS_JAKARTA_SANS",
+    "roundness": "ROUND_TWELVE"
+  },
+  "screens": [
+    {
+      "id": "81604c2c6e8842afade8cffcfe2e63a0",
+      "name": "projects/2627731492696541504/screens/81604c2c6e8842afade8cffcfe2e63a0",
+      "title": "1. Início — Meu Exame",
+      "route": "home",
+      "deviceType": "MOBILE",
+      "prototypeSource": "1. Início"
+    },
+    {
+      "id": "9bd0306b6ee445edb505cf5fce84870c",
+      "name": "projects/2627731492696541504/screens/9bd0306b6ee445edb505cf5fce84870c",
+      "title": "2. Enviar exame — Meu Exame",
+      "route": "send",
+      "deviceType": "MOBILE",
+      "prototypeSource": "2. Enviar exame",
+      "previousVersionId": "a4f568d9a6e94a83a7f5b5b0949d57f1"
+    },
+    {
+      "id": "00a736296bfe4039974a554ea1462d49",
+      "name": "projects/2627731492696541504/screens/00a736296bfe4039974a554ea1462d49",
+      "title": "3. Resultado — Meu Exame",
+      "route": "results/{runId}",
+      "deviceType": "MOBILE",
+      "prototypeSource": "3. Resultado (com filtros Todos / Revisar / Na referência)",
+      "previousVersionId": "a2274b203ccc4eb18a7a6bfc0c45ebca"
+    },
+    {
+      "id": "6b2000c1374b490281c7f885301459c9",
+      "name": "projects/2627731492696541504/screens/6b2000c1374b490281c7f885301459c9",
+      "title": "4. Ajuda e revisão — Meu Exame",
+      "route": "help",
+      "deviceType": "MOBILE",
+      "prototypeSource": "4. Orientação (adaptada conforme governança)"
+    },
+    {
+      "id": "7a7fc457f7cd4ad39dcbf345928878ec",
+      "name": "projects/2627731492696541504/screens/7a7fc457f7cd4ad39dcbf345928878ec",
+      "title": "5. Processando laudo — Meu Exame",
+      "route": "processing/{runId}",
+      "deviceType": "MOBILE",
+      "prototypeSource": "Fluxo de extração offline (docs/AI_EXAM_EXTRACTION.md)"
+    },
+    {
+      "id": "0c9a063c3c1147f5af23e41c6b344df1",
+      "name": "projects/2627731492696541504/screens/0c9a063c3c1147f5af23e41c6b344df1",
+      "title": "6. Ver no laudo — Meu Exame",
+      "route": "evidence/{runId}",
+      "deviceType": "MOBILE",
+      "prototypeSource": "Revisão visual com evidência (docs/EVIDENCE_REVIEW.md)"
+    }
+  ]
+}

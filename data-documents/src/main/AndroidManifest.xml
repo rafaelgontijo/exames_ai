@@ -1,6 +1,0 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <application>
-        <provider android:name="br.com.exames.datadocuments.OcrInitializer"
-            android:authorities="${applicationId}.ocr-init" android:exported="false" />
-    </application>
-</manifest>

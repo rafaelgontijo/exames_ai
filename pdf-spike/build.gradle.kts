@@ -20,8 +20,7 @@ android {
 }
 dependencies {
     coreLibraryDesugaring(libs.desugar.jdk)
-    androidTestImplementation(project(":data-local")) { exclude(module = "pdf-local") }
-    androidTestImplementation(project(":validation-fixtures"))
+    androidTestImplementation(project(":data-private-pdf")) { exclude(module = "pdf-local") }
     androidTestImplementation(libs.pdfium.android) {
         if (patchedJni) exclude(group = "io.legere", module = "pdfiumandroid-core")
     }

@@ -1,4 +1,0 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Test APK only: lets the instrumentation grant the runtime permission to exercise the real (or emulated) camera. -->
-    <uses-permission android:name="android.permission.CAMERA" />
-</manifest>

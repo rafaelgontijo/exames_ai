@@ -31,6 +31,7 @@ class ExtractExam(private val inference: TextInference) {
         pages: IntRange,
         read: suspend (Int) -> List<SourceFragment>,
         onProgress: (page: Int, block: Int, blocks: Int) -> Unit = { _, _, _ -> },
+        onPageFinished: (ExamPageOutcome) -> Unit = {},
     ): ExamExtraction {
         require(!pages.isEmpty() && pages.first >= 1 && pages.last <= MAX_PAGES)
         val outcomes = mutableListOf<ExamPageOutcome>()
@@ -42,7 +43,9 @@ class ExtractExam(private val inference: TextInference) {
             val fragments = try {
                 read(page)
             } catch (_: IOException) {
-                outcomes += ExamPageOutcome(page, emptyList(), setOf(ExamIssue.PAGE_UNREADABLE), emptySet())
+                val failed = ExamPageOutcome(page, emptyList(), setOf(ExamIssue.PAGE_UNREADABLE), emptySet())
+                outcomes += failed
+                onPageFinished(failed)
                 continue
             }
             val evidence = ExamEvidence.prepare(page, fragments)
@@ -114,7 +117,9 @@ class ExtractExam(private val inference: TextInference) {
                 }
             }
             val ordered = evidence.rows.mapNotNull { verified[it.result.id] }.distinctBy { it.sourceResult.id }
-            outcomes += ExamPageOutcome(page, ordered, issues, failures)
+            val outcome = ExamPageOutcome(page, ordered, issues, failures)
+            outcomes += outcome
+            onPageFinished(outcome)
         }
         currentCoroutineContext().ensureActive()
         return ExamExtraction(outcomes)
