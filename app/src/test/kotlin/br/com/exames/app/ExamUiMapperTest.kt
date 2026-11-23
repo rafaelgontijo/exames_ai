@@ -51,4 +51,29 @@ class ExamUiMapperTest {
         val uiReview = ExamUiMapper.toResultsUi(entry, assessed, ResultFilterOption.REVIEW, null, ZoneOffset.UTC)
         assertEquals(listOf("v1"), uiReview.pages.flatMap { it.items }.map { it.id })
     }
+
+    @Test fun mapsScannedVisualObservationToNeedsReviewAndResolvesFallbackPageInEvidenceUi() {
+        val scannedObs = ExamObservation(
+            name = ExamCitation("p3vis1n", "Glicose", emptyList()),
+            sourceResult = ExamCitation("p3vis1v", "82 mg/dL", emptyList()),
+            result = "82",
+            unit = "mg/dL",
+            reference = ExamCitation("p3vis1f", "70 a 99 mg/dL", emptyList()),
+            referenceNeedsReview = true,
+            unitCitation = null,
+            visualOnly = true,
+            page = 3,
+        )
+        val assessed = ConservativeExamAssessor().assess(scannedObs)
+        assertEquals(DocumentaryStatus.NEEDS_REVIEW, assessed.status)
+        assertEquals(DocumentaryReason.VISUAL_EXTRACTION_WITHOUT_DIGITAL_TEXT, assessed.reason)
+
+        val evidence = ExamUiMapper.toEvidenceUi("exam-scanned", 5, assessed)
+        assertEquals(3, evidence.page)
+        assertEquals(5, evidence.totalPages)
+        assertEquals("Revisar", evidence.statusLabel)
+        assertEquals("Extraído visualmente sem texto digital — confira no laudo", evidence.documentaryNote)
+        assertEquals(emptyList<Any>(), evidence.resultBoxes)
+        assertEquals(emptyList<Any>(), evidence.referenceBoxes)
+    }
 }

@@ -110,6 +110,25 @@ class ConservativeExamAssessorTest {
         assertEquals(DocumentaryReason.UNCERTAIN_REFERENCE_LINK, uncertainNoRef.reason)
     }
 
+    @Test fun forcesNeedsReviewForVisualOnlyScannedObservationsEvenWhenNumericInRange() {
+        val region = SourceRegion(1, 10.0, 20.0, 80.0, 30.0, 500.0, 800.0)
+        val scanned = ExamObservation(
+            name = ExamCitation("p1vis1n", "Glicose", emptyList()),
+            sourceResult = ExamCitation("p1vis1v", "82 mg/dL", emptyList()),
+            result = "82",
+            unit = "mg/dL",
+            reference = ExamCitation("p1vis1f", "70 a 99 mg/dL", emptyList()),
+            referenceNeedsReview = false,
+            unitCitation = null,
+            visualOnly = true,
+            page = 1,
+        )
+        val assessed = assessor.assess(scanned)
+        assertEquals(DocumentaryStatus.NEEDS_REVIEW, assessed.status)
+        assertEquals(DocumentaryReason.VISUAL_EXTRACTION_WITHOUT_DIGITAL_TEXT, assessed.reason)
+        assertEquals(1, region.page)
+    }
+
     private fun obs(value: String, unit: String?, reference: String?, uncertain: Boolean = false): ExamObservation {
         val region = SourceRegion(1, 10.0, 20.0, 80.0, 30.0, 500.0, 800.0)
         return ExamObservation(

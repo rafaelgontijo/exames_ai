@@ -10,13 +10,16 @@ object SelectedInferenceConfiguration {
     fun referenceDeviceCompatible(): Boolean = android.os.Build.MODEL == "SM-S931B" && android.os.Build.VERSION.SDK_INT >= 24 &&
         android.os.Process.is64Bit() && "arm64-v8a" in android.os.Build.SUPPORTED_ABIS
     const val MODEL_ID = "gemma4"
-    const val MODEL_REVISION = "1caa527c1e88b55f046fcd8d2b4265606680663d"
-    const val MODEL_SHA256 = "a53a59001894c58e6bdb5b9b227709f91a2e3e556baa7d85acf9c55402ba5cf5"
-    const val MODEL_BYTES = 2008432640L
+    const val MODEL_REVISION = "2e12bfd869b2962984f97a1f2a26807316d534cc"
+    const val MODEL_SHA256 = "181938105e0eefd105961417e8da75903eacda102c4fce9ce90f50b97139a63c"
+    const val MODEL_BYTES = 2588147712L
     const val RUNTIME_VERSION = "com.google.ai.edge.litertlm:litertlm-android:0.18.1"
     const val RUNTIME_AAR_SHA256 = "05c6bdc8acda834efcca12c0ad5d06d2cd8c83e60770f056d8d222f699f3012b"
-    const val CONTEXT_TOKENS = 2048
-    const val OUTPUT_TOKENS = 1024
+    const val VISION_BACKEND = "GPU"
+    const val CONTEXT_TOKENS = 4096
+    const val OUTPUT_TOKENS = 1536
+    const val MAX_NUM_IMAGES = 1
+    const val MAX_IMAGE_BYTES = InferencePayloadLimits.MAX_IMAGE_BYTES
     const val TOP_K = 1
     const val TOP_P = 1.0
     const val TEMPERATURE = 0.0
@@ -31,6 +34,8 @@ object SelectedInferenceConfiguration {
         thinkingBudget = null, timeoutMillis = InferenceProcessProtocol.GENERATION_MS,
         generationParameters = mapOf(
             "api" to "synchronous", "topK" to TOP_K.toString(), "topP" to TOP_P.toString(),
+            "visionBackend" to VISION_BACKEND, "maxNumImages" to MAX_NUM_IMAGES.toString(),
+            "maxImageBytes" to MAX_IMAGE_BYTES.toString(),
             "runtimeAarSha256" to RUNTIME_AAR_SHA256,
             "temperature" to TEMPERATURE.toString(), "seed" to SEED.toString(), "tools" to "none",
             "nativeResponseFormat" to "false", "channelPolicy" to "bundle-metadata-final-only",

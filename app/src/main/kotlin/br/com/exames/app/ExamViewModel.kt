@@ -158,7 +158,7 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
                 throw cancelled
             } catch (failure: ExamInputException) {
                 val notice = when (failure.issue) {
-                    ExamInputIssue.NOT_PDF -> "Selecione um arquivo PDF digital."
+                    ExamInputIssue.NOT_PDF -> "Selecione um arquivo PDF."
                     ExamInputIssue.EMPTY -> "O arquivo selecionado está vazio."
                     ExamInputIssue.TOO_LARGE -> "O arquivo excede o limite de tamanho."
                     ExamInputIssue.UNREADABLE -> "Não foi possível ler o arquivo selecionado."

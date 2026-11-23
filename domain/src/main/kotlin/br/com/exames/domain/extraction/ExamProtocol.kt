@@ -19,6 +19,8 @@ class ExamObservation(
     val reference: ExamCitation?,
     val referenceNeedsReview: Boolean,
     val unitCitation: ExamCitation? = null,
+    val visualOnly: Boolean = false,
+    val page: Int? = null,
 )
 
 internal class ExamBlock(val rows: List<ExamRow>, val request: GenerationRequest)

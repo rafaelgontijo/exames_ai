@@ -33,7 +33,7 @@ android {
 }
 
 val bundledModelPath = providers.gradleProperty("examesModelPath")
-    .orElse(rootProject.layout.projectDirectory.file("../.model-cache/gemma4-e2b/gemma-4-E2B-it-gpu.litertlm").asFile.absolutePath)
+    .orElse(rootProject.layout.projectDirectory.file("../.model-cache/gemma4-e2b-mm/gemma-4-E2B-it.litertlm").asFile.absolutePath)
 val stageBundledModel by tasks.registering(Exec::class) {
     inputs.file(bundledModelPath)
     inputs.files(rootProject.file("tools/litert/stage_model.py"), rootProject.file("validation/models/selection.json"))

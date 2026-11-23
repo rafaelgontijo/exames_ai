@@ -23,6 +23,7 @@ enum class DocumentaryReason {
     INVALID_REFERENCE_SYNTAX,
     NO_REFERENCE,
     NON_NUMERIC_RESULT,
+    VISUAL_EXTRACTION_WITHOUT_DIGITAL_TEXT,
 }
 
 data class AssessedObservation(
@@ -42,6 +43,9 @@ class ConservativeExamAssessor(
         fun result(status: DocumentaryStatus, reason: DocumentaryReason) =
             AssessedObservation(observation, status, reason)
 
+        if (observation.visualOnly) {
+            return result(DocumentaryStatus.NEEDS_REVIEW, DocumentaryReason.VISUAL_EXTRACTION_WITHOUT_DIGITAL_TEXT)
+        }
         if (observation.referenceNeedsReview) {
             return result(DocumentaryStatus.NEEDS_REVIEW, DocumentaryReason.UNCERTAIN_REFERENCE_LINK)
         }

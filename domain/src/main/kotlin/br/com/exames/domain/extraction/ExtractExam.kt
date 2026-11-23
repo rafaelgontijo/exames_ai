@@ -26,7 +26,88 @@ class ExamExtraction(val pages: List<ExamPageOutcome>) {
     val partial: Boolean get() = pages.any { it.issues.isNotEmpty() }
 }
 
+class VisionPageSource(
+    val bands: List<VisionPageBand>,
+    val fragments: List<SourceFragment>,
+)
+
 class ExtractExam(private val inference: TextInference) {
+    suspend fun extractVision(
+        pages: IntRange,
+        read: suspend (Int) -> VisionPageSource,
+        onProgress: (page: Int, block: Int, blocks: Int) -> Unit = { _, _, _ -> },
+        onPageFinished: (ExamPageOutcome) -> Unit = {},
+    ): ExamExtraction {
+        require(!pages.isEmpty() && pages.first >= 1 && pages.last <= MAX_PAGES)
+        val outcomes = mutableListOf<ExamPageOutcome>()
+        var attempted = 0
+        var unavailable: InferenceFailure? = null
+        for (page in pages) {
+            currentCoroutineContext().ensureActive()
+            onProgress(page, 0, 0)
+            val source = try {
+                read(page)
+            } catch (_: IOException) {
+                val failed = ExamPageOutcome(page, emptyList(), setOf(ExamIssue.PAGE_UNREADABLE), emptySet())
+                outcomes += failed
+                onPageFinished(failed)
+                continue
+            }
+            val issues = mutableSetOf<ExamIssue>()
+            val failures = mutableSetOf<InferenceFailure>()
+            val proposals = mutableListOf<VisionProposal>()
+            val bands = source.bands.take(VisionExamProtocol.MAX_BANDS_PER_PAGE)
+            if (source.bands.size > VisionExamProtocol.MAX_BANDS_PER_PAGE) {
+                issues += ExamIssue.INPUT_LIMIT
+            }
+            for ((idx, band) in bands.withIndex()) {
+                currentCoroutineContext().ensureActive()
+                onProgress(page, idx + 1, bands.size)
+                if (attempted >= MAX_DOCUMENT_REQUESTS) {
+                    issues += ExamIssue.INPUT_LIMIT
+                    continue
+                }
+                val request = VisionExamProtocol.request(band)
+                if (!br.com.exames.domain.inference.InferencePayloadLimits.accepts(request)) {
+                    issues += ExamIssue.INPUT_LIMIT
+                    continue
+                }
+                val failure = unavailable
+                val response = if (failure != null) {
+                    GenerationResult.Failed(failure)
+                } else {
+                    attempted++
+                    inference.generate(ExtractionMode.ASSISTED, request)
+                }
+                currentCoroutineContext().ensureActive()
+                when (response) {
+                    is GenerationResult.UnvalidatedFinal -> {
+                        val decoded = VisionExamProtocol.decode(band, response.text)
+                        if (decoded == null) {
+                            issues += ExamIssue.INVALID_RESPONSE
+                        } else {
+                            proposals += decoded.items
+                            if (decoded.hasInvalidItems) issues += ExamIssue.EVIDENCE_NEEDS_REVIEW
+                        }
+                    }
+                    is GenerationResult.Failed -> {
+                        issues += ExamIssue.INFERENCE_FAILED
+                        failures += response.reason
+                        if (response.reason in configurationFailures) unavailable = response.reason
+                    }
+                    GenerationResult.NotRequested -> issues += ExamIssue.INFERENCE_FAILED
+                }
+            }
+            val grounded = VisionEvidenceGrounder.ground(page, proposals, source.fragments)
+            issues += grounded.issues
+            val outcome = ExamPageOutcome(page, grounded.observations, issues, failures)
+            outcomes += outcome
+            onPageFinished(outcome)
+        }
+        currentCoroutineContext().ensureActive()
+        return ExamExtraction(outcomes)
+    }
+
     suspend fun extract(
         pages: IntRange,
         read: suspend (Int) -> List<SourceFragment>,

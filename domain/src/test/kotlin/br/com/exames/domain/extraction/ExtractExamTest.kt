@@ -248,6 +248,60 @@ class ExtractExamTest {
         assertEquals(3, evidence.rows.size)
     }
 
+    @Test fun extractVisionProcessesBandedPagesGroundsDigitalTextHandlesScannedAndSkipsEmptyBands() = runTest {
+        val band0 = VisionPageBand(1, 0, byteArrayOf(1, 2, 3), "image/png", SourceRegion(1, 0.0, 0.0, 500.0, 336.0, 500.0, 800.0))
+        val band1 = VisionPageBand(1, 1, byteArrayOf(4, 5, 6), "image/png", SourceRegion(1, 0.0, 256.0, 500.0, 592.0, 500.0, 800.0))
+        val bandP2 = VisionPageBand(2, 0, byteArrayOf(7, 8, 9), "image/jpeg", SourceRegion(2, 0.0, 0.0, 500.0, 336.0, 500.0, 800.0))
+        val digitalFrags = listOf(
+            word(1, "n1", "Glicose", 20.0, 100.0, 90.0),
+            word(1, "v1", "82", 180.0, 100.0, 200.0),
+            word(1, "u1", "mg/dL", 205.0, 100.0, 245.0),
+            word(1, "f1", "70 a 99 mg/dL", 300.0, 100.0, 410.0),
+        )
+        val answers = listOf(
+            """{"schema":"exam-vision-items/1","items":[{"name":"Glicose","result":"82","unit":"mg/dL","reference":"70 a 99 mg/dL","needs_review":false}]}""",
+            """{"schema":"exam-vision-items/1","items":[{"name":"Glicose","result":"82","unit":"mg/dL","reference":"70 a 99 mg/dL","needs_review":false}]}""",
+            """{"schema":"exam-vision-items/1","items":[{"name":"Hemoglobina","result":"14,2","unit":"g/dL","reference":"12,0 a 16,0 g/dL","needs_review":false}]}""",
+        ).iterator()
+        var calls = 0
+        val visionRuntime = object : TextInference {
+            override suspend fun generate(mode: ExtractionMode, request: GenerationRequest): GenerationResult {
+                assertEquals(ExtractionMode.ASSISTED, mode)
+                assertEquals(VisionExamProtocol.SCHEMA_VERSION, request.schemaVersion)
+                assertTrue(request.imageBytes != null)
+                calls++
+                return GenerationResult.UnvalidatedFinal(answers.next(), 10, 20)
+            }
+        }
+        val extraction = ExtractExam(visionRuntime).extractVision(
+            pages = 1..3,
+            read = { page ->
+                when (page) {
+                    1 -> VisionPageSource(listOf(band0, band1), digitalFrags)
+                    2 -> VisionPageSource(listOf(bandP2), emptyList())
+                    else -> VisionPageSource(emptyList(), emptyList()) // blank page skipped
+                }
+            },
+        )
+        assertEquals(3, calls)
+        assertEquals(1, extraction.pages[0].observations.size)
+        assertFalse(extraction.pages[0].observations.single().visualOnly)
+        assertTrue(extraction.pages[0].issues.isEmpty())
+        assertEquals(1, extraction.pages[1].observations.size)
+        assertTrue(extraction.pages[1].observations.single().visualOnly)
+        assertEquals(2, extraction.pages[1].observations.single().page)
+        assertTrue(ExamIssue.INSUFFICIENT_POSITIONED_TEXT in extraction.pages[1].issues)
+        assertTrue(extraction.pages[2].observations.isEmpty())
+    }
+
+    @Test fun deserializesLegacyExamObservationJsonWithoutVisualOnlyOrPageFields() {
+        val legacyJson = """{"name":{"id":"n1","text":"Glicose","regions":[{"page":1,"left":10.0,"top":20.0,"right":80.0,"bottom":30.0,"pageWidth":500.0,"pageHeight":800.0}]},"sourceResult":{"id":"v1","text":"82 mg/dL","regions":[{"page":1,"left":100.0,"top":20.0,"right":160.0,"bottom":30.0,"pageWidth":500.0,"pageHeight":800.0}]},"result":"82","unit":"mg/dL","reference":{"id":"f1","text":"70 a 99 mg/dL","regions":[]},"referenceNeedsReview":false}"""
+        val decoded = kotlinx.serialization.json.Json.decodeFromString<ExamObservation>(legacyJson)
+        assertFalse(decoded.visualOnly)
+        assertEquals(null, decoded.page)
+        assertEquals("82", decoded.result)
+    }
+
     private fun runtime(answer: suspend (GenerationRequest) -> GenerationResult) = object : TextInference {
         override suspend fun generate(mode: ExtractionMode, request: GenerationRequest): GenerationResult {
             assertEquals(ExtractionMode.ASSISTED, mode)

@@ -23,6 +23,8 @@ class SelectedInferenceConfigurationTest {
         assertEquals(System.getProperty("exames.runtimeCoordinate"), actual.runtimeVersion)
         assertEquals(System.getProperty("exames.runtimeAarSha256"), actual.generationParameters["runtimeAarSha256"])
         assertEquals(selection.s("backend"), actual.backend)
+        assertEquals(selection.s("visionBackend"), actual.generationParameters["visionBackend"])
+        assertEquals(selection.s("maxNumImages"), actual.generationParameters["maxNumImages"])
         assertEquals(selection.s("contextTokens").toInt(), actual.maxContextTokens)
         assertEquals(selection.s("maxOutputTokens").toInt(), actual.maxGenerationTokens)
         assertEquals(ProposalProtocol.PROMPT_VERSION, actual.promptVersion)
@@ -34,7 +36,7 @@ class SelectedInferenceConfigurationTest {
             assertEquals(selection.s(key), actual.generationParameters[key])
         val lifecycle = selection.getValue("lifecycle").jsonObject
         for (key in listOf("freshProcessPerRequest", "loadTimeoutMillis", "generationTimeoutMillis", "retireTimeoutMillis",
-            "maxInputUtf8Bytes", "maxFinalCharacters", "concurrency", "overflowPolicy"))
+            "maxInputUtf8Bytes", "maxImageBytes", "maxFinalCharacters", "concurrency", "overflowPolicy"))
             assertEquals(lifecycle.s(key), actual.generationParameters[key])
         assertEquals(lifecycle.s("generationTimeoutMillis").toLong(), actual.timeoutMillis)
     }

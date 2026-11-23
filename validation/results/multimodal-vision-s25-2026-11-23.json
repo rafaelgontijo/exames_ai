@@ -1,0 +1,972 @@
+{
+  "date": "2026-11-23T14:05:32.018603+00:00",
+  "device": "SM-S931B",
+  "android": "17",
+  "api": "37",
+  "airplane": true,
+  "wifiDisabled": true,
+  "activeDefaultNetworkNone": true,
+  "modelFile": "gemma-4-E2B-it.litertlm",
+  "modelRevision": "2e12bfd869b2962984f97a1f2a26807316d534cc",
+  "modelSha256": "181938105e0eefd105961417e8da75903eacda102c4fce9ce90f50b97139a63c",
+  "runtime": "com.google.ai.edge.litertlm:litertlm-android:0.18.1",
+  "promptVersion": "exam-vision/1",
+  "schemaVersion": "exam-vision-items/1",
+  "clinicalValidation": false,
+  "allRunsCompleted": true,
+  "runs": [
+    {
+      "docId": "pdf_1",
+      "page": null,
+      "events": [
+        {
+          "phase": "authorized-stream-ready"
+        },
+        {
+          "page": 1,
+          "pages": 6,
+          "block": 0,
+          "blocks": 0,
+          "phase": "processing"
+        },
+        {
+          "page": 1,
+          "pages": 6,
+          "block": 1,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 180430,
+          "characters": 491,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 6,
+          "itemsWithExpectedKeys": 0,
+          "loadMs": 11279,
+          "generationMs": 6478,
+          "sampledMaxPssKiB": 3166765,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 1,
+          "pages": 6,
+          "block": 2,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 162850,
+          "characters": 1156,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 15,
+          "itemsWithExpectedKeys": 0,
+          "loadMs": 11016,
+          "generationMs": 12230,
+          "sampledMaxPssKiB": 3190804,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 1,
+          "pages": 6,
+          "block": 3,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 124471,
+          "characters": 249,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 2,
+          "itemsWithExpectedKeys": 2,
+          "loadMs": 11662,
+          "generationMs": 3509,
+          "sampledMaxPssKiB": 3173600,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 2,
+          "pages": 6,
+          "block": 0,
+          "blocks": 0,
+          "phase": "processing"
+        },
+        {
+          "page": 2,
+          "pages": 6,
+          "block": 1,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 179295,
+          "characters": 156,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 1,
+          "itemsWithExpectedKeys": 1,
+          "loadMs": 9746,
+          "generationMs": 2727,
+          "sampledMaxPssKiB": 3174408,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 2,
+          "pages": 6,
+          "block": 2,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 203910,
+          "characters": 310,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 3,
+          "itemsWithExpectedKeys": 0,
+          "loadMs": 8827,
+          "generationMs": 3620,
+          "sampledMaxPssKiB": 3183766,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 2,
+          "pages": 6,
+          "block": 3,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 128698,
+          "characters": 112,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 1,
+          "itemsWithExpectedKeys": 0,
+          "loadMs": 9965,
+          "generationMs": 2247,
+          "sampledMaxPssKiB": 3169558,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 3,
+          "pages": 6,
+          "block": 0,
+          "blocks": 0,
+          "phase": "processing"
+        },
+        {
+          "page": 3,
+          "pages": 6,
+          "block": 1,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 175110,
+          "characters": 145,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 1,
+          "itemsWithExpectedKeys": 0,
+          "loadMs": 8865,
+          "generationMs": 2424,
+          "sampledMaxPssKiB": 3172895,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 3,
+          "pages": 6,
+          "block": 2,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 152798,
+          "characters": 317,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 2,
+          "itemsWithExpectedKeys": 2,
+          "loadMs": 9460,
+          "generationMs": 3710,
+          "sampledMaxPssKiB": 3178204,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 3,
+          "pages": 6,
+          "block": 3,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 70108,
+          "characters": 43,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 0,
+          "itemsWithExpectedKeys": 0,
+          "loadMs": 10151,
+          "generationMs": 1739,
+          "sampledMaxPssKiB": 3163700,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 4,
+          "pages": 6,
+          "block": 0,
+          "blocks": 0,
+          "phase": "processing"
+        },
+        {
+          "page": 4,
+          "pages": 6,
+          "block": 1,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 160856,
+          "characters": 255,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 2,
+          "itemsWithExpectedKeys": 0,
+          "loadMs": 9768,
+          "generationMs": 3017,
+          "sampledMaxPssKiB": 3175335,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 4,
+          "pages": 6,
+          "block": 2,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 127257,
+          "characters": 576,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 4,
+          "itemsWithExpectedKeys": 0,
+          "loadMs": 10343,
+          "generationMs": 5019,
+          "sampledMaxPssKiB": 3184783,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 4,
+          "pages": 6,
+          "block": 3,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 128047,
+          "characters": 314,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 2,
+          "itemsWithExpectedKeys": 2,
+          "loadMs": 11442,
+          "generationMs": 3587,
+          "sampledMaxPssKiB": 3170550,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 5,
+          "pages": 6,
+          "block": 0,
+          "blocks": 0,
+          "phase": "processing"
+        },
+        {
+          "page": 5,
+          "pages": 6,
+          "block": 1,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 184412,
+          "characters": 202,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 1,
+          "itemsWithExpectedKeys": 1,
+          "loadMs": 7303,
+          "generationMs": 2567,
+          "sampledMaxPssKiB": 3128016,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 5,
+          "pages": 6,
+          "block": 2,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 235830,
+          "characters": 148,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 1,
+          "itemsWithExpectedKeys": 1,
+          "loadMs": 7380,
+          "generationMs": 2410,
+          "sampledMaxPssKiB": 3170987,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 5,
+          "pages": 6,
+          "block": 3,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 141314,
+          "characters": 315,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 2,
+          "itemsWithExpectedKeys": 2,
+          "loadMs": 7308,
+          "generationMs": 3766,
+          "sampledMaxPssKiB": 3152802,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 6,
+          "pages": 6,
+          "block": 0,
+          "blocks": 0,
+          "phase": "processing"
+        },
+        {
+          "page": 6,
+          "pages": 6,
+          "block": 1,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 174722,
+          "characters": 305,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 2,
+          "itemsWithExpectedKeys": 2,
+          "loadMs": 8020,
+          "generationMs": 4130,
+          "sampledMaxPssKiB": 3157182,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 6,
+          "pages": 6,
+          "block": 2,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 118284,
+          "characters": 257,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 2,
+          "itemsWithExpectedKeys": 2,
+          "loadMs": 7588,
+          "generationMs": 3770,
+          "sampledMaxPssKiB": 3159952,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 6,
+          "pages": 6,
+          "block": 3,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 48301,
+          "characters": 43,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 0,
+          "itemsWithExpectedKeys": 0,
+          "loadMs": 7528,
+          "generationMs": 1747,
+          "sampledMaxPssKiB": 3161370,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "phase": "authorized-checklist-ready"
+        },
+        {
+          "pages": [
+            {
+              "expected": 21,
+              "exact": 0,
+              "extras": 0,
+              "measurementDifferences": 2,
+              "referenceDifferences": 2,
+              "expectedAmbiguities": 0,
+              "preservedAmbiguities": 0,
+              "omissions": 19,
+              "page": 1
+            },
+            {
+              "expected": 3,
+              "exact": 0,
+              "extras": 0,
+              "measurementDifferences": 1,
+              "referenceDifferences": 1,
+              "expectedAmbiguities": 0,
+              "preservedAmbiguities": 0,
+              "omissions": 2,
+              "page": 2
+            },
+            {
+              "expected": 2,
+              "exact": 0,
+              "extras": 1,
+              "measurementDifferences": 1,
+              "referenceDifferences": 1,
+              "expectedAmbiguities": 0,
+              "preservedAmbiguities": 0,
+              "omissions": 1,
+              "page": 3
+            },
+            {
+              "expected": 6,
+              "exact": 0,
+              "extras": 0,
+              "measurementDifferences": 2,
+              "referenceDifferences": 2,
+              "expectedAmbiguities": 1,
+              "preservedAmbiguities": 0,
+              "omissions": 4,
+              "page": 4
+            },
+            {
+              "expected": 2,
+              "exact": 0,
+              "extras": 2,
+              "measurementDifferences": 2,
+              "referenceDifferences": 2,
+              "expectedAmbiguities": 0,
+              "preservedAmbiguities": 0,
+              "omissions": 0,
+              "page": 5
+            },
+            {
+              "expected": 2,
+              "exact": 0,
+              "extras": 1,
+              "measurementDifferences": 2,
+              "referenceDifferences": 2,
+              "expectedAmbiguities": 0,
+              "preservedAmbiguities": 0,
+              "omissions": 0,
+              "page": 6
+            }
+          ],
+          "phase": "authorized-comparison-measured"
+        },
+        {
+          "availableForDeviceReview": false,
+          "partial": true,
+          "pages": [
+            {
+              "page": 1,
+              "observations": 2,
+              "references": 2,
+              "referenceNeedsReview": 0,
+              "issues": [
+                "EVIDENCE_NEEDS_REVIEW"
+              ],
+              "inferenceFailures": []
+            },
+            {
+              "page": 2,
+              "observations": 1,
+              "references": 1,
+              "referenceNeedsReview": 1,
+              "issues": [
+                "EVIDENCE_NEEDS_REVIEW"
+              ],
+              "inferenceFailures": []
+            },
+            {
+              "page": 3,
+              "observations": 2,
+              "references": 1,
+              "referenceNeedsReview": 1,
+              "issues": [
+                "EVIDENCE_NEEDS_REVIEW"
+              ],
+              "inferenceFailures": []
+            },
+            {
+              "page": 4,
+              "observations": 2,
+              "references": 2,
+              "referenceNeedsReview": 2,
+              "issues": [
+                "EVIDENCE_NEEDS_REVIEW"
+              ],
+              "inferenceFailures": []
+            },
+            {
+              "page": 5,
+              "observations": 4,
+              "references": 1,
+              "referenceNeedsReview": 3,
+              "issues": [],
+              "inferenceFailures": []
+            },
+            {
+              "page": 6,
+              "observations": 3,
+              "references": 3,
+              "referenceNeedsReview": 2,
+              "issues": [],
+              "inferenceFailures": []
+            }
+          ],
+          "phase": "authorized-extraction-measured"
+        }
+      ],
+      "runnerPassed": true,
+      "streamDelivered": true,
+      "publishedWithEvidence": 14,
+      "completed": true,
+      "checklistCompared": true
+    },
+    {
+      "docId": "pdf_2",
+      "page": 14,
+      "events": [
+        {
+          "phase": "authorized-stream-ready"
+        },
+        {
+          "page": 14,
+          "pages": 15,
+          "block": 0,
+          "blocks": 0,
+          "phase": "processing"
+        },
+        {
+          "page": 14,
+          "pages": 15,
+          "block": 1,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 188094,
+          "characters": 810,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 8,
+          "itemsWithExpectedKeys": 8,
+          "loadMs": 7659,
+          "generationMs": 8241,
+          "sampledMaxPssKiB": 3137953,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 14,
+          "pages": 15,
+          "block": 2,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 129941,
+          "characters": 2009,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": false,
+          "objectJson": false,
+          "arrayJson": false,
+          "rootKeysMatch": false,
+          "versionMatches": false,
+          "items": -1,
+          "itemsWithExpectedKeys": 0,
+          "loadMs": 8606,
+          "generationMs": 24849,
+          "sampledMaxPssKiB": 3148475,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 14,
+          "pages": 15,
+          "block": 3,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 126433,
+          "characters": 393,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 4,
+          "itemsWithExpectedKeys": 4,
+          "loadMs": 9653,
+          "generationMs": 4775,
+          "sampledMaxPssKiB": 3166144,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "availableForDeviceReview": false,
+          "partial": true,
+          "pages": [
+            {
+              "page": 14,
+              "observations": 12,
+              "references": 1,
+              "referenceNeedsReview": 11,
+              "issues": [
+                "INVALID_RESPONSE",
+                "EVIDENCE_NEEDS_REVIEW"
+              ],
+              "inferenceFailures": []
+            }
+          ],
+          "phase": "authorized-extraction-measured"
+        }
+      ],
+      "runnerPassed": true,
+      "streamDelivered": true,
+      "publishedWithEvidence": 12,
+      "completed": true
+    },
+    {
+      "docId": "pdf_2",
+      "page": 8,
+      "events": [
+        {
+          "phase": "authorized-stream-ready"
+        },
+        {
+          "page": 8,
+          "pages": 15,
+          "block": 0,
+          "blocks": 0,
+          "phase": "processing"
+        },
+        {
+          "page": 8,
+          "pages": 15,
+          "block": 1,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 164466,
+          "characters": 339,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 2,
+          "itemsWithExpectedKeys": 2,
+          "loadMs": 8995,
+          "generationMs": 5300,
+          "sampledMaxPssKiB": 3165025,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 8,
+          "pages": 15,
+          "block": 2,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 121687,
+          "characters": 840,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 2,
+          "itemsWithExpectedKeys": 0,
+          "loadMs": 8448,
+          "generationMs": 12829,
+          "sampledMaxPssKiB": 3152103,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 8,
+          "pages": 15,
+          "block": 3,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 144158,
+          "characters": 771,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 4,
+          "itemsWithExpectedKeys": 4,
+          "loadMs": 9404,
+          "generationMs": 10899,
+          "sampledMaxPssKiB": 3170079,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "availableForDeviceReview": false,
+          "partial": true,
+          "pages": [
+            {
+              "page": 8,
+              "observations": 6,
+              "references": 0,
+              "referenceNeedsReview": 6,
+              "issues": [
+                "EVIDENCE_NEEDS_REVIEW"
+              ],
+              "inferenceFailures": []
+            }
+          ],
+          "phase": "authorized-extraction-measured"
+        }
+      ],
+      "runnerPassed": true,
+      "streamDelivered": true,
+      "publishedWithEvidence": 6,
+      "completed": true
+    },
+    {
+      "docId": "pdf_3",
+      "page": 1,
+      "events": [
+        {
+          "phase": "authorized-stream-ready"
+        },
+        {
+          "page": 1,
+          "pages": 1,
+          "block": 0,
+          "blocks": 0,
+          "phase": "processing"
+        },
+        {
+          "page": 1,
+          "pages": 1,
+          "block": 1,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 152449,
+          "characters": 155,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 1,
+          "itemsWithExpectedKeys": 1,
+          "loadMs": 9572,
+          "generationMs": 3172,
+          "sampledMaxPssKiB": 3165903,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 1,
+          "pages": 1,
+          "block": 2,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 7289,
+          "characters": 43,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 0,
+          "itemsWithExpectedKeys": 0,
+          "loadMs": 8589,
+          "generationMs": 1938,
+          "sampledMaxPssKiB": 3147708,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "page": 1,
+          "pages": 1,
+          "block": 3,
+          "blocks": 3,
+          "phase": "processing"
+        },
+        {
+          "imageBytes": 87997,
+          "characters": 43,
+          "fenced": false,
+          "startsObject": true,
+          "endsObject": true,
+          "objectJson": true,
+          "arrayJson": false,
+          "rootKeysMatch": true,
+          "versionMatches": true,
+          "items": 0,
+          "itemsWithExpectedKeys": 0,
+          "loadMs": 8837,
+          "generationMs": 1845,
+          "sampledMaxPssKiB": 3151385,
+          "phase": "authorized-response-structure"
+        },
+        {
+          "availableForDeviceReview": false,
+          "partial": true,
+          "pages": [
+            {
+              "page": 1,
+              "observations": 1,
+              "references": 0,
+              "referenceNeedsReview": 1,
+              "issues": [
+                "EVIDENCE_NEEDS_REVIEW"
+              ],
+              "inferenceFailures": []
+            }
+          ],
+          "phase": "authorized-extraction-measured"
+        }
+      ],
+      "runnerPassed": true,
+      "streamDelivered": true,
+      "publishedWithEvidence": 1,
+      "completed": true
+    }
+  ]
+}

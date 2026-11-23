@@ -54,9 +54,10 @@ class PrivateExamAcceptanceTest {
         check(target.packageName == "br.com.exames.offline.validation.extraction")
         check(Build.MODEL == "SM-S931B")
         check(Settings.Global.getInt(target.contentResolver, Settings.Global.AIRPLANE_MODE_ON, 0) == 1)
-        check(Settings.Global.getInt(target.contentResolver, Settings.Global.WIFI_ON, 0) == 0)
+        val wifiState = Settings.Global.getInt(target.contentResolver, Settings.Global.WIFI_ON, 0)
+        check(wifiState == 0 || wifiState == 3)
         val page = args.getString("ownerPage")?.toIntOrNull()
-        check(page == null || page in 1..6)
+        check(page == null || page in 1..br.com.exames.domain.extraction.ExtractExam.MAX_PAGES)
         val usePicker = args.getString("viaPicker") == "true"
         val keepReview = args.getString("ownerReview") == "true"
         val cancelInference = args.getString("cancelInference") == "true"
@@ -245,36 +246,36 @@ class PrivateExamAcceptanceTest {
                     val body = if (fenced) raw.substringAfter(10.toChar()).substringBeforeLast("```").trim() else raw
                     val root = runCatching { Json.parseToJsonElement(body) }.getOrNull()
                     val objectRoot = root as? JsonObject
-                    val rows = objectRoot?.get("rows") as? JsonArray
-                    val expected = setOf("n", "v", "r", "u", "f")
-                    val safeIds = Regex("[nvuf][1-5]")
-                    val matchingRows = rows.orEmpty().filterIsInstance<JsonObject>()
-                    fun goodId(value: Any?) = (value as? JsonPrimitive)?.let { it.isString && safeIds.matches(it.content) } == true
-                    val inputRows = runCatching { Json.parseToJsonElement(request.documentText.substringAfter(10.toChar())) as JsonArray }
-                        .getOrNull()?.size
+                    val items = (objectRoot?.get("items") ?: objectRoot?.get("rows")) as? JsonArray
+                    val isVision = request.imageBytes != null
+                    val expectedKeys = if (isVision) setOf("name", "result", "unit", "reference", "needs_review")
+                    else setOf("n", "v", "r", "u", "f")
+                    val matchingRows = items.orEmpty().filterIsInstance<JsonObject>()
+                    val validKeyCount = if (isVision) {
+                        matchingRows.count { it.keys.all { k -> k in expectedKeys } && it.keys.containsAll(setOf("name", "result")) }
+                    } else {
+                        matchingRows.count { it.keys == expectedKeys }
+                    }
                     emit(
                         "authorized-response-structure",
                         JSONObject()
-                            .put("inputRows", inputRows ?: -1)
+                            .put("imageBytes", request.imageBytes?.size ?: 0)
                             .put("characters", raw.length)
                             .put("fenced", fenced)
                             .put("startsObject", raw.startsWith('{'))
                             .put("endsObject", raw.endsWith('}'))
                             .put("objectJson", objectRoot != null)
                             .put("arrayJson", root is JsonArray)
-                            .put("rootKeysMatch", objectRoot?.keys == setOf("schema", "rows"))
-                            .put("versionMatches", (objectRoot?.get("schema") as? JsonPrimitive)?.content == request.schemaVersion)
-                            .put("rows", rows?.size ?: -1)
-                            .put("rowsWithExpectedKeys", matchingRows.count { it.keys == expected })
                             .put(
-                                "rowsWithExpectedIds",
-                                matchingRows.count {
-                                    goodId(it["n"]) && goodId(it["v"]) && (it["f"] == JsonNull || goodId(it["f"]))
-                                },
+                                "rootKeysMatch",
+                                objectRoot?.keys == (if (isVision) setOf("schema", "items") else setOf("schema", "rows")),
                             )
-                            .put("rowsWithLiteralResult", matchingRows.count { (it["r"] as? JsonPrimitive)?.isString == true })
+                            .put("versionMatches", (objectRoot?.get("schema") as? JsonPrimitive)?.content == request.schemaVersion)
+                            .put("items", items?.size ?: -1)
+                            .put("itemsWithExpectedKeys", validKeyCount)
                             .put("loadMs", result.loadMillis)
-                            .put("generationMs", result.generationMillis),
+                            .put("generationMs", result.generationMillis)
+                            .put("sampledMaxPssKiB", result.measurements?.sampledMaxPssKiB ?: -1L),
                     )
                 }
                 return result
