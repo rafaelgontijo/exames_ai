@@ -1,0 +1,36 @@
+# Proposal
+
+## Why
+
+A interface distribuída atual (`app/src/extraction`) concentra todo o fluxo em uma única tela minimalista com um único exame persistido e diálogo simples de evidência, ficando distante do novo sistema visual e de experiência definido no projeto Stitch **`Meu Exame — MVP`** (`2627731492696541504`, Design System `assets/16423656734733007448`, [`.stitch/DESIGN.md`](../../../.stitch/DESIGN.md)). Além disso, manter a variante técnica `-PlegacyWorkbench=true` em paralelo fragmenta módulos, dependências e testes de interface. Refatorar o aplicativo agora unifica a arquitetura em uma única base limpa e entrega as novas capacidades previstas no design — histórico local cifrado de múltiplos exames, classificação conservadora com filtros na tela de resultados, acompanhamento página a página da leitura offline e visualizador dedicado de evidência no laudo.
+
+## What Changes
+
+- **Refatoração completa da interface para as 6 telas do Stitch (`Meu Exame — MVP`):**
+  - **1. Início (`home`):** cabeçalho da marca com atalho de ajuda (`?`), cartão hero para importar PDF, passo a passo em 3 etapas, seção **Meus exames** com histórico recente e barra de navegação inferior (`Início`, `Exames`, `Ajuda`).
+  - **2. Enviar exame (`send`):** tela dedicada com ação primária **Selecionar PDF digital**, acesso secundário **Abrir histórico local**, bloco **Dicas para uma leitura fiel** e aviso de privacidade offline cifrada (**Como protegemos seus dados**).
+  - **3. Resultado (`results/{examId}`):** banner superior de conferência com contagem de itens a revisar e ação **Ver no laudo**, filtros acessíveis por estado (**Todos**, **Revisar**, **Na referência**, e **Sem faixa** quando aplicável), cartões em ordem documental com valor, referência bruta preservada, página e estado conservador, além de ações para ajuda e exclusão do exame.
+  - **4. Ajuda e revisão (`help`):** tela dedicada explicando como conferir o laudo original, legenda das marcações (**Na referência**, **Revisar**, **Sem faixa**), transparência de privacidade/armazenamento local e aviso explícito de limite não diagnóstico (sem diagnósticos, urgência, especialidades ou encaminhamentos).
+  - **5. Processando laudo (`processing/{examId}`):** tela dedicada de progresso offline com selo **Offline no aparelho**, cartão com percentual e contador página/bloco, lista de andamento por página (concluídas com contagem de itens verificados, em leitura e aguardando), aviso de privacidade e botão **Cancelar leitura**.
+  - **6. Ver no laudo (`evidence/{examId}`):** tela dedicada de revisão visual substituindo o `AlertDialog` atual, com indicador `Página X de Y`, cartão do item selecionado e texto bruto da referência preservado, alternância **Página inteira / Recorte**, filtros de destaque por campo (**Resultado**, **Referência**), projeção proporcional sobre a página do PDF e rodapé não diagnóstico.
+- **Novo histórico local cifrado de múltiplos exames:** evoluir `:data-private-pdf` para armazenar múltiplos PDFs e suas extrações criptografados com AES-GCM (chaves no Android Keystore) sob identificadores opacos, suportando listagem em **Início** e na aba **Exames**, abertura individual, cancelamento seguro e exclusão individual ou total, com migração automática da extração única anterior (`current-exam`).
+- **Classificação determinística conservadora em `:domain`:** conectar as observações extraídas por IA (`ExamObservation`) a um avaliador puro em `:domain` que compara apenas faixas numéricas únicas com mesma unidade explícita, mantendo obrigatoriamente o fallback `NEEDS_REVIEW` (**Revisar**) para valores fora da faixa, referências múltiplas/ambíguas, vínculo incerto (`referenceNeedsReview`), unidades incompatíveis ou valores censurados, e `NOT_CLASSIFIABLE` (**Sem faixa**) para ausência de referência ou valores não numéricos — sempre preservando o texto bruto e a proveniência.
+- **BREAKING — Unificação removendo a variante `legacyWorkbench`:** eliminar a flag `-PlegacyWorkbench=true`, o source set `app/src/workbench*` e os módulos exclusivos da bancada legada (`:data-documents`, `:data-local`, `:feature-import`, `:feature-results`, `:feature-history`, `:validation-fixtures`), consolidando o aplicativo distribuído em um único source set padrão (`app/src/main`) com `:domain`, `:core-ui`, `:data-private-pdf`, `:pdf-local`, `:inference-local` e `:ui-checks` atualizado para validar as novas telas (temas claro/escuro, contraste WCAG, alvos ≥ 48 dp e fonte 200%).
+
+## Capabilities
+
+### New Capabilities
+
+- `mobile-exam-experience`: Experiência mobile unificada de 6 telas em Jetpack Compose derivada do projeto Stitch `Meu Exame — MVP` (`Início`, `Exames`, `Enviar exame`, `Processando laudo`, `Resultado` com filtros, `Ver no laudo` e `Ajuda e revisão`), sem variante `legacyWorkbench`, respeitando limites éticos, acessibilidade e ausência de permissões de rede.
+- `encrypted-exam-history`: Persistência privada e criptografada de múltiplos exames em `:data-private-pdf` com índice cifrado, migração do ponteiro único anterior, listagem, reabertura de resultados/PDF e exclusão individual ou total sem PII em texto claro.
+- `conservative-reference-assessment`: Avaliação determinística conservadora em `:domain` das medições extraídas de laudos PDF contra sua referência bruta vinculada, classificando em `Na referência`, `Revisar` (`NEEDS_REVIEW` estrito) e `Sem faixa` (`NOT_CLASSIFIABLE`) com motivos documentais neutros e testes unitários completos de limites.
+
+### Modified Capabilities
+
+Nenhuma publicada em `openspec/specs/` até o momento. Esta proposta consolida a experiência do aplicativo e substitui decisões anteriores registradas em changes não sincronizadas (`simplify-ai-exam-extraction` e `adapt-android-prototype-offline-experience`) no que diz respeito à remoção da variante `legacyWorkbench`, à introdução do histórico local cifrado de múltiplos exames, à barra inferior com **Início / Exames / Ajuda** e à classificação determinística conservadora de faixas.
+
+## Impact
+
+- **Módulos mantidos e refatorados:** `:app` (unificado em `src/main`, adicionando `androidx.navigation:navigation-compose` e novas telas/ViewModels), `:core-ui` (novos componentes reutilizáveis alinhados a `.stitch/DESIGN.md` e `ExamesTokens`), `:domain` (avaliador conservador sobre `ExamObservation`, progresso por página e projeções de resumo/filtro), `:data-private-pdf` (armazenamento cifrado multi-exame + migração de `current-exam`), `:ui-checks` (verificação automatizada de acessibilidade/contraste/escala 200% para as novas telas).
+- **Módulos e configurações removidos:** `legacyWorkbench` em `app/build.gradle.kts`, `app/src/workbench*`, `:feature-import`, `:feature-results`, `:feature-history`, `:data-documents`, `:data-local`, `:validation-fixtures` (e dependências exclusivas como Hilt, Room, WorkManager, Tesseract, CameraX e JitPack em `settings.gradle.kts` / `gradle/libs.versions.toml` quando sem consumidor restante).
+- **Privacidade e governança preservadas:** zero permissão `INTERNET`, zero bibliotecas de rede, backups desabilitados, `FLAG_SECURE`, zero conteúdo clínico em `SavedStateHandle`/rotas/logs, modelo Gemma 4 E2B + LiteRT-LM offline intactos e limites éticos não diagnósticos reforçados em todas as telas.

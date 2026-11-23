@@ -144,14 +144,19 @@ class ExtractExamTest {
         val final = response(field())
         var calls = 0
         val progress = mutableListOf<Pair<Int, Int>>()
+        val finishedPages = mutableListOf<Pair<Int, Int>>()
         val result = ExtractExam(runtime {
             calls++
             if (calls == 1) GenerationResult.Failed(InferenceFailure.GENERATION_TIMEOUT)
             else GenerationResult.UnvalidatedFinal(final, 0, 0)
-        }).extract(1..2, read = { if (it == 1) input else throw IOException() }) { page, block, _ ->
-            progress += page to block
-        }
+        }).extract(
+            1..2,
+            read = { if (it == 1) input else throw IOException() },
+            onProgress = { page, block, _ -> progress += page to block },
+            onPageFinished = { outcome -> finishedPages += outcome.page to outcome.observations.size },
+        )
         assertEquals(listOf(1 to 0, 1 to 1, 1 to 2, 1 to 3, 2 to 0), progress)
+        assertEquals(listOf(1 to 1, 2 to 0), finishedPages)
         assertEquals(listOf(expected.last().result.id), result.pages.first().observations.map { it.sourceResult.id })
         assertEquals(setOf(ExamIssue.INPUT_LIMIT, ExamIssue.INFERENCE_FAILED), result.pages.first().issues)
         assertEquals(setOf(ExamIssue.PAGE_UNREADABLE), result.pages.last().issues)

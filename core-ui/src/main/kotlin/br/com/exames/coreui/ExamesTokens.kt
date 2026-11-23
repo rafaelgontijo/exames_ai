@@ -6,9 +6,9 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
 /**
- * Palette from the approved prototype (light) with explicit dark equivalents. Decorative borders are NOT
- * used for interactive controls; those use [ExamesPalette.controlBorder] (>= 3:1). Status is always paired
- * with text/icon, and red never means urgency.
+ * Palette from the approved Stitch design system ("Meu Exame — MVP") with explicit dark equivalents.
+ * Decorative borders are NOT used for interactive controls; those use [ExamesPalette.controlBorder] (>= 3:1).
+ * Status is always paired with text/icon, and alert tones never mean clinical urgency.
  */
 data class ExamesPalette(
     val title: Color,
@@ -17,7 +17,12 @@ data class ExamesPalette(
     val controlBorder: Color,
     val infoContainer: Color, val onInfoContainer: Color,
     val reviewContainer: Color, val onReviewContainer: Color,
+    val reviewBorder: Color,
     val alertContainer: Color, val onAlertContainer: Color,
+    val alertBorder: Color,
+    val heroContainer: Color, val onHeroContainer: Color,
+    val onHeroSubtext: Color,
+    val heroActionContainer: Color, val onHeroActionContainer: Color,
 )
 
 object ExamesTokens {
@@ -42,15 +47,25 @@ object ExamesTokens {
     val lightPalette = ExamesPalette(
         title = Color(0xFF0F3A7A), secondaryText = Color(0xFF4A5B72),
         decorativeBorder = Color(0xFFD6E6F8), controlBorder = Color(0xFF6B7F99),
-        infoContainer = Color(0xFFDCEAFB), onInfoContainer = Color(0xFF0F3A7A),
+        infoContainer = Color(0xFFE8F1FC), onInfoContainer = Color(0xFF0F3A7A),
         reviewContainer = Color(0xFFFFF2D9), onReviewContainer = Color(0xFF5C3600),
-        alertContainer = Color(0xFFFDE4E1), onAlertContainer = Color(0xFF8C1D18),
+        reviewBorder = Color(0xFFF2D29A),
+        alertContainer = Color(0xFFFDE4E1), onAlertContainer = Color(0xFF6E1414),
+        alertBorder = Color(0xFFF3B8B8),
+        heroContainer = Color(0xFF1F5FBF), onHeroContainer = Color.White,
+        onHeroSubtext = Color(0xFFDCEAFB),
+        heroActionContainer = Color.White, onHeroActionContainer = Color(0xFF0F3A7A),
     )
     val darkPalette = ExamesPalette(
         title = Color(0xFFC9DCFF), secondaryText = Color(0xFFB4C4DA),
         decorativeBorder = Color(0xFF2C3E5B), controlBorder = Color(0xFF8499B6),
         infoContainer = Color(0xFF1B3A6B), onInfoContainer = Color(0xFFD6E6FF),
         reviewContainer = Color(0xFF4A3A00), onReviewContainer = Color(0xFFFFE08A),
+        reviewBorder = Color(0xFF7A6218),
         alertContainer = Color(0xFF5C1A17), onAlertContainer = Color(0xFFFFD9D5),
+        alertBorder = Color(0xFF8C3B37),
+        heroContainer = Color(0xFF1B3A6B), onHeroContainer = Color(0xFFE6EEF9),
+        onHeroSubtext = Color(0xFFC9DCFF),
+        heroActionContainer = Color(0xFF8DB8FF), onHeroActionContainer = Color(0xFF06214A),
     )
 }

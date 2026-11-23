@@ -32,6 +32,9 @@ class ThemeContrastTest {
             text("$mode info chip", p.onInfoContainer, p.infoContainer)
             text("$mode review chip", p.onReviewContainer, p.reviewContainer)
             text("$mode alert chip", p.onAlertContainer, p.alertContainer)
+            text("$mode hero title", p.onHeroContainer, p.heroContainer)
+            text("$mode hero subtext", p.onHeroSubtext, p.heroContainer)
+            text("$mode hero action", p.onHeroActionContainer, p.heroActionContainer)
         }
     }
     @Test fun controlBordersAndFocusableFillsMeetThree() {

@@ -88,3 +88,19 @@ raiz do app usando `surface` em vez de `background`, que deixava telas sem fundo
 ## Prévia do compartilhamento
 
 A captura de 21/11/2026 mostra a prévia com tema escuro no S25 e a fixture sintética de seis páginas. A rolagem mantém todo o resumo consultável antes da seleção de um aplicativo. [Captura da prévia](prototype-screens/compartilhar-s25-escuro.png)
+
+## Unificação com o projeto Stitch `Meu Exame — MVP` (22/11/2026)
+
+A aplicação foi consolidada em uma única base (`app/src/main`, removendo a variante `-PlegacyWorkbench` e os módulos legados da bancada) alinhada às seis telas do projeto Stitch **`Meu Exame — MVP`** (`projectId`: `2627731492696541504`, Design System `assets/16423656734733007448`, [`.stitch/DESIGN.md`](../.stitch/DESIGN.md)):
+
+| Tela Stitch | Rota opaca | Papel |
+| --- | --- | --- |
+| `1. Início` | `home` | Cabeçalho da marca, atalho de ajuda (`?`), cartão hero `Selecionar PDF`, guia em 3 etapas, lista recente **Meus exames** e barra inferior (`Início`, `Exames`, `Ajuda`). |
+| `Aba Exames` | `exams` | Histórico completo cifrado de múltiplos exames com abertura, exclusão individual e limpeza total. |
+| `2. Enviar exame` | `send` | Ação `Selecionar PDF digital`, acesso ao histórico local, dicas para leitura fiel e transparência de privacidade offline cifrada. |
+| `5. Processando laudo` | `processing/{examId}` | Selo **Offline no aparelho**, progresso percentual/página/bloco, lista dinâmica de andamento por página e **Cancelar leitura**. |
+| `3. Resultado` | `results/{examId}` | Banner de conferência, filtros acessíveis (`Todos`, `Revisar`, `Na referência`, e `Sem faixa` quando presente), classificação determinística conservadora em `:domain`, cartões documentais e atalho `Ver no laudo`. |
+| `6. Ver no laudo` | `evidence/{examId}` | Visualização dedicada com `Página X de Y`, texto bruto da referência preservado, alternância `Recorte` / `Página inteira` e filtros de destaque `Resultado` / `Referência`. |
+| `4. Ajuda e revisão` | `help` / `help/review` | Legenda das marcações, privacidade/Keystore e aviso destacado de limite não diagnóstico. |
+
+As telas estateless residem em `:core-ui` (`br.com.exames.coreui.screens`) sem dependência de `:domain`, permitindo que `:ui-checks` execute `enableAccessibilityChecks()`, checagem de alvos ≥ 48 dp e contraste claro/escuro em escala de fonte 100% e 200% para todas as oito visões sem empacotar o modelo de 2 GB.

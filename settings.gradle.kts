@@ -13,17 +13,10 @@ dependencyResolutionManagement {
             forRepository { maven { url = uri("build/pdfium-repository") } }
             filter { includeGroup("br.com.exames.thirdparty") }
         }
-        exclusiveContent {
-            forRepository { maven { url = uri("https://jitpack.io") } }
-            filter { includeGroup("cz.adaptech.tesseract4android") }
-        }
         google(); mavenCentral()
     }
 }
 rootProject.name = "ExamesOffline"
-include(":domain", ":data-documents", ":data-local", ":feature-import", ":feature-results", ":feature-history", ":inference-local", ":core-ui", ":ui-checks", ":app")
+include(":domain", ":core-ui", ":data-private-pdf", ":pdf-local", ":inference-local", ":app", ":ui-checks")
 // Isolated technical gate; no dependency from the application.
 include(":pdf-spike")
-include(":pdf-local")
-include(":validation-fixtures")
-include(":data-private-pdf")

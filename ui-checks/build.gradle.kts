@@ -26,11 +26,7 @@ kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarg
 
 dependencies {
     coreLibraryDesugaring(libs.desugar.jdk)
-    androidTestImplementation(project(":domain"))
     androidTestImplementation(project(":core-ui"))
-    androidTestImplementation(project(":feature-import"))
-    androidTestImplementation(project(":feature-results"))
-    androidTestImplementation(project(":feature-history"))
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.compose.ui)
     androidTestImplementation(libs.compose.material3)
@@ -41,5 +37,4 @@ dependencies {
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.hilt.android)
 }

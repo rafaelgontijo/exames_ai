@@ -17,7 +17,7 @@ import javax.crypto.spec.GCMParameterSpec
 /** Blocking IO: call from Dispatchers.IO. No plaintext clinical files are persisted. */
 class ArtifactKeyUnavailableException : IOException("ARTIFACT_KEY_UNAVAILABLE")
 
-class EncryptedArtifactStore(context: Context, private val keyAlias: String = KEY_ALIAS) {
+class EncryptedArtifactStore @JvmOverloads constructor(context: Context, private val keyAlias: String = KEY_ALIAS) {
     private val root = File(context.noBackupFilesDir, "artifacts")
     private val guards = ArtifactDocumentLocks(context)
     private fun key(allowCreate: Boolean): SecretKey = guards.keyAccess {
@@ -44,6 +44,24 @@ class EncryptedArtifactStore(context: Context, private val keyAlias: String = KE
         val dir = directory(documentId).apply { check(isDirectory || mkdirs()) }
         val target = File(dir, "$artifactId.enc")
         check(!target.exists()) { "Artefato já existe" }
+        writeEncryptedFile(dir, target, input, artifactId)
+    }
+
+    /** Atomic authenticated overwrite restricted strictly to the encrypted history index. */
+    fun overwriteHistoryIndex(input: InputStream): File = guards.access(HISTORY_INDEX_DOC) {
+        val dir = directory(HISTORY_INDEX_DOC).apply { check(isDirectory || mkdirs()) }
+        val target = File(dir, "$HISTORY_INDEX_ARTIFACT.enc")
+        writeEncryptedFile(dir, target, input, HISTORY_INDEX_ARTIFACT).also {
+            ArtifactDocumentLocks.sync(dir)
+        }
+    }
+
+    fun exists(documentId: String, artifactId: String): Boolean = guards.access(documentId) {
+        require(Regex("[a-zA-Z0-9_-]{1,80}").matches(artifactId))
+        File(directory(documentId), "$artifactId.enc").isFile
+    }
+
+    private fun writeEncryptedFile(dir: File, target: File, input: InputStream, artifactId: String): File {
         val encryptionKey = key(allowCreate = true)
         val pending = if (exportArtifact.matches(target.name)) {
             File(dir, "$artifactId.pending.enc").apply { check(createNewFile()) }
@@ -55,7 +73,7 @@ class EncryptedArtifactStore(context: Context, private val keyAlias: String = KE
                 CipherOutputStream(output, cipher).use { encrypted -> copyBounded(input, encrypted) }
             }
             check(pending.renameTo(target))
-            target
+            return target
         } finally { pending.delete() }
     }
     /** Consume plaintext only in memory; do not render to unencrypted persistent temp files. */
@@ -108,6 +126,11 @@ class EncryptedArtifactStore(context: Context, private val keyAlias: String = KE
             output.write(buffer, 0, read)
         }
     }
-    companion object { private const val KEY_ALIAS = "exames-artifacts-v1"; private const val VERSION = 1
-        private val MAX_BYTES = br.com.exames.datadocuments.DocumentLimits.MAX_BYTES.toLong() }
+    companion object {
+        private const val KEY_ALIAS = "exames-artifacts-v1"
+        private const val VERSION = 1
+        const val HISTORY_INDEX_DOC = "_history_index"
+        const val HISTORY_INDEX_ARTIFACT = "index-v1"
+        private val MAX_BYTES = br.com.exames.datadocuments.DocumentLimits.MAX_BYTES.toLong()
+    }
 }
