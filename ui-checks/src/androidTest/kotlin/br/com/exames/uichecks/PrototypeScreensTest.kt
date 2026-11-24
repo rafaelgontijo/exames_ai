@@ -112,7 +112,21 @@ class PrototypeScreensTest {
                 onBack = {},
             )
         },
-        "ajuda" to { HelpScreen(onBack = null, onOpenExams = {}) },
+        "ajuda" to {
+            HelpScreen(
+                onBack = null,
+                onOpenExams = {},
+                hybridSettings = HybridSettingsUi(
+                    activeModeLabel = "IA local no aparelho",
+                    localModelStatus = LocalModelStatusUi.NOT_DOWNLOADED,
+                    downloadStatusMessage = "Modelo local ainda não baixado (2,58 GB).",
+                    canDownloadLocal = true,
+                    canRemoveLocal = false,
+                    cloudFallbackOptIn = false,
+                    downloadOnWifiOnly = true,
+                ),
+            )
+        },
     )
 
     private data class Variant(val name: String, val dark: Boolean, val fontScale: Float)

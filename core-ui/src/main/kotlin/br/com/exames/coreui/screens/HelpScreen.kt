@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -22,6 +23,12 @@ fun HelpScreen(
     onOpenExams: () -> Unit,
     primaryActionLabel: String = "Abrir lista de exames",
     modifier: Modifier = Modifier,
+    hybridSettings: HybridSettingsUi? = null,
+    onToggleCloudFallback: (Boolean) -> Unit = {},
+    onToggleWifiOnly: (Boolean) -> Unit = {},
+    onStartDownload: () -> Unit = {},
+    onCancelDownload: () -> Unit = {},
+    onDeleteLocalModel: () -> Unit = {},
 ) {
     val p = ExamesTheme.palette
     Column(
@@ -83,6 +90,18 @@ fun HelpScreen(
                 )
             }
 
+            // Hybrid Local-First & On-Demand Weights Management Card
+            if (hybridSettings != null) {
+                HybridAiSettingsCard(
+                    settings = hybridSettings,
+                    onToggleCloudFallback = onToggleCloudFallback,
+                    onToggleWifiOnly = onToggleWifiOnly,
+                    onStartDownload = onStartDownload,
+                    onCancelDownload = onCancelDownload,
+                    onDeleteLocalModel = onDeleteLocalModel,
+                )
+            }
+
             // Privacy & Storage Card
             ExamesCard {
                 Row(
@@ -91,14 +110,19 @@ fun HelpScreen(
                 ) {
                     Icon(ExamesIcons.ShieldLock, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(22.dp))
                     Text(
-                        "Privacidade e armazenamento local",
+                        "Privacidade e arquitetura Local-First",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = p.title,
                     )
                 }
                 Text(
-                    "Os PDFs importados e os resultados extraídos ficam criptografados apenas neste aparelho com chaves protegidas pelo Android Keystore. O aplicativo funciona 100% offline, sem internet e sem backup automático.",
+                    "O Meu Exame prioriza o processamento local no aparelho com Gemma 4 E2B sempre que o hardware (≥ 6 GB de RAM e GPU 64-bit) e os pesos verificados por SHA-256 estiverem disponíveis. Os PDFs e resultados ficam criptografados apenas no aparelho via Android Keystore, sem backup automático.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = p.secondaryText,
+                )
+                Text(
+                    "Quando o modelo local não estiver disponível, você pode optar explicitamente pelo fallback privado na nuvem: PDFs digitais recebem tarja local de PII em memória antes do envio criptografado (TLS) e o backend não grava dados nem usa exames para treinamento.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = p.secondaryText,
                 )
@@ -111,11 +135,120 @@ fun HelpScreen(
             )
 
             Text(
-                "Processamento 100% offline no aparelho. Esta leitura apoia a conferência do documento e não substitui a consulta com um profissional de saúde.",
+                "Processamento Local-First no aparelho com fallback privado opcional (sem retenção). Esta leitura apoia a conferência do documento e não substitui a consulta com um profissional de saúde.",
                 style = MaterialTheme.typography.bodySmall,
                 color = p.secondaryText,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun HybridAiSettingsCard(
+    settings: HybridSettingsUi,
+    onToggleCloudFallback: (Boolean) -> Unit,
+    onToggleWifiOnly: (Boolean) -> Unit,
+    onStartDownload: () -> Unit,
+    onCancelDownload: () -> Unit,
+    onDeleteLocalModel: () -> Unit,
+) {
+    val p = ExamesTheme.palette
+    ExamesCard {
+        Text(
+            "Modo de IA e pesos locais",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = p.title,
+            modifier = Modifier.semantics { heading() },
+        )
+        StatusChip(
+            label = settings.activeModeLabel,
+            kind = if (settings.isCloudActive) ChipKind.REVIEW else ChipKind.INFO,
+        )
+        settings.downloadStatusMessage?.let { msg ->
+            Text(msg, style = MaterialTheme.typography.bodyMedium, color = p.secondaryText)
+        }
+        if (settings.localModelStatus == LocalModelStatusUi.DOWNLOADING) {
+            val fraction = settings.downloadFraction
+            if (fraction != null) {
+                LinearProgressIndicator(
+                    progress = { fraction },
+                    modifier = Modifier.fillMaxWidth().height(8.dp),
+                )
+            } else {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth().height(8.dp))
+            }
+            SecondaryAction(text = "Cancelar download dos pesos", onClick = onCancelDownload)
+        } else if (settings.canDownloadLocal && settings.localModelStatus != LocalModelStatusUi.READY) {
+            SecondaryAction(text = "Baixar modelo local (2,58 GB)", onClick = onStartDownload)
+        }
+        if (settings.canRemoveLocal) {
+            ExamesTextButton(onClick = onDeleteLocalModel) {
+                Text("Remover pesos locais para liberar espaço")
+            }
+        }
+
+        HorizontalDivider(color = p.decorativeBorder)
+
+        Row(
+            modifier = Modifier.fillMaxWidth().heightIn(min = MinTouchTarget),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Column(Modifier.weight(1f).padding(end = 12.dp)) {
+                Text(
+                    "Baixar pesos somente no Wi-Fi",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    "Evita consumo de dados móveis ao baixar o modelo local.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = p.secondaryText,
+                )
+            }
+            Switch(
+                checked = settings.downloadOnWifiOnly,
+                onCheckedChange = onToggleWifiOnly,
+                modifier = Modifier
+                    .widthIn(min = MinTouchTarget)
+                    .heightIn(min = MinTouchTarget)
+                    .semantics { contentDescription = "Baixar pesos somente no Wi-Fi" },
+            )
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth().heightIn(min = MinTouchTarget),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Column(Modifier.weight(1f).padding(end = 12.dp)) {
+                Text(
+                    "Permitir fallback privado na nuvem",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    if (settings.cloudFallbackOptIn) {
+                        "Ativo por consentimento. Desative para manter o app estritamente offline."
+                    } else {
+                        "Desativado. O app solicitará consentimento antes de qualquer envio."
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = p.secondaryText,
+                )
+            }
+            Switch(
+                checked = settings.cloudFallbackOptIn,
+                onCheckedChange = onToggleCloudFallback,
+                modifier = Modifier
+                    .widthIn(min = MinTouchTarget)
+                    .heightIn(min = MinTouchTarget)
+                    .semantics { contentDescription = "Permitir fallback privado na nuvem" },
             )
         }
     }

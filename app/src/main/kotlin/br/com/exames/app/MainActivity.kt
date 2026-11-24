@@ -55,6 +55,13 @@ class MainActivity : ComponentActivity() {
                     onDeleteAllExams = exam::deleteAllExams,
                     onConsumeNavEvent = exam::consumeNavEvent,
                     onPreviewPage = exam::preview,
+                    onAuthorizeCloudFallback = exam::authorizeCloudFallbackAndContinue,
+                    onDeclineCloudFallback = exam::declineCloudFallback,
+                    onToggleCloudFallback = exam::setCloudFallbackOptIn,
+                    onToggleWifiOnly = exam::setDownloadOnWifiOnly,
+                    onStartModelDownload = exam::startLocalModelDownload,
+                    onCancelModelDownload = exam::cancelLocalModelDownload,
+                    onDeleteLocalModel = exam::deleteLocalModelWeights,
                 )
             }
         }
@@ -75,6 +82,13 @@ internal fun ExamesAppShell(
     onDeleteAllExams: () -> Unit,
     onConsumeNavEvent: () -> Unit,
     onPreviewPage: suspend (String, Int) -> android.graphics.Bitmap,
+    onAuthorizeCloudFallback: () -> Unit = {},
+    onDeclineCloudFallback: () -> Unit = {},
+    onToggleCloudFallback: (Boolean) -> Unit = {},
+    onToggleWifiOnly: (Boolean) -> Unit = {},
+    onStartModelDownload: () -> Unit = {},
+    onCancelModelDownload: () -> Unit = {},
+    onDeleteLocalModel: () -> Unit = {},
 ) {
     val navController = rememberNavController()
     val backStack by navController.currentBackStackEntryAsState()
@@ -163,6 +177,7 @@ internal fun ExamesAppShell(
                         clinicalContext = state.sessionContext,
                         onUpdateContext = onUpdateContext,
                         onClearContext = onClearContext,
+                        executionModeLabel = state.hybridSettings.activeModeLabel,
                     )
                 }
 
@@ -186,6 +201,12 @@ internal fun ExamesAppShell(
                                 launchSingleTop = true
                             }
                         },
+                        hybridSettings = state.hybridSettings,
+                        onToggleCloudFallback = onToggleCloudFallback,
+                        onToggleWifiOnly = onToggleWifiOnly,
+                        onStartDownload = onStartModelDownload,
+                        onCancelDownload = onCancelModelDownload,
+                        onDeleteLocalModel = onDeleteLocalModel,
                     )
                 }
 
@@ -194,6 +215,12 @@ internal fun ExamesAppShell(
                         onBack = { navController.popBackStack() },
                         onOpenExams = { navController.popBackStack() },
                         primaryActionLabel = "Voltar aos resultados",
+                        hybridSettings = state.hybridSettings,
+                        onToggleCloudFallback = onToggleCloudFallback,
+                        onToggleWifiOnly = onToggleWifiOnly,
+                        onStartDownload = onStartModelDownload,
+                        onCancelDownload = onCancelModelDownload,
+                        onDeleteLocalModel = onDeleteLocalModel,
                     )
                 }
 
@@ -283,5 +310,14 @@ internal fun ExamesAppShell(
                 }
             }
         }
+    }
+
+    state.pendingCloudConsent?.let { prompt ->
+        CloudConsentDialog(
+            prompt = prompt,
+            onAuthorize = onAuthorizeCloudFallback,
+            onDeclineOffline = onDeclineCloudFallback,
+            onDownloadLocal = if (prompt.canDownloadLocal) onStartModelDownload else null,
+        )
     }
 }

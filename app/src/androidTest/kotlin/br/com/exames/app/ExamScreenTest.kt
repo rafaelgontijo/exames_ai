@@ -8,12 +8,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasScrollToNodeAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.unit.Density
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import br.com.exames.coreui.ChipKind
@@ -147,8 +150,10 @@ class ExamScreenTest {
         }
 
         compose.onNodeWithText("1 item pede conferência").assertIsDisplayed()
+        compose.onNode(hasScrollToNodeAction()).performScrollToNode(hasText("Revisar (1)"))
         compose.onNodeWithText("Revisar (1)").performClick()
         compose.waitForIdle()
+        compose.onNode(hasScrollToNodeAction()).performScrollToNode(hasText("Item A"))
         assertEquals(1, compose.onAllNodesWithText("Item A").fetchSemanticsNodes().size)
         assertEquals(0, compose.onAllNodesWithText("Item B").fetchSemanticsNodes().size)
     }

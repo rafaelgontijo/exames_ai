@@ -17,8 +17,13 @@ espresso = "3.7.0"
 runner = "1.6.2"
 litertlm = "0.18.1"
 pdfium = "2.0.1"
+okhttp = "4.12.0"
+work = "2.10.0"
 
 [libraries]
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+okhttp-mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "okhttp" }
+androidx-work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
 pdfium-android = { module = "io.legere:pdfiumandroid", version.ref = "pdfium" }
 pdfium-android-core = { module = "io.legere:pdfiumandroid-core", version.ref = "pdfium" }
 litertlm-android = { module = "com.google.ai.edge.litertlm:litertlm-android", version.ref = "litertlm" }

@@ -13,7 +13,20 @@ import br.com.exames.datalocal.ExamInputIssue
 import br.com.exames.domain.extraction.AssessedExam
 import br.com.exames.domain.extraction.ExamExtraction
 import br.com.exames.domain.extraction.ExamSummaryProjection
+import br.com.exames.domain.inference.CloudFallbackPolicy
+import br.com.exames.domain.inference.InferenceExecutionTarget
+import br.com.exames.domain.inference.InferenceRoutingDecisionEngine
+import br.com.exames.domain.inference.LocalWeightsState
+import br.com.exames.domain.inference.RoutingDecision
+import br.com.exames.domain.inference.RoutingReason
+import br.com.exames.inferencecloud.CloudAuthTokenProvider
+import br.com.exames.inferencecloud.CloudFallbackConfig
+import br.com.exames.inferencecloud.CloudFallbackInference
+import br.com.exames.inferencelocal.AndroidDeviceCapabilityProbe
+import br.com.exames.inferencelocal.LocalModelStore
 import br.com.exames.inferencelocal.LocalTextInference
+import br.com.exames.inferencelocal.ModelDownloadPhase
+import br.com.exames.inferencelocal.ModelDownloadProgress
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -45,6 +58,8 @@ internal data class ExamAppState(
     val processing: ProcessingUiState? = null,
     val openedExam: OpenedExamState? = null,
     val sessionContext: ClinicalContextUi = ClinicalContextUi(),
+    val hybridSettings: HybridSettingsUi = HybridSettingsUi(),
+    val pendingCloudConsent: CloudConsentPromptUi? = null,
     val selectedEvidenceId: String? = null,
     val notice: String? = null,
     val navEvent: AppNavEvent? = null,
@@ -72,14 +87,39 @@ internal data class ExamAppState(
 
 internal class ExamViewModel(application: Application) : AndroidViewModel(application) {
     private val store = EncryptedExamHistoryStore(application)
-    private val runner = ExamRunner(store, LocalTextInference(application))
+    private val localInference = LocalTextInference(application)
+    private val authTokenProvider = CloudAuthTokenProvider(
+        staticBearerToken = BuildConfig.CLOUD_AUTH_TOKEN,
+        cognitoRegion = BuildConfig.COGNITO_REGION,
+        cognitoClientId = BuildConfig.COGNITO_CLIENT_ID,
+        cognitoRefreshToken = BuildConfig.COGNITO_REFRESH_TOKEN,
+    )
+    private val cloudConfig = CloudFallbackConfig(
+        endpointUrl = BuildConfig.CLOUD_FALLBACK_URL,
+        authTokenProvider = authTokenProvider::getToken,
+    )
+    private val cloudInference = CloudFallbackInference(cloudConfig)
+    private val capabilityProbe = AndroidDeviceCapabilityProbe(application)
+    private val modelStore = LocalModelStore(application)
+    private val preferences: HybridPreferences = AppPreferencesStore(application)
+
     private val mutableState = MutableStateFlow(ExamAppState())
     val state = mutableState.asStateFlow()
     private var work: Job? = null
+    private var latestDownloadProgress = ModelDownloadProgress()
+    // Kept strictly in RAM until the user accepts or declines cloud opt-in; never persisted.
+    private var pendingConsentUri: Uri? = null
 
     init {
         viewModelScope.launch {
             refreshHistory(initialLoad = true)
+            refreshHybridSettings()
+        }
+        viewModelScope.launch {
+            modelStore.observeDownloadProgress().collect { progress ->
+                latestDownloadProgress = progress
+                refreshHybridSettings()
+            }
         }
     }
 
@@ -93,10 +133,106 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
 
     fun selectPdf(uri: Uri?) {
         if (uri == null || work?.isActive == true) return
+        val decision = evaluateRoutingDecision()
+        when (decision.target) {
+            InferenceExecutionTarget.LOCAL -> startExtraction(uri, decision)
+            InferenceExecutionTarget.CLOUD_FALLBACK -> startExtraction(uri, decision)
+            InferenceExecutionTarget.BLOCKED_CONSENT_REQUIRED -> {
+                pendingConsentUri = uri
+                mutableState.update {
+                    it.copy(
+                        pendingCloudConsent = CloudConsentPromptUi(
+                            reasonSummary = routingReasonSummary(decision.reason),
+                            canDownloadLocal = decision.canDownloadLocal && BuildConfig.MODEL_DOWNLOAD_URL.isNotBlank(),
+                        ),
+                    )
+                }
+            }
+            InferenceExecutionTarget.BLOCKED_OFFLINE -> {
+                // Keep validation/technical behavior where LocalTextInference runs directly if weights are bundled/mocked
+                // or report clear operational reason without making network calls.
+                if (decision.reason == RoutingReason.CLOUD_ENDPOINT_UNCONFIGURED && modelStore.hasBundledAsset()) {
+                    startExtraction(uri, decision.copy(target = InferenceExecutionTarget.LOCAL))
+                } else {
+                    mutableState.update { it.copy(notice = blockedOfflineNotice(decision.reason)) }
+                }
+            }
+        }
+    }
+
+    fun authorizeCloudFallbackAndContinue() {
+        val pending = pendingConsentUri
+        pendingConsentUri = null
+        preferences.cloudFallbackOptIn = true
+        mutableState.update { it.copy(pendingCloudConsent = null) }
+        refreshHybridSettings()
+        if (pending != null) {
+            selectPdf(pending)
+        }
+    }
+
+    fun declineCloudFallback() {
+        pendingConsentUri = null
+        preferences.cloudFallbackOptIn = false
+        refreshHybridSettings()
+        mutableState.update {
+            it.copy(
+                pendingCloudConsent = null,
+                notice = "Modo offline mantido. Nenhum dado do exame foi enviado pela internet.",
+            )
+        }
+    }
+
+    fun setCloudFallbackOptIn(enabled: Boolean) {
+        preferences.cloudFallbackOptIn = enabled
+        refreshHybridSettings()
+    }
+
+    fun setDownloadOnWifiOnly(wifiOnly: Boolean) {
+        preferences.downloadOnWifiOnly = wifiOnly
+        refreshHybridSettings()
+    }
+
+    fun startLocalModelDownload() {
+        val url = BuildConfig.MODEL_DOWNLOAD_URL
+        if (url.isBlank()) {
+            mutableState.update { it.copy(notice = "URL de download do modelo local não configurada nesta compilação.") }
+            return
+        }
+        pendingConsentUri = null
+        mutableState.update { it.copy(pendingCloudConsent = null) }
+        modelStore.enqueueDownload(url, preferences.downloadOnWifiOnly)
+        refreshHybridSettings()
+    }
+
+    fun cancelLocalModelDownload() {
+        modelStore.cancelDownload()
+        refreshHybridSettings()
+    }
+
+    fun deleteLocalModelWeights() {
+        viewModelScope.launch {
+            modelStore.deleteLocalWeights()
+            refreshHybridSettings()
+            mutableState.update { it.copy(notice = "Pesos locais removidos do aparelho.") }
+        }
+    }
+
+    private fun startExtraction(uri: Uri, decision: RoutingDecision) {
+        val useCloud = decision.target == InferenceExecutionTarget.CLOUD_FALLBACK
+        val execMode = if (useCloud) ExecutionModeUi.CLOUD_PRIVATE_FALLBACK else ExecutionModeUi.LOCAL_OFFLINE
+        val routedInference = HybridTextInference(decision, localInference, cloudInference)
+        val runner = ExamRunner(store, routedInference)
+
         mutableState.update {
             it.copy(
                 notice = null,
-                processing = ProcessingUiState(message = "Abrindo o PDF", cancellable = true),
+                pendingCloudConsent = null,
+                processing = ProcessingUiState(
+                    message = "Abrindo o PDF",
+                    cancellable = true,
+                    executionMode = execMode,
+                ),
             )
         }
         work = viewModelScope.launch {
@@ -107,13 +243,18 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
                 mutableState.update {
                     it.copy(
                         activeExamId = id,
-                        processing = ProcessingUiState(message = "Analisando laudo em PDF", cancellable = true),
+                        processing = ProcessingUiState(
+                            message = "Analisando laudo em PDF",
+                            cancellable = true,
+                            executionMode = execMode,
+                        ),
                         navEvent = AppNavEvent.OpenProcessing(id),
                     )
                 }
                 val finishedPages = linkedMapOf<Int, PageProgressUi>()
                 val extraction = runner.extract(
                     id = id,
+                    redactPiiForCloud = useCloud,
                     onProgress = { page, totalPages, block, blocks ->
                         mutableState.update { current ->
                             if (current.processing?.cancellable != true) return@update current
@@ -125,13 +266,14 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
                             }
                             current.copy(
                                 processing = ProcessingUiState(
-                                    message = "Extraindo com IA",
+                                    message = if (useCloud) "Extraindo via nuvem privada" else "Extraindo com IA",
                                     page = page,
                                     totalPages = totalPages,
                                     block = block,
                                     totalBlocks = blocks,
                                     pages = pageList,
                                     cancellable = true,
+                                    executionMode = execMode,
                                 ),
                             )
                         }
@@ -187,6 +329,101 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
                 }
             }
         }
+    }
+
+    private fun evaluateRoutingDecision(): RoutingDecision {
+        val device = capabilityProbe.snapshot()
+        val isDownloading = latestDownloadProgress.phase == ModelDownloadPhase.DOWNLOADING ||
+            latestDownloadProgress.phase == ModelDownloadPhase.QUEUED ||
+            latestDownloadProgress.phase == ModelDownloadPhase.VERIFYING
+        val weights = modelStore.inspectState(isDownloading = isDownloading)
+        val policy = CloudFallbackPolicy(
+            cloudFallbackOptIn = preferences.cloudFallbackOptIn,
+            cloudEndpointConfigured = cloudConfig.isConfigured,
+            networkAvailable = capabilityProbe.isNetworkAvailable(),
+        )
+        return InferenceRoutingDecisionEngine.decide(device, weights, policy)
+    }
+
+    private fun refreshHybridSettings() {
+        val decision = evaluateRoutingDecision()
+        val progress = latestDownloadProgress
+        val isDownloading = progress.phase == ModelDownloadPhase.DOWNLOADING ||
+            progress.phase == ModelDownloadPhase.QUEUED ||
+            progress.phase == ModelDownloadPhase.VERIFYING
+        val weightsState = modelStore.inspectState(isDownloading = isDownloading)
+        val uiStatus = when {
+            !decision.hardwareEligibleForLocal && !decision.canDownloadLocal -> LocalModelStatusUi.INELIGIBLE_HARDWARE
+            isDownloading -> LocalModelStatusUi.DOWNLOADING
+            weightsState == LocalWeightsState.READY -> LocalModelStatusUi.READY
+            weightsState == LocalWeightsState.INSUFFICIENT_SPACE || progress.phase == ModelDownloadPhase.FAILED_SPACE ->
+                LocalModelStatusUi.INSUFFICIENT_SPACE
+            weightsState == LocalWeightsState.CORRUPT ||
+                progress.phase == ModelDownloadPhase.FAILED_INTEGRITY ||
+                progress.phase == ModelDownloadPhase.FAILED_NETWORK -> LocalModelStatusUi.ERROR
+            else -> LocalModelStatusUi.NOT_DOWNLOADED
+        }
+        val activeLabel = when (decision.target) {
+            InferenceExecutionTarget.LOCAL -> "IA local no aparelho (offline)"
+            InferenceExecutionTarget.CLOUD_FALLBACK -> "Fallback privado na nuvem (opt-in)"
+            InferenceExecutionTarget.BLOCKED_CONSENT_REQUIRED -> "Modo offline · requer consentimento para nuvem"
+            InferenceExecutionTarget.BLOCKED_OFFLINE -> "Modo estritamente offline"
+        }
+        val statusMsg = when (uiStatus) {
+            LocalModelStatusUi.READY -> "Pesos locais do Gemma 4 E2B verificados por SHA-256 prontos neste aparelho."
+            LocalModelStatusUi.DOWNLOADING -> "Baixando pesos locais do Gemma 4 E2B em segundo plano..."
+            LocalModelStatusUi.INELIGIBLE_HARDWARE -> "Este aparelho não atende ao mínimo de hardware local (≥ 6 GB RAM e GPU 64-bit)."
+            LocalModelStatusUi.INSUFFICIENT_SPACE -> "Espaço livre insuficiente para os pesos locais (necessário ~2,65 GB)."
+            LocalModelStatusUi.ERROR -> "O download ou verificação de integridade dos pesos falhou. Tente novamente."
+            LocalModelStatusUi.NOT_DOWNLOADED -> "Pesos locais ainda não baixados (APK leve)."
+        }
+        mutableState.update {
+            it.copy(
+                hybridSettings = HybridSettingsUi(
+                    activeModeLabel = activeLabel,
+                    isCloudActive = decision.target == InferenceExecutionTarget.CLOUD_FALLBACK,
+                    localModelStatus = uiStatus,
+                    downloadFraction = progress.fraction,
+                    downloadStatusMessage = statusMsg,
+                    canDownloadLocal = decision.canDownloadLocal && BuildConfig.MODEL_DOWNLOAD_URL.isNotBlank(),
+                    canRemoveLocal = weightsState == LocalWeightsState.READY && !modelStore.hasBundledAsset(),
+                    cloudFallbackOptIn = preferences.cloudFallbackOptIn,
+                    downloadOnWifiOnly = preferences.downloadOnWifiOnly,
+                    cloudEndpointConfigured = cloudConfig.isConfigured,
+                ),
+            )
+        }
+    }
+
+    private fun routingReasonSummary(reason: RoutingReason): String = when (reason) {
+        RoutingReason.HARDWARE_NOT_64BIT,
+        RoutingReason.HARDWARE_NO_GPU,
+        RoutingReason.HARDWARE_RAM_BELOW_MINIMUM ->
+            "Este aparelho não atende aos requisitos mínimos de hardware para executar a IA localmente (≥ 6 GB de RAM e GPU 64-bit)."
+        RoutingReason.HARDWARE_AVAILABLE_RAM_LOW ->
+            "A memória RAM livre no momento está abaixo do mínimo seguro para executar a IA localmente."
+        RoutingReason.WEIGHTS_DOWNLOADING ->
+            "Os pesos locais da IA ainda estão sendo baixados em segundo plano."
+        RoutingReason.WEIGHTS_INSUFFICIENT_SPACE ->
+            "Não há espaço livre suficiente no aparelho para armazenar os pesos locais (~2,65 GB)."
+        RoutingReason.WEIGHTS_CORRUPT ->
+            "Os pesos locais falharam na verificação de integridade SHA-256."
+        else ->
+            "Os pesos locais da IA ainda não foram baixados neste aparelho."
+    }
+
+    private fun blockedOfflineNotice(reason: RoutingReason): String = when (reason) {
+        RoutingReason.CLOUD_NETWORK_UNAVAILABLE ->
+            "Sem conexão com a internet para o fallback privado na nuvem."
+        RoutingReason.WEIGHTS_INSUFFICIENT_SPACE ->
+            "Espaço livre insuficiente para preparar o modelo local."
+        RoutingReason.HARDWARE_RAM_BELOW_MINIMUM,
+        RoutingReason.HARDWARE_AVAILABLE_RAM_LOW,
+        RoutingReason.HARDWARE_NO_GPU,
+        RoutingReason.HARDWARE_NOT_64BIT ->
+            "Este aparelho não suporta inferência local e o fallback em nuvem não está disponível no momento."
+        else ->
+            "Modelo local ainda não baixado. Baixe os pesos locais em Ajuda ou habilite o fallback em nuvem."
     }
 
     fun cancelProcessing() {

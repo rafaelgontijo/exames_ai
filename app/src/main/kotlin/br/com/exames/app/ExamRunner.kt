@@ -5,6 +5,7 @@ import br.com.exames.datalocal.EncryptedExamHistoryStore
 import br.com.exames.domain.extraction.ExamExtraction
 import br.com.exames.domain.extraction.ExamPageOutcome
 import br.com.exames.domain.extraction.ExtractExam
+import br.com.exames.domain.extraction.PiiRegionDetector
 import br.com.exames.domain.extraction.VisionPageSource
 import br.com.exames.domain.inference.TextInference
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +20,7 @@ internal class ExamRunner(
     suspend fun extract(
         id: String,
         pages: IntRange? = null,
+        redactPiiForCloud: Boolean = false,
         onProgress: (page: Int, totalPages: Int, block: Int, totalBlocks: Int) -> Unit = { _, _, _, _ -> },
         onPageFinished: (ExamPageOutcome) -> Unit = {},
     ): ExamExtraction {
@@ -30,9 +32,11 @@ internal class ExamRunner(
                     pages = pages ?: (1..totalPages),
                     read = { page ->
                         pdf.readPage(page).use { snapshot ->
+                            val fragments = snapshot.positionedText()
+                            val redactions = if (redactPiiForCloud) PiiRegionDetector.detect(fragments) else emptyList()
                             VisionPageSource(
-                                bands = PdfPageBandSlicer.slice(page, snapshot.bitmap),
-                                fragments = snapshot.positionedText(),
+                                bands = PdfPageBandSlicer.slice(page, snapshot.bitmap, redactions),
+                                fragments = fragments,
                             )
                         }
                     },

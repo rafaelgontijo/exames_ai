@@ -8,15 +8,16 @@ App Android nativo para extrair resultados de PDFs digitais de exames com IA loc
 - Nunca inventar referências; preservar textos brutos e proveniência. Confirmação humana não elimina ambiguidade clínica.
 
 ## Código e privacidade
-- `:domain` é Kotlin/JVM puro, sem Android SDK.
-- Não importar Retrofit, Ktor, OkHttp, telemetria ou dependências de rede no MVP. Não adicionar permissão INTERNET.
+- `:domain` é Kotlin/JVM puro, sem Android SDK e sem bibliotecas de rede.
+- Arquitetura **Local-First + Fallback Privado na Nuvem (`opt-in`)**: priorizar inferência local com LiteRT-LM e Gemma 4 E2B no aparelho sempre que hardware (≥ 6 GB RAM total, ≥ 2,5 GB disponíveis, ABI 64-bit e GPU compatível) e pesos verificados permitirem.
+- A permissão `INTERNET` e o cliente HTTPS mínimo (OkHttp sem cache em disco, TLS 1.2+, `usesCleartextTraffic="false"`) são restritos exclusivamente ao download verificado dos pesos locais (tamanho + SHA-256 em `noBackupFilesDir`) e ao fallback privado na nuvem mediante consentimento explícito (`opt-in`). Proibido adicionar telemetria, analytics ou crash reports com dados clínicos.
 - Toda nova regra em `:domain` exige testes unitários de limites e fallback.
-- Proibido registrar conteúdo de exames, nomes, valores clínicos ou URIs em logs de produção, analytics ou crash reports.
-- Manter backups desabilitados; arquivos clínicos persistidos são privados e criptografados com chaves no Android Keystore.
-- DataStore armazena apenas preferências gerais sem PII. Não salvar conteúdo clínico no SavedStateHandle.
-- A distribuição padrão extrai resultados com LiteRT-LM e Gemma 4 E2B no aparelho. A bancada e seus modos de comparação ficam no build técnico opcional.
+- Proibido registrar conteúdo de exames, nomes, valores clínicos ou URIs em logs de produção (cliente ou backend), analytics ou crash reports.
+- Manter backups desabilitados (`allowBackup="false"`); arquivos clínicos persistidos são privados e criptografados com chaves no Android Keystore.
+- Preferências locais armazenam apenas preferências gerais sem PII (ex.: consentimento de fallback e restrição a Wi-Fi). Não salvar conteúdo clínico nem contexto clínico efêmero no `SavedStateHandle`, `rememberSaveable` ou disco.
+- A distribuição padrão gera APK leve com download sob demanda dos pesos `gemma-4-E2B-it.litertlm` fora do APK (build técnico opcional `-PbundleLocalModel=true` para ensaios offline com pesos embarcados). No fallback em nuvem, aplicar tarja visual local de PII em memória sobre imagens de PDFs digitais antes do envio ao proxy AWS *stateless* (Amazon Bedrock `google.gemma-4-e2b` em região fixa, sem persistência e com *Model Invocation Logging* desativado).
 - O modelo propõe campos sustentados por evidência do documento. Validar schema, trechos, posição e associação antes de exibir os resultados. Preservar as incertezas por campo e por página.
-- Usar Engine nova por solicitação até comprovar reset seguro. Validar somente o canal final; não persistir/exibir raciocínio interno. Pesos fixados por revisão/hash ficam fora do Git e são distribuídos para primeira execução offline.
+- No caminho local, usar Engine e processo `:inference` novos por solicitação até comprovar reset seguro. Validar somente o canal final; não persistir/exibir raciocínio interno. Pesos fixados por revisão/hash ficam fora do Git.
 - Ao integrar ou distribuir inferência, consultar `validation/models/selection.json` e `docs/LITERT_COMPATIBILITY.md` para a configuração selecionada e os limites comprovados.
 
 ## Design e criação de telas (Stitch)

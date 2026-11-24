@@ -33,10 +33,15 @@ fun ProcessingScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
+        val isCloud = state.executionMode == ExecutionModeUi.CLOUD_PRIVATE_FALLBACK
         ExamesTopBar(
             title = "Lendo seu exame",
             trailing = {
-                StatusChip(label = "Offline no aparelho", kind = ChipKind.INFO, modifier = Modifier.padding(end = 8.dp))
+                StatusChip(
+                    label = if (isCloud) "Nuvem privada" else "Offline no aparelho",
+                    kind = ChipKind.INFO,
+                    modifier = Modifier.padding(end = 8.dp),
+                )
             },
         )
 
@@ -92,7 +97,11 @@ fun ProcessingScreen(
                             )
                         }
                         Text(
-                            "A IA local lê cada tabela em ordem documental e vincula os trechos ao PDF original.",
+                            if (isCloud) {
+                                "Fallback privado na nuvem (sem retenção) lê cada faixa em ordem documental com tarja local de PII em PDFs digitais."
+                            } else {
+                                "A IA local lê cada tabela em ordem documental e vincula os trechos ao PDF original."
+                            },
                             style = MaterialTheme.typography.bodySmall,
                             color = p.onHeroSubtext,
                         )
@@ -148,7 +157,11 @@ fun ProcessingScreen(
                 ) {
                     Icon(ExamesIcons.ShieldLock, contentDescription = null, tint = p.onInfoContainer, modifier = Modifier.size(20.dp))
                     Text(
-                        "Seus dados permanecem privados e cifrados apenas neste aparelho. Ao cancelar, a cópia temporária é descartada.",
+                        if (isCloud) {
+                            "Envio criptografado (TLS) apenas das faixas do laudo, sem armazenamento nem treino na nuvem. Ao cancelar, a chamada é encerrada imediatamente."
+                        } else {
+                            "Seus dados permanecem privados e cifrados apenas neste aparelho. Ao cancelar, a cópia temporária é descartada."
+                        },
                         style = MaterialTheme.typography.bodyMedium,
                         color = p.onInfoContainer,
                     )
