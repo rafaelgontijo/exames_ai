@@ -37,6 +37,7 @@ fun HomeScreen(
     clinicalContext: ClinicalContextUi = ClinicalContextUi(),
     onUpdateContext: (ClinicalContextUi) -> Unit = {},
     onClearContext: () -> Unit = {},
+    executionModeLabel: String? = null,
 ) {
     val p = ExamesTheme.palette
     val fontScale = LocalDensity.current.fontScale
@@ -131,7 +132,7 @@ fun HomeScreen(
         // Primary Hero Card
         ExamesHeroCard(
             title = "Importar um exame",
-            subtitle = "PDF digital · 100% offline no aparelho",
+            subtitle = "PDF digital · ${executionModeLabel ?: "100% offline no aparelho"}",
             icon = ExamesIcons.Document,
             ctaText = "Selecionar PDF",
             onCtaClick = onSelectPdf,

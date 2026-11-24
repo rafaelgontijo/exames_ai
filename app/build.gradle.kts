@@ -6,6 +6,13 @@ plugins {
 
 val modelAssets = layout.projectDirectory.dir("build/generated/model-assets")
 val validationApplicationId = providers.gradleProperty("validationApplicationId")
+val bundleLocalModel = providers.gradleProperty("bundleLocalModel").map { it.equals("true", ignoreCase = true) }.orElse(false)
+val cloudFallbackUrl = providers.gradleProperty("examesCloudFallbackUrl").orElse("")
+val cloudAuthToken = providers.gradleProperty("examesCloudAuthToken").orElse("")
+val cognitoRegion = providers.gradleProperty("examesCognitoRegion").orElse("")
+val cognitoClientId = providers.gradleProperty("examesCognitoClientId").orElse("")
+val cognitoRefreshToken = providers.gradleProperty("examesCognitoRefreshToken").orElse("")
+val modelDownloadUrl = providers.gradleProperty("examesModelDownloadUrl").orElse("")
 if (validationApplicationId.isPresent) {
     layout.buildDirectory.set(layout.projectDirectory.dir("build/validation"))
 }
@@ -21,20 +28,32 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "0.1.0"
+        buildConfigField("String", "CLOUD_FALLBACK_URL", "\"${cloudFallbackUrl.get()}\"")
+        buildConfigField("String", "CLOUD_AUTH_TOKEN", "\"${cloudAuthToken.get()}\"")
+        buildConfigField("String", "COGNITO_REGION", "\"${cognitoRegion.get()}\"")
+        buildConfigField("String", "COGNITO_CLIENT_ID", "\"${cognitoClientId.get()}\"")
+        buildConfigField("String", "COGNITO_REFRESH_TOKEN", "\"${cognitoRefreshToken.get()}\"")
+        buildConfigField("String", "MODEL_DOWNLOAD_URL", "\"${modelDownloadUrl.get()}\"")
     }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    buildFeatures { compose = true }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
     androidResources { noCompress += listOf("litertlm") }
-    sourceSets.getByName("main").assets.srcDir(modelAssets)
+    if (bundleLocalModel.get()) {
+        sourceSets.getByName("main").assets.srcDir(modelAssets)
+    }
 }
 
 val bundledModelPath = providers.gradleProperty("examesModelPath")
     .orElse(rootProject.layout.projectDirectory.file("../.model-cache/gemma4-e2b-mm/gemma-4-E2B-it.litertlm").asFile.absolutePath)
 val stageBundledModel by tasks.registering(Exec::class) {
+    onlyIf { bundleLocalModel.get() }
     inputs.file(bundledModelPath)
     inputs.files(rootProject.file("tools/litert/stage_model.py"), rootProject.file("validation/models/selection.json"))
     inputs.dir(rootProject.file("validation/models/gemma4-e2b"))
@@ -48,7 +67,9 @@ val stageBundledModel by tasks.registering(Exec::class) {
         modelAssets.dir("models").asFile,
     )
 }
-tasks.named("preBuild").configure { dependsOn(stageBundledModel) }
+if (bundleLocalModel.get()) {
+    tasks.named("preBuild").configure { dependsOn(stageBundledModel) }
+}
 
 kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) } }
 
@@ -58,6 +79,7 @@ dependencies {
     implementation(project(":core-ui"))
     implementation(project(":data-private-pdf"))
     implementation(project(":inference-local"))
+    implementation(project(":inference-cloud"))
     implementation(libs.coroutines.android)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)

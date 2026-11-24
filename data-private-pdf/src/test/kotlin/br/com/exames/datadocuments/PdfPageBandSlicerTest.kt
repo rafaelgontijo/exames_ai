@@ -69,4 +69,55 @@ class PdfPageBandSlicerTest {
         )
         assertNull(stillTooLarge)
     }
+
+    @Test fun projectsRedactionRegionsIntoBandAndPaintsOpaqueBoxesWithoutTouchingOutsidePixels() {
+        val bounds = PdfPageBandSlicer.BandBounds(bandIndex = 0, top = 0, bottom = 420)
+        val piiOnPage1 = br.com.exames.domain.validation.SourceRegion(
+            page = 1,
+            left = 100.0,
+            top = 40.0,
+            right = 300.0,
+            bottom = 60.0,
+            pageWidth = 1000.0,
+            pageHeight = 1000.0,
+        )
+        val piiBelowBand = br.com.exames.domain.validation.SourceRegion(
+            page = 1,
+            left = 100.0,
+            top = 500.0,
+            right = 300.0,
+            bottom = 520.0,
+            pageWidth = 1000.0,
+            pageHeight = 1000.0,
+        )
+        val piiOtherPage = piiOnPage1.copy(page = 2)
+
+        val rects = PdfPageBandSlicer.projectRedactionsToBand(
+            regions = listOf(piiOnPage1, piiBelowBand, piiOtherPage),
+            page = 1,
+            bounds = bounds,
+            sourceWidth = 1000,
+            sourceHeight = 1000,
+            targetWidth = 500,
+            targetHeight = 210,
+            padPx = 2,
+        )
+        assertEquals(1, rects.size)
+        val r = rects.single()
+        assertEquals(48, r.left)
+        assertEquals(18, r.top)
+        assertEquals(152, r.right)
+        assertEquals(32, r.bottom)
+
+        val w = 200
+        val h = 100
+        val pixels = IntArray(w * h) { 0xFFFFFFFF.toInt() }
+        val fill = 0xFF1A1A1A.toInt()
+        PdfPageBandSlicer.applyRedactionsToPixels(pixels, w, h, rects, fill)
+        // Inside redaction box -> opaque fill
+        assertEquals(fill, pixels[25 * w + 100])
+        // Outside redaction box (clinical values region) -> untouched white
+        assertEquals(0xFFFFFFFF.toInt(), pixels[80 * w + 100])
+        assertEquals(0xFFFFFFFF.toInt(), pixels[10 * w + 10])
+    }
 }

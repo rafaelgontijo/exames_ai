@@ -1,0 +1,32 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyBedrockOutsideApprovedRegion",
+      "Effect": "Deny",
+      "Action": [
+        "bedrock:InvokeModel",
+        "bedrock:InvokeModelWithResponseStream",
+        "bedrock:Converse",
+        "bedrock:ConverseStream",
+        "bedrock-mantle:CreateInference"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestedRegion": [
+            "us-east-1"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyEnablingBedrockModelInvocationLogging",
+      "Effect": "Deny",
+      "Action": [
+        "bedrock:PutModelInvocationLoggingConfiguration"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

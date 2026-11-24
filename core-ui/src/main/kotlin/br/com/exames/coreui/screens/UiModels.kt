@@ -19,6 +19,35 @@ data class PageProgressUi(
     val verifiedCount: Int = 0,
 )
 
+enum class ExecutionModeUi { LOCAL_OFFLINE, CLOUD_PRIVATE_FALLBACK }
+
+enum class LocalModelStatusUi {
+    READY,
+    DOWNLOADING,
+    NOT_DOWNLOADED,
+    INELIGIBLE_HARDWARE,
+    INSUFFICIENT_SPACE,
+    ERROR,
+}
+
+data class HybridSettingsUi(
+    val activeModeLabel: String = "IA local no aparelho",
+    val isCloudActive: Boolean = false,
+    val localModelStatus: LocalModelStatusUi = LocalModelStatusUi.NOT_DOWNLOADED,
+    val downloadFraction: Float? = null,
+    val downloadStatusMessage: String? = null,
+    val canDownloadLocal: Boolean = true,
+    val canRemoveLocal: Boolean = false,
+    val cloudFallbackOptIn: Boolean = false,
+    val downloadOnWifiOnly: Boolean = true,
+    val cloudEndpointConfigured: Boolean = false,
+)
+
+data class CloudConsentPromptUi(
+    val reasonSummary: String,
+    val canDownloadLocal: Boolean,
+)
+
 data class ProcessingUiState(
     val message: String,
     val page: Int = 0,
@@ -27,6 +56,7 @@ data class ProcessingUiState(
     val totalBlocks: Int = 0,
     val pages: List<PageProgressUi> = emptyList(),
     val cancellable: Boolean = true,
+    val executionMode: ExecutionModeUi = ExecutionModeUi.LOCAL_OFFLINE,
 ) {
     val progressFraction: Float?
         get() {

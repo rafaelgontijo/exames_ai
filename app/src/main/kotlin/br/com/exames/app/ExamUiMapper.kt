@@ -203,8 +203,14 @@ internal object ExamUiMapper {
     }
 
     fun pageNotice(issues: Set<ExamIssue>, failures: Set<InferenceFailure>): String = when {
-        InferenceFailure.UNSUPPORTED_DEVICE in failures -> "O aparelho não oferece suporte ao modelo de IA."
-        InferenceFailure.MODEL_SPACE in failures -> "Espaço insuficiente para preparar o modelo de IA."
+        InferenceFailure.CLOUD_CONSENT_REQUIRED in failures -> "Autorize o fallback privado na nuvem ou aguarde os pesos locais."
+        InferenceFailure.NETWORK_UNAVAILABLE in failures -> "Sem conexão com a internet para o fallback privado na nuvem."
+        InferenceFailure.CLOUD_UNAUTHORIZED in failures -> "Não foi possível autenticar a chamada no fallback privado na nuvem."
+        InferenceFailure.CLOUD_RATE_LIMITED in failures -> "Limite temporário de requisições na nuvem atingido. Tente novamente em instantes."
+        InferenceFailure.CLOUD_UNAVAILABLE in failures -> "O fallback privado na nuvem está indisponível no momento."
+        InferenceFailure.UNSUPPORTED_DEVICE in failures -> "O aparelho não oferece suporte ao modelo local de IA."
+        InferenceFailure.MODEL_SPACE in failures -> "Espaço insuficiente para preparar o modelo local de IA."
+        InferenceFailure.MODEL_UNAVAILABLE in failures -> "Os pesos locais do modelo ainda não foram baixados."
         ExamIssue.PAGE_UNREADABLE in issues -> "Não foi possível ler esta página."
         ExamIssue.INSUFFICIENT_POSITIONED_TEXT in issues -> "Página sem texto digital — confira os valores extraídos visualmente no laudo."
         ExamIssue.INFERENCE_FAILED in issues || ExamIssue.INVALID_RESPONSE in issues -> "A IA não concluiu todos os trechos desta página."

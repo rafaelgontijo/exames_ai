@@ -168,3 +168,28 @@ pacote isolado `br.com.exames.offline.validation.extraction`) em
   (`VISUAL_EXTRACTION_WITHOUT_DIGITAL_TEXT`); faixas ultra-densas podem atingir truncamento de saída
   (sinalizado explicitamente na página); API 24, kernel 16 KiB, aparelhos de 4 GB e outras GPUs
   continuam fora da evidência executada.
+
+## Arquitetura Híbrida Local-First + Fallback Privado na Nuvem (`opt-in`) — 24/11/2026
+
+Para viabilizar APK leve na distribuição padrão e atender dispositivos abaixo do piso de hardware
+comprovado no S25 (~3,04 GiB de PSS), o aplicativo passou a operar em modelo **Local-First**:
+
+- **Critérios determinísticos de roteamento (`InferenceRoutingDecisionEngine` em `:domain`):**
+  - Inferência local prioritária com LiteRT-LM (`gemma-4-E2B-it.litertlm`, rev `2e12bfd869b2962984f97a1f2a26807316d534cc`,
+    SHA-256 `181938105e0eefd105961417e8da75903eacda102c4fce9ce90f50b97139a63c`) quando o aparelho
+    possui **≥ 6 GB de RAM total**, **≥ 2,5 GB de RAM disponíveis**, **ABI 64-bit**, **GPU compatível
+    (Vulkan ou OpenGL ES 3.1+)** e pesos verificados em `noBackupFilesDir/models/gemma4.litertlm`.
+  - **Entrega sob demanda fora do APK:** o build padrão gera APK leve (~86 MB, sem embutir os 2,58 GB)
+    e baixa os pesos sob demanda em background (`WorkManager` + OkHttp TLS sem cache em disco) com
+    verificação atômica de tamanho + SHA-256. O build técnico offline de bancada/S25 permanece
+    disponível via `-PbundleLocalModel=true`.
+- **Fallback privado na nuvem (`opt-in` explícito):**
+  - Quando hardware ou pesos locais impedem execução on-device, o app solicita consentimento explícito
+    antes de enviar qualquer faixa do laudo; na recusa, permanece estritamente offline.
+  - Em PDFs digitais, `PiiRegionDetector` + `PdfPageBandSlicer` aplicam tarjas opacas em memória sobre
+    regiões de PII (CPF, e-mail, telefone e cabeçalho de identificação do paciente) antes da codificação
+    PNG/JPEG ≤ 512 KiB e envio sobre TLS 1.2+ (`Cache-Control: no-store`) ao proxy AWS *stateless*
+    (`backend/lambda/` + `backend/infra/`), que invoca Amazon Bedrock `google.gemma-4-e2b` em região fixa
+    com `temperature = 0.0`, `maxTokens = 1536`, zero persistência e *Model Invocation Logging* desativado.
+  - Paridade integral de protocolo (`exam-vision/1` / `exam-vision-items/1`), ancoragem documental
+    (`VisionEvidenceGrounder`) e avaliador conservador (`ConservativeExamAssessor`).
