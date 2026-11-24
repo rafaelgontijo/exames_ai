@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.coroutines.android)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.okhttp)
+    implementation(libs.androidx.core)
     implementation(libs.androidx.work.runtime)
     testImplementation(libs.junit4)
     testImplementation(libs.mockk)

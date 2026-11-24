@@ -23,10 +23,13 @@ import br.com.exames.inferencecloud.CloudAuthTokenProvider
 import br.com.exames.inferencecloud.CloudFallbackConfig
 import br.com.exames.inferencecloud.CloudFallbackInference
 import br.com.exames.inferencelocal.AndroidDeviceCapabilityProbe
+import br.com.exames.inferencelocal.BackgroundNotifications
 import br.com.exames.inferencelocal.LocalModelStore
 import br.com.exames.inferencelocal.LocalTextInference
 import br.com.exames.inferencelocal.ModelDownloadPhase
 import br.com.exames.inferencelocal.ModelDownloadProgress
+import androidx.work.WorkInfo
+import java.util.UUID
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -41,6 +44,7 @@ import kotlinx.coroutines.withContext
 internal sealed interface AppNavEvent {
     data class OpenProcessing(val examId: String) : AppNavEvent
     data class OpenResults(val examId: String) : AppNavEvent
+    data object OpenHelp : AppNavEvent
     data object BackToHome : AppNavEvent
 }
 
@@ -101,16 +105,22 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
     private val cloudInference = CloudFallbackInference(cloudConfig)
     private val capabilityProbe = AndroidDeviceCapabilityProbe(application)
     private val modelStore = LocalModelStore(application)
+    private val extractionScheduler = ExamBackgroundScheduler(application)
     private val preferences: HybridPreferences = AppPreferencesStore(application)
 
     private val mutableState = MutableStateFlow(ExamAppState())
     val state = mutableState.asStateFlow()
     private var work: Job? = null
     private var latestDownloadProgress = ModelDownloadProgress()
+    private var lastHandledWorkId: UUID? = null
+    private var activeSessionWork: Boolean = false
+    private var lastEnqueuedExamId: String? = null
+    private var lastEnqueuedUseCloud: Boolean = false
     // Kept strictly in RAM until the user accepts or declines cloud opt-in; never persisted.
     private var pendingConsentUri: Uri? = null
 
     init {
+        BackgroundNotifications.ensureChannels(application)
         viewModelScope.launch {
             refreshHistory(initialLoad = true)
             refreshHybridSettings()
@@ -120,6 +130,9 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
                 latestDownloadProgress = progress
                 refreshHybridSettings()
             }
+        }
+        viewModelScope.launch {
+            extractionScheduler.observe().collect(::onExtractionWorkInfo)
         }
     }
 
@@ -132,7 +145,7 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
     }
 
     fun selectPdf(uri: Uri?) {
-        if (uri == null || work?.isActive == true) return
+        if (uri == null || work?.isActive == true || mutableState.value.activeExamId != null) return
         val decision = evaluateRoutingDecision()
         when (decision.target) {
             InferenceExecutionTarget.LOCAL -> startExtraction(uri, decision)
@@ -221,8 +234,6 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
     private fun startExtraction(uri: Uri, decision: RoutingDecision) {
         val useCloud = decision.target == InferenceExecutionTarget.CLOUD_FALLBACK
         val execMode = if (useCloud) ExecutionModeUi.CLOUD_PRIVATE_FALLBACK else ExecutionModeUi.LOCAL_OFFLINE
-        val routedInference = HybridTextInference(decision, localInference, cloudInference)
-        val runner = ExamRunner(store, routedInference)
 
         mutableState.update {
             it.copy(
@@ -236,10 +247,11 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
             )
         }
         work = viewModelScope.launch {
-            var createdId: String? = null
             try {
                 val id = store.accept(uri)
-                createdId = id
+                activeSessionWork = true
+                lastEnqueuedExamId = id
+                lastEnqueuedUseCloud = useCloud
                 mutableState.update {
                     it.copy(
                         activeExamId = id,
@@ -251,54 +263,7 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
                         navEvent = AppNavEvent.OpenProcessing(id),
                     )
                 }
-                val finishedPages = linkedMapOf<Int, PageProgressUi>()
-                val extraction = runner.extract(
-                    id = id,
-                    redactPiiForCloud = useCloud,
-                    onProgress = { page, totalPages, block, blocks ->
-                        mutableState.update { current ->
-                            if (current.processing?.cancellable != true) return@update current
-                            val pageList = (1..totalPages).map { p ->
-                                finishedPages[p] ?: when {
-                                    p == page -> PageProgressUi(p, PageProgressStatus.IN_PROGRESS)
-                                    else -> PageProgressUi(p, PageProgressStatus.PENDING)
-                                }
-                            }
-                            current.copy(
-                                processing = ProcessingUiState(
-                                    message = if (useCloud) "Extraindo via nuvem privada" else "Extraindo com IA",
-                                    page = page,
-                                    totalPages = totalPages,
-                                    block = block,
-                                    totalBlocks = blocks,
-                                    pages = pageList,
-                                    cancellable = true,
-                                    executionMode = execMode,
-                                ),
-                            )
-                        }
-                    },
-                    onPageFinished = { outcome ->
-                        val status = if (outcome.issues.isNotEmpty()) PageProgressStatus.ISSUE else PageProgressStatus.COMPLETED
-                        finishedPages[outcome.page] = PageProgressUi(outcome.page, status, outcome.observations.size)
-                    },
-                )
-                val savedEntry = store.save(id, extraction)
-                val history = store.list()
-                ensureActive()
-                val domainContext = ExamUiMapper.toDomainContext(mutableState.value.sessionContext)
-                val assessed = ExamSummaryProjection.project(extraction, domainContext)
-                mutableState.update {
-                    it.copy(
-                        history = history,
-                        activeExamId = null,
-                        processing = null,
-                        openedExam = OpenedExamState(savedEntry, extraction, assessed),
-                        selectedEvidenceId = null,
-                        notice = null,
-                        navEvent = AppNavEvent.OpenResults(id),
-                    )
-                }
+                extractionScheduler.enqueue(examId = id, useCloud = useCloud)
             } catch (cancelled: CancellationException) {
                 throw cancelled
             } catch (failure: ExamInputException) {
@@ -324,8 +289,115 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
                         activeExamId = null,
                         processing = null,
                         notice = notice,
-                        navEvent = if (createdId != null) AppNavEvent.BackToHome else null,
                     )
+                }
+            }
+        }
+    }
+
+    private suspend fun onExtractionWorkInfo(info: WorkInfo?) {
+        if (info == null) return
+        when (info.state) {
+            WorkInfo.State.ENQUEUED, WorkInfo.State.BLOCKED, WorkInfo.State.RUNNING -> {
+                val workExamId = info.progress.getString(ExamWorkCodec.KEY_EXAM_ID)
+                    ?.takeIf { AppRoutes.isOpaqueId(it) }
+                    ?: lastEnqueuedExamId
+                    ?: return
+                val ui = ExamWorkCodec.toProcessingUi(info.progress, fallbackUseCloud = lastEnqueuedUseCloud)
+                val shouldOpenProcessing = mutableState.value.activeExamId == null
+                activeSessionWork = true
+                lastEnqueuedExamId = workExamId
+                mutableState.update { current ->
+                    if (current.processing?.cancellable == false) return@update current
+                    current.copy(
+                        activeExamId = workExamId,
+                        processing = ui,
+                        navEvent = if (shouldOpenProcessing) AppNavEvent.OpenProcessing(workExamId) else current.navEvent,
+                    )
+                }
+            }
+            WorkInfo.State.SUCCEEDED -> {
+                if (lastHandledWorkId == info.id) return
+                lastHandledWorkId = info.id
+                val finishedExamId = info.outputData.getString(ExamWorkCodec.KEY_EXAM_ID)
+                    ?.takeIf { AppRoutes.isOpaqueId(it) }
+                    ?: lastEnqueuedExamId
+                val wasWatching = activeSessionWork || mutableState.value.activeExamId != null || mutableState.value.processing != null
+                activeSessionWork = false
+                lastEnqueuedExamId = null
+                val history = runCatching { store.list() }.getOrElse { mutableState.value.history }
+                mutableState.update {
+                    it.copy(
+                        history = history,
+                        activeExamId = null,
+                        processing = null,
+                    )
+                }
+                if (wasWatching && finishedExamId != null) {
+                    BackgroundNotifications.cancel(getApplication(), BackgroundNotifications.NOTIFICATION_ID_EXAM_RESULT)
+                    openExam(finishedExamId)
+                }
+            }
+            WorkInfo.State.CANCELLED -> {
+                if (lastHandledWorkId == info.id) return
+                lastHandledWorkId = info.id
+                val wasWatching = activeSessionWork || mutableState.value.activeExamId != null || mutableState.value.processing != null
+                activeSessionWork = false
+                lastEnqueuedExamId = null
+                if (wasWatching) {
+                    val history = runCatching { store.list() }.getOrElse { emptyList() }
+                    mutableState.update {
+                        it.copy(
+                            history = history,
+                            activeExamId = null,
+                            processing = null,
+                            sessionContext = ClinicalContextUi(),
+                            notice = "Extração cancelada.",
+                            navEvent = AppNavEvent.BackToHome,
+                        )
+                    }
+                }
+            }
+            WorkInfo.State.FAILED -> {
+                if (lastHandledWorkId == info.id) return
+                lastHandledWorkId = info.id
+                val wasWatching = activeSessionWork || mutableState.value.activeExamId != null || mutableState.value.processing != null
+                activeSessionWork = false
+                lastEnqueuedExamId = null
+                val history = runCatching { store.list() }.getOrElse { mutableState.value.history }
+                if (wasWatching) {
+                    val code = info.outputData.getString(ExamWorkCodec.KEY_ERROR_CODE)
+                    mutableState.update {
+                        it.copy(
+                            history = history,
+                            activeExamId = null,
+                            processing = null,
+                            notice = ExamWorkCodec.errorNotice(code),
+                            navEvent = AppNavEvent.BackToHome,
+                        )
+                    }
+                } else {
+                    mutableState.update { it.copy(history = history) }
+                }
+            }
+        }
+    }
+
+    fun handleNotificationIntent(examId: String?, destination: String?) {
+        if (!examId.isNullOrBlank() && AppRoutes.isOpaqueId(examId)) {
+            BackgroundNotifications.cancel(getApplication(), BackgroundNotifications.NOTIFICATION_ID_EXAM_RESULT)
+            openExam(examId)
+            return
+        }
+        when (destination) {
+            BackgroundNotifications.DESTINATION_HELP -> {
+                BackgroundNotifications.cancel(getApplication(), BackgroundNotifications.NOTIFICATION_ID_MODEL_RESULT)
+                mutableState.update { it.copy(navEvent = AppNavEvent.OpenHelp) }
+            }
+            BackgroundNotifications.DESTINATION_PROCESSING -> {
+                val active = mutableState.value.activeExamId
+                if (active != null) {
+                    mutableState.update { it.copy(navEvent = AppNavEvent.OpenProcessing(active)) }
                 }
             }
         }
@@ -434,21 +506,11 @@ internal class ExamViewModel(application: Application) : AndroidViewModel(applic
         mutableState.update {
             it.copy(processing = ProcessingUiState(message = "Cancelando a extração", cancellable = false))
         }
+        extractionScheduler.cancel()
         work = viewModelScope.launch {
             activeJob?.cancelAndJoin()
             if (activeId != null) {
                 runCatching { store.cancelActive(activeId) }
-            }
-            val history = runCatching { store.list() }.getOrElse { emptyList() }
-            mutableState.update {
-                it.copy(
-                    history = history,
-                    activeExamId = null,
-                    processing = null,
-                    sessionContext = ClinicalContextUi(),
-                    notice = "Extração cancelada.",
-                    navEvent = AppNavEvent.BackToHome,
-                )
             }
         }
     }

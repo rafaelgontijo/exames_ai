@@ -180,6 +180,11 @@ private fun HybridAiSettingsCard(
             } else {
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth().height(8.dp))
             }
+            Text(
+                "O download continua em segundo plano com acompanhamento na barra de notificações.",
+                style = MaterialTheme.typography.bodySmall,
+                color = p.secondaryText,
+            )
             SecondaryAction(text = "Cancelar download dos pesos", onClick = onCancelDownload)
         } else if (settings.canDownloadLocal && settings.localModelStatus != LocalModelStatusUi.READY) {
             SecondaryAction(text = "Baixar modelo local (2,58 GB)", onClick = onStartDownload)

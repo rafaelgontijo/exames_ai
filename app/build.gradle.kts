@@ -12,7 +12,9 @@ val cloudAuthToken = providers.gradleProperty("examesCloudAuthToken").orElse("")
 val cognitoRegion = providers.gradleProperty("examesCognitoRegion").orElse("")
 val cognitoClientId = providers.gradleProperty("examesCognitoClientId").orElse("")
 val cognitoRefreshToken = providers.gradleProperty("examesCognitoRefreshToken").orElse("")
-val modelDownloadUrl = providers.gradleProperty("examesModelDownloadUrl").orElse("")
+val modelDownloadUrl = providers.gradleProperty("examesModelDownloadUrl").orElse(
+    "https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm/resolve/2e12bfd869b2962984f97a1f2a26807316d534cc/gemma-4-E2B-it.litertlm",
+)
 if (validationApplicationId.isPresent) {
     layout.buildDirectory.set(layout.projectDirectory.dir("build/validation"))
 }
@@ -81,6 +83,8 @@ dependencies {
     implementation(project(":inference-local"))
     implementation(project(":inference-cloud"))
     implementation(libs.coroutines.android)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.work.runtime)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(platform(libs.compose.bom))
