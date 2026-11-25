@@ -158,9 +158,9 @@ fun ProcessingScreen(
                     Icon(ExamesIcons.ShieldLock, contentDescription = null, tint = p.onInfoContainer, modifier = Modifier.size(20.dp))
                     Text(
                         if (isCloud) {
-                            "Envio criptografado (TLS) apenas das faixas do laudo, sem armazenamento nem treino na nuvem. Ao cancelar, a chamada é encerrada imediatamente."
+                            "Envio criptografado (TLS) apenas das faixas do laudo, sem armazenamento nem treino na nuvem. Você pode sair do app e acompanhar pela barra de notificações; avisaremos ao terminar."
                         } else {
-                            "Seus dados permanecem privados e cifrados apenas neste aparelho. Ao cancelar, a cópia temporária é descartada."
+                            "Seus dados permanecem privados e cifrados apenas neste aparelho. Você pode sair do app e acompanhar pela barra de notificações; avisaremos ao terminar."
                         },
                         style = MaterialTheme.typography.bodyMedium,
                         color = p.onInfoContainer,

@@ -5,6 +5,7 @@ import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
+import androidx.work.ForegroundInfo
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
@@ -65,7 +66,9 @@ data class ModelDownloadProgress(
 internal class VerifiedModelStreamDownloader(
     private val directory: File,
     private val spec: ModelSpec,
-    private val space: () -> Long = { directory.usableSpace },
+    private val space: () -> Long = {
+        generateSequence(directory) { it.parentFile }.firstOrNull { it.exists() }?.usableSpace ?: 0L
+    },
     private val atomicRename: (File, File) -> Unit = { src, dst ->
         Files.move(src.toPath(), dst.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
     },
@@ -363,13 +366,22 @@ class ModelDownloadWorker(
     appContext: Context,
     params: WorkerParameters,
 ) : CoroutineWorker(appContext, params) {
+    override suspend fun getForegroundInfo(): ForegroundInfo =
+        createForegroundInfo(downloadedBytes = 0L, totalBytes = LocalTextInference.MODEL_BYTES, verifying = false)
+
     override suspend fun doWork(): Result {
         val url = inputData.getString(LocalModelStore.KEY_DOWNLOAD_URL)?.trim().orEmpty()
         if (url.isEmpty()) {
             return Result.failure(Data.Builder().putString(LocalModelStore.KEY_ERROR_CODE, "MISSING_URL").build())
         }
+        BackgroundNotifications.cancel(applicationContext, BackgroundNotifications.NOTIFICATION_ID_MODEL_RESULT)
+        trySetForeground(downloadedBytes = 0L, totalBytes = LocalTextInference.MODEL_BYTES, verifying = false)
+
         val directory = File(applicationContext.noBackupFilesDir, "models")
         val downloader = OkHttpModelDownloader(directory)
+        var lastNotifiedAtMs = 0L
+        var lastNotifiedPercent = -1
+
         return try {
             downloader.download(url) { downloaded, total ->
                 setProgressAsync(
@@ -378,14 +390,87 @@ class ModelDownloadWorker(
                         .putLong(LocalModelStore.KEY_TOTAL_BYTES, total)
                         .build(),
                 )
+                val now = System.currentTimeMillis()
+                val pct = BackgroundNotificationCopy.modelProgressPercent(downloaded, total) ?: -1
+                val isVerifying = total > 0L && downloaded >= total
+                if (isVerifying || pct != lastNotifiedPercent && (now - lastNotifiedAtMs >= NOTIFY_THROTTLE_MS || pct == 100)) {
+                    lastNotifiedAtMs = now
+                    lastNotifiedPercent = pct
+                    setForegroundAsync(createForegroundInfo(downloaded, total, verifying = isVerifying))
+                }
             }
+            BackgroundNotifications.postCompletionAlert(
+                context = applicationContext,
+                notificationId = BackgroundNotifications.NOTIFICATION_ID_MODEL_RESULT,
+                title = BackgroundNotificationCopy.modelCompletedTitle(),
+                text = BackgroundNotificationCopy.modelCompletedText(),
+                smallIconRes = android.R.drawable.stat_sys_download_done,
+                contentIntent = BackgroundNotifications.createAppLaunchIntent(
+                    context = applicationContext,
+                    requestCode = BackgroundNotifications.NOTIFICATION_ID_MODEL_RESULT,
+                    destination = BackgroundNotifications.DESTINATION_HELP,
+                ),
+            )
             Result.success()
         } catch (cancelled: CancellationException) {
+            BackgroundNotifications.cancel(applicationContext, BackgroundNotifications.NOTIFICATION_ID_MODEL_PROGRESS)
             throw cancelled
         } catch (prep: ModelPreparationException) {
+            postFailureAlert(prep.reason.name)
             Result.failure(Data.Builder().putString(LocalModelStore.KEY_ERROR_CODE, prep.reason.name).build())
         } catch (_: IOException) {
+            postFailureAlert("NETWORK_ERROR")
             Result.failure(Data.Builder().putString(LocalModelStore.KEY_ERROR_CODE, "NETWORK_ERROR").build())
         }
+    }
+
+    private suspend fun trySetForeground(downloadedBytes: Long, totalBytes: Long, verifying: Boolean) {
+        try {
+            setForeground(createForegroundInfo(downloadedBytes, totalBytes, verifying))
+        } catch (_: IllegalStateException) {
+            // Android 12+ ForegroundServiceStartNotAllowedException: continue work without crashing.
+        } catch (_: SecurityException) {
+            // Missing permission edge case: continue work gracefully.
+        }
+    }
+
+    private fun createForegroundInfo(downloadedBytes: Long, totalBytes: Long, verifying: Boolean): ForegroundInfo {
+        val percent = if (verifying) null else BackgroundNotificationCopy.modelProgressPercent(downloadedBytes, totalBytes)
+        val notification = BackgroundNotifications.buildProgressNotification(
+            context = applicationContext,
+            title = BackgroundNotificationCopy.modelProgressTitle(),
+            text = BackgroundNotificationCopy.modelProgressText(downloadedBytes, totalBytes, verifying),
+            percent = percent,
+            smallIconRes = android.R.drawable.stat_sys_download,
+            contentIntent = BackgroundNotifications.createAppLaunchIntent(
+                context = applicationContext,
+                requestCode = BackgroundNotifications.NOTIFICATION_ID_MODEL_PROGRESS,
+                destination = BackgroundNotifications.DESTINATION_HELP,
+            ),
+            cancelIntent = WorkManager.getInstance(applicationContext).createCancelPendingIntent(id),
+        )
+        return BackgroundNotifications.buildDataSyncForegroundInfo(
+            notificationId = BackgroundNotifications.NOTIFICATION_ID_MODEL_PROGRESS,
+            notification = notification,
+        )
+    }
+
+    private fun postFailureAlert(errorCode: String) {
+        BackgroundNotifications.postCompletionAlert(
+            context = applicationContext,
+            notificationId = BackgroundNotifications.NOTIFICATION_ID_MODEL_RESULT,
+            title = BackgroundNotificationCopy.modelFailedTitle(),
+            text = BackgroundNotificationCopy.modelFailedText(errorCode),
+            smallIconRes = android.R.drawable.stat_notify_error,
+            contentIntent = BackgroundNotifications.createAppLaunchIntent(
+                context = applicationContext,
+                requestCode = BackgroundNotifications.NOTIFICATION_ID_MODEL_RESULT,
+                destination = BackgroundNotifications.DESTINATION_HELP,
+            ),
+        )
+    }
+
+    private companion object {
+        const val NOTIFY_THROTTLE_MS = 500L
     }
 }

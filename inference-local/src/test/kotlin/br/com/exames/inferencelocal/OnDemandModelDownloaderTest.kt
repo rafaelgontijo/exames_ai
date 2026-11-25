@@ -136,6 +136,18 @@ class OnDemandModelDownloaderTest {
         assertTrue(dir.listFiles().orEmpty().none { it.name.endsWith(".partial") })
     }
 
+    @Test fun inspectStateChecksExistingParentWhenModelsDirectoryDoesNotExistYet() {
+        val parent = temp.newFolder("noBackupFilesDir")
+        val nonExistentModelsDir = File(parent, "models")
+        assertFalse(nonExistentModelsDir.exists())
+        val spec = ModelSpec(1024L, sha256(ByteArray(1024)))
+        val core = VerifiedModelStreamDownloader(
+            directory = nonExistentModelsDir,
+            spec = spec,
+        )
+        assertEquals(LocalWeightsState.NOT_DOWNLOADED, core.inspectState())
+    }
+
     private fun sha256(bytes: ByteArray): String =
         MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
 }

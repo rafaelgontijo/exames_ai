@@ -1,5 +1,9 @@
 package br.com.exames.app
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -7,6 +11,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
+import br.com.exames.inferencelocal.BackgroundNotifications
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -34,17 +40,33 @@ import br.com.exames.coreui.screens.*
 
 class MainActivity : ComponentActivity() {
     private val exam: ExamViewModel by viewModels()
+    private var askedNotificationsThisSession = false
+    private var pendingAfterNotificationPrompt: (() -> Unit)? = null
+
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { _ ->
+        // Grant or denial never blocks exam extraction or model download.
+        val next = pendingAfterNotificationPrompt
+        pendingAfterNotificationPrompt = null
+        next?.invoke()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        handleNotificationIntent(intent)
         setContent {
             val state by exam.state.collectAsStateWithLifecycle()
             val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument(), exam::selectPdf)
             ExamesTheme {
                 ExamesAppShell(
                     state = state,
-                    onSelectPdf = { picker.launch(arrayOf("application/pdf")) },
+                    onSelectPdf = {
+                        runWithOptionalNotificationPermission {
+                            picker.launch(arrayOf("application/pdf"))
+                        }
+                    },
                     onOpenExam = exam::openExam,
                     onSelectFilter = exam::selectFilter,
                     onUpdateContext = exam::updateClinicalContext,
@@ -59,12 +81,51 @@ class MainActivity : ComponentActivity() {
                     onDeclineCloudFallback = exam::declineCloudFallback,
                     onToggleCloudFallback = exam::setCloudFallbackOptIn,
                     onToggleWifiOnly = exam::setDownloadOnWifiOnly,
-                    onStartModelDownload = exam::startLocalModelDownload,
+                    onStartModelDownload = {
+                        runWithOptionalNotificationPermission {
+                            exam.startLocalModelDownload()
+                        }
+                    },
                     onCancelModelDownload = exam::cancelLocalModelDownload,
                     onDeleteLocalModel = exam::deleteLocalModelWeights,
                 )
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleNotificationIntent(intent)
+    }
+
+    private fun handleNotificationIntent(source: Intent?) {
+        if (source == null) return
+        val examId = source.getStringExtra(BackgroundNotifications.EXTRA_OPEN_EXAM_ID)
+        val destination = source.getStringExtra(BackgroundNotifications.EXTRA_OPEN_DESTINATION)
+        if (!examId.isNullOrBlank() || !destination.isNullOrBlank()) {
+            source.removeExtra(BackgroundNotifications.EXTRA_OPEN_EXAM_ID)
+            source.removeExtra(BackgroundNotifications.EXTRA_OPEN_DESTINATION)
+            exam.handleNotificationIntent(examId, destination)
+        }
+    }
+
+    private fun runWithOptionalNotificationPermission(action: () -> Unit) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || askedNotificationsThisSession) {
+            action()
+            return
+        }
+        val granted = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.POST_NOTIFICATIONS,
+        ) == PackageManager.PERMISSION_GRANTED
+        if (granted) {
+            action()
+            return
+        }
+        askedNotificationsThisSession = true
+        pendingAfterNotificationPrompt = action
+        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
 }
 
@@ -115,6 +176,12 @@ internal fun ExamesAppShell(
             }
             is AppNavEvent.OpenResults -> {
                 navController.navigate(AppRoutes.results(event.examId)) {
+                    popUpTo(AppRoutes.HOME) { inclusive = false }
+                    launchSingleTop = true
+                }
+            }
+            AppNavEvent.OpenHelp -> {
+                navController.navigate(AppRoutes.HELP) {
                     popUpTo(AppRoutes.HOME) { inclusive = false }
                     launchSingleTop = true
                 }
